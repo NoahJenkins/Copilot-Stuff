@@ -25,7 +25,26 @@ When a file to be created or modified already exists:
 4. Remove exact duplicates but keep the existing version if formatting differs
 5. For `.vscode/settings.json`, merge keys — never overwrite existing user/team preferences
 
+### Sub-Agent Delegation
+After creating the custom agents in Section 9, delegate specialized work to them as sub-agents for the remainder of the onboarding process:
+
+| Section | Delegate to | Reason |
+|---------|------------|--------|
+| 1. Codebase Analysis | `@research-agent` | Technical research, version lookups, framework identification |
+| 11. CI/CD Pipeline Documentation | `@documentation-agent` | Structured documentation creation |
+| 12. Initial ADR | `@documentation-agent` | ADR authoring follows agent's specialization |
+| 13. Security Baseline Report | `@security-agent` | Vulnerability scanning, secrets detection, dependency audit |
+| 14. Summary Report | `@documentation-agent` | Final report authoring |
+
+When delegating:
+- Provide the sub-agent with all context gathered so far (detected languages, frameworks, file paths, etc.)
+- Let the sub-agent execute its full workflow — do not duplicate its responsibilities
+- Review the sub-agent's output before finalizing
+- If a sub-agent is not yet created (i.e., Section 9 hasn't run yet), perform the work directly and note that delegation will be available for future runs
+
 ## 1. Codebase Analysis
+
+> **Sub-agent delegation**: Use `@research-agent` to conduct the codebase analysis. Provide it with the repository root path and ask it to identify all technologies, frameworks, versions, and patterns listed below. Incorporate its findings into the analysis output.
 
 Analyze and document the following:
 - Primary programming languages and their versions
@@ -698,6 +717,8 @@ Production build: `[command]`
 
 > **Skip condition**: If no CI/CD configuration exists (`.github/workflows/`, `.circleci/`, `.gitlab-ci.yml`, `Jenkinsfile`, etc.), skip this section and note the absence in the summary report.
 
+> **Sub-agent delegation**: Use `@documentation-agent` to create the CI/CD pipeline documentation. Provide it with the CI/CD configuration file paths detected in Section 1.
+
 If CI/CD configuration exists, create `docs/architecture/ci-cd-pipeline.md` documenting:
 
 - **Overview**: Brief description of the CI/CD approach
@@ -712,6 +733,8 @@ If CI/CD configuration exists, create `docs/architecture/ci-cd-pipeline.md` docu
 - **Maintenance**: How to update CI dependencies and modify pipeline configuration
 
 ## 12. Initial ADR
+
+> **Sub-agent delegation**: Use `@documentation-agent` to create this ADR. It is pre-configured with ADR naming conventions, required sections, and immutability rules.
 
 Create `docs/adr/0001-adopt-documentation-structure.md`:
 
@@ -810,6 +833,8 @@ This framework will be enforced through:
 
 ## 13. Security Baseline Report
 
+> **Sub-agent delegation**: Use `@security-agent` to perform the security assessment. Provide it with the dependency manifest file paths and tech stack detected in Section 1. The security agent will scan for vulnerabilities, secrets, and configuration issues.
+
 Create `docs/context/[YYYY-MM-DD]-security-baseline.md`:
 
 Perform initial security assessment:
@@ -878,6 +903,8 @@ Format the report as:
 ```
 
 ## 14. Summary Report
+
+> **Sub-agent delegation**: Use `@documentation-agent` to compile the final onboarding report. Provide it with the complete results from all previous sections — technologies detected, files created, security findings, and any skipped sections.
 
 Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 
