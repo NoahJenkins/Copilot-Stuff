@@ -1,10 +1,29 @@
 ---
-description: Automated repository onboarding that scans the repo and creates custom instructions, documentation structure, IDE configuration, and development environment setup
+description: Automated repository onboarding that scans the repo and creates custom instructions, documentation structure, IDE configuration, GitHub templates, security baseline, and development environment setup
 ---
 
 # OnboardCopilot: Automated Repository Setup
 
-Scan this repository and perform the following comprehensive onboarding tasks:
+Scan this repository and perform the following comprehensive onboarding tasks.
+
+## General Guidance
+
+### Edge Cases & Conditional Logic
+Before executing each section, evaluate whether it applies to this repository:
+- **New/empty repository with no git history**: Skip CODEOWNERS generation (Section 6). Create placeholder templates instead.
+- **No environment variables detected**: Create a minimal `.env.example` with a comment noting no variables were found, plus common placeholders (e.g., `NODE_ENV`, `PORT`).
+- **Monorepo with multiple languages**: Apply language-specific patterns for ALL detected languages. Create separate sections in `.env.example`, `.gitignore`, and pre-commit hooks for each language.
+- **Files already exist**: Always merge with existing content. Never overwrite without preserving current entries. Add new content in clearly commented sections.
+- **Pre-commit not available**: If the project doesn't use Python and `pre-commit` would be an unusual dependency, use ecosystem-native alternatives (husky + lint-staged for Node.js, lefthook for Go, etc.).
+- **CI/CD not present**: Skip Section 10 entirely. Note the absence in the summary report.
+
+### Merging Strategy
+When a file to be created or modified already exists:
+1. Read the existing file content first
+2. Preserve all existing entries and configurations
+3. Add new content in clearly labeled sections with comments (e.g., `# Added by OnboardCopilot`)
+4. Remove exact duplicates but keep the existing version if formatting differs
+5. For `.vscode/settings.json`, merge keys — never overwrite existing user/team preferences
 
 ## 1. Codebase Analysis
 
@@ -17,6 +36,9 @@ Analyze and document the following:
 - Code style tools (linters, formatters)
 - Dependency management approach
 - Project structure and architecture patterns
+- Containerization setup (Dockerfile, docker-compose.yml, .devcontainer/)
+- Monorepo tooling (lerna, pnpm workspaces, nx, turborepo)
+- License files and type
 
 ## 2. Documentation Structure
 
@@ -54,7 +76,7 @@ Create the following directories if they don't exist:
 ## 3. Environment Configuration
 
 ### .env.example Template
-Scan the codebase for environment variable usage and create `.env.example`:
+Scan the codebase for environment variable usage and create `.env.example`. If no environment variables are detected, create a minimal template with common placeholders and a note for the team to populate:
 
 - Search for environment variable patterns:
   - JavaScript/Node: `process.env.VARIABLE_NAME`
@@ -97,7 +119,10 @@ Analyze detected tech stack and update `.gitignore` with:
 - Ruby: `*.gem`, `.bundle/`, `vendor/bundle/`
 
 **IDE/Editor files:**
-- `.vscode/` (except settings you want to share)
+- `.vscode/*` with exclusions for shared config:
+  - `!.vscode/settings.json`
+  - `!.vscode/extensions.json`
+  - `!.vscode/launch.json` (if present)
 - `.idea/`
 - `*.swp`, `*.swo`, `*~`
 - `.DS_Store`
@@ -203,12 +228,12 @@ Example format:
 
 ### .github/ISSUE_TEMPLATE/bug_report.md
 ```markdown
-***
+---
 name: Bug Report
 about: Report a bug or unexpected behavior
 title: '[BUG] '
 labels: bug
-***
+---
 
 ## Description
 A clear and concise description of the bug.
@@ -235,12 +260,12 @@ Add any other context, screenshots, or logs.
 
 ### .github/ISSUE_TEMPLATE/feature_request.md
 ```markdown
-***
+---
 name: Feature Request
 about: Suggest a new feature or enhancement
 title: '[FEATURE] '
 labels: enhancement
-***
+---
 
 ## Problem Statement
 Describe the problem or need this feature would address.
@@ -319,6 +344,8 @@ Describe specific test scenarios:
 
 Create `.github/CODEOWNERS`:
 
+> **Skip condition**: If the repository has no git history or is newly initialized, create a placeholder CODEOWNERS with `# TODO: Populate with actual team members` comments and skip git history analysis.
+
 - Analyze git history to identify primary contributors per directory
 - Use `git log --format='%an' --numstat` to find who modifies which areas
 - Create initial CODEOWNERS mapping:
@@ -358,11 +385,14 @@ Create `.pre-commit-config.yaml` based on detected languages:
 - Rust: rustfmt, clippy
 - Ruby: rubocop
 
+When generating this file, look up the latest stable release tags for each repository. Do not hardcode versions — they become outdated quickly.
+
 Example format:
 ```yaml
+# IMPORTANT: Replace rev values with latest stable release tags before committing.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: # latest from https://github.com/pre-commit/pre-commit-hooks/releases
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -370,7 +400,7 @@ repos:
       - id: check-added-large-files
       
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+    rev: # latest from https://github.com/Yelp/detect-secrets/releases
     hooks:
       - id: detect-secrets
 
@@ -378,6 +408,8 @@ repos:
 ```
 
 Keep hooks fast (< 2 seconds total) to avoid developer friction.
+
+> **Alternative for Node.js projects**: If the project is Node.js-based and doesn't use Python, use `husky` + `lint-staged` instead of `pre-commit`. For Go projects, consider `lefthook`. Always match the hook tool to the project's ecosystem.
 
 ## 8. Custom Instructions
 
@@ -435,17 +467,17 @@ Exploratory research, planning session notes, and working documentation. Files n
 
 ## Information Sources Priority
 
-### 1. Primary: Context7
-- **Always attempt to use context7 first** for all technical documentation lookups
-- Include "use context7" in your research process when looking up:
+### 1. Primary: Documentation Lookup Tools
+- **Use available documentation lookup tools** (e.g., Context7 MCP server, library documentation fetchers) for all technical documentation lookups when available
+- Look up:
   - Library and framework documentation
   - API references
   - Language features and syntax
   - Best practices for current versions
-- Context7 provides up-to-date, accurate technical information from official sources
+- If no documentation tools are configured, proceed to first-party sources below
 
 ### 2. Secondary: First-Party Official Documentation
-If context7 is unavailable or yields no results, use first-party official documentation sources:
+Use first-party official documentation sources (especially if documentation tools above are unavailable):
 - learn.microsoft.com for Microsoft technologies
 - Official GitHub repositories and documentation sites
 - Vendor-maintained documentation portals
@@ -568,86 +600,20 @@ Production build: `[command]`
 
 ## 10. CI/CD Pipeline Documentation
 
-If CI/CD configuration exists (`.github/workflows/`, `.circleci/`, `.gitlab-ci.yml`, etc.):
+> **Skip condition**: If no CI/CD configuration exists (`.github/workflows/`, `.circleci/`, `.gitlab-ci.yml`, `Jenkinsfile`, etc.), skip this section and note the absence in the summary report.
 
-Create `docs/architecture/ci-cd-pipeline.md`:
+If CI/CD configuration exists, create `docs/architecture/ci-cd-pipeline.md` documenting:
 
-```markdown
-# CI/CD Pipeline Documentation
-
-## Overview
-[Brief description of the CI/CD approach]
-
-## Pipeline Stages
-
-### Build Stage
-- Trigger: [when does it run]
-- Actions:
-  - Install dependencies
-  - Compile/build application
-  - Run linters/formatters
-- Success criteria: Clean build with no errors
-- Typical duration: [X minutes]
-
-### Test Stage
-- Trigger: [when does it run]
-- Actions:
-  - Run unit tests
-  - Run integration tests
-  - Generate coverage reports
-- Success criteria: All tests pass, coverage threshold met
-- Typical duration: [X minutes]
-
-### Security/Quality Stage
-- Actions:
-  - Dependency vulnerability scanning
-  - Static code analysis
-  - Security scanning
-- Success criteria: No critical vulnerabilities
-
-### Deployment Stage(s)
-[For each environment: staging, production, etc.]
-
-#### Staging
-- Trigger: [merge to main, manual, etc.]
-- Environment: [staging URL/details]
-- Deployment method: [describe]
-
-#### Production
-- Trigger: [tag, manual approval, etc.]
-- Environment: [production URL/details]
-- Deployment method: [describe]
-- Rollback procedure: [describe]
-
-## Required Secrets/Environment Variables
-
-### Repository Secrets
-[List secrets configured in CI/CD]
-- `SECRET_NAME`: Description and where to obtain
-- 
-
-### Environment Variables
-[List environment-specific variables]
-- 
-
-## Troubleshooting
-
-### Common Issues
-
-**Build fails on dependency installation**
-- Solution: 
-
-**Tests fail in CI but pass locally**
-- Solution: 
-
-**Deployment fails**
-- Solution: 
-
-## Pipeline Maintenance
-- How to update dependencies in CI
-- How to modify pipeline configuration
-- Where to view logs and artifacts
-```
+- **Overview**: Brief description of the CI/CD approach
+- **Pipeline Stages**: For each stage (build, test, security/quality, deploy), document:
+  - Trigger conditions
+  - Actions performed
+  - Success criteria
+  - Typical duration (if determinable)
+- **Deployment Environments**: For each environment (staging, production), document triggers, URLs, deployment method, and rollback procedures
+- **Required Secrets/Environment Variables**: List all secrets and environment variables referenced in CI/CD config (names only, never values)
+- **Troubleshooting**: Common failure scenarios and solutions based on the pipeline configuration
+- **Maintenance**: How to update CI dependencies and modify pipeline configuration
 
 ## 11. Initial ADR
 
@@ -758,8 +724,15 @@ Perform initial security assessment:
 - Identify dependencies without pinned versions
 
 **Known Vulnerabilities:**
-- Check for known CVEs using available data
-- Prioritize by severity (Critical, High, Medium, Low)
+- Run language-specific audit commands when available:
+  - Node.js: `npm audit` or `yarn audit`
+  - Python: `pip audit` or `safety check`
+  - Ruby: `bundle audit`
+  - Rust: `cargo audit`
+  - Go: `govulncheck ./...`
+- Check for `dependabot.yml` or `renovate.json` presence
+- Flag dependencies without lockfiles (lockfiles ensure reproducible builds and auditability)
+- Prioritize findings by severity (Critical, High, Medium, Low)
 - Identify outdated dependencies with security patches available
 
 **Secrets Detection:**
@@ -817,7 +790,7 @@ Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 *Generated: [Date]*
 
 ## Executive Summary
-This repository has been automatically analyzed and configured with development best practices, documentation structure, and GitHub Copilot custom agents.
+This repository has been automatically analyzed and configured with development best practices, documentation structure, and GitHub Copilot custom instructions.
 
 ## Technologies Detected
 
@@ -861,17 +834,11 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `docs/architecture/ci-cd-pipeline.md` - CI/CD documentation (if applicable)
 - [ ] `docs/context/[date]-security-baseline.md` - Security assessment
 
-## Custom Copilot Agents Available
+## GitHub Copilot Configuration
 
-This repository has 7 custom agents configured in `.github/agents/`:
-
-1. **research-agent** (Gemini 3 Flash) - Technical research with context7
-2. **code-reviewer** (Claude Sonnet 4.5) - Code quality and standards
-3. **security-agent** (Claude Opus 4.6) - Security analysis and vulnerabilities
-4. **documentation-agent** (GPT-5.2) - ADRs, architecture docs, README
-5. **implementation-planner** (Claude Opus 4.6) - Technical planning
-6. **test-specialist** (GPT-5.1-Codex-Max) - Test creation and coverage
-7. **dependency-manager** (GPT-5.1-Codex-Max) - Dependency updates and maintenance
+- Custom instructions configured in `.github/copilot-instructions.md`
+- Project-specific coding standards, documentation structure, and security guidelines included
+- Review and customize the instructions to match your team's specific conventions
 
 ## Recommended Next Steps
 
@@ -898,28 +865,23 @@ This repository has 7 custom agents configured in `.github/agents/`:
    - Review security recommendations
 
 ### Short-term (First Week)
-1. **Review Custom Copilot Instructions**
-   - Validate auto-detected coding standards
-   - Add project-specific guidelines
-   - Update version information if needed
-
-2. **IDE Setup**
+1. **IDE Setup**
    - Install recommended extensions from `.vscode/extensions.json`
    - Verify workspace settings work for your team
+
+2. **Review Custom Copilot Instructions**
+   - Validate auto-detected coding standards in `.github/copilot-instructions.md`
+   - Add project-specific guidelines
+   - Update version information if needed
 
 3. **Documentation Review**
    - Read initial ADR: `docs/adr/0001-adopt-documentation-structure.md`
    - Familiarize team with documentation structure
    - Plan first architecture documentation session
 
-4. **Test Agent Functionality**
-   - Try each custom Copilot agent
-   - Provide feedback on agent performance
-   - Adjust model assignments if needed
-
 ### Ongoing Maintenance
 1. **Keep Dependencies Updated**
-   - Use dependency-manager agent monthly
+   - Run language-specific audit tools regularly (monthly recommended)
    - Review security advisories
 
 2. **Document Decisions**
@@ -929,7 +891,7 @@ This repository has 7 custom agents configured in `.github/agents/`:
 
 3. **Refine Templates**
    - Update PR/issue templates based on team feedback
-   - Add custom agents as project needs evolve
+   - Extend Copilot instructions as project needs evolve
 
 ## Security Considerations
 
@@ -942,12 +904,12 @@ This repository has 7 custom agents configured in `.github/agents/`:
 ## Questions or Issues?
 
 - Review documentation in `docs/`
-- Use custom Copilot agents for help (e.g., `@documentation-agent` for doc questions)
+- Reference `.github/copilot-instructions.md` for project conventions
 - Create an issue using the templates in `.github/ISSUE_TEMPLATE/`
 
 ***
 
-**Onboarding Complete!** Your repository is now configured with development best practices and GitHub Copilot custom agents.
+**Onboarding Complete!** Your repository is now configured with development best practices and GitHub Copilot custom instructions.
 ```
 
 ---
@@ -955,11 +917,13 @@ This repository has 7 custom agents configured in `.github/agents/`:
 ## Execution Instructions
 
 Execute all tasks in the order listed above. For each task:
-1. Analyze existing files/structure before creating new ones
-2. Preserve existing content when enhancing files
-3. Use consistent formatting and style
-4. Add clear comments explaining generated content
-5. Create placeholder values where team-specific information is needed
+1. **Check applicability**: Evaluate whether the section applies to this repository (see General Guidance above)
+2. **Check for existing files**: Read existing files before creating or modifying — never overwrite without merging
+3. **Preserve existing content**: When enhancing files, keep all existing entries and add new content in labeled sections
+4. **Use consistent formatting and style**: Match the existing codebase conventions where possible
+5. **Add clear comments**: Explain generated content with comments (e.g., `# Added by OnboardCopilot`)
+6. **Create placeholder values**: Where team-specific information is needed, use `# TODO:` prefixed comments
+7. **Skip gracefully**: If a section cannot be completed (e.g., no git history for CODEOWNERS), note it in the summary report and move on
 
 After completing all tasks, provide a summary of:
 - What was created
