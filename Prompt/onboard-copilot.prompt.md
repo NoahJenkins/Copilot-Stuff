@@ -1,10 +1,32 @@
 ---
-description: Automated repository onboarding that scans the repo and creates custom instructions, documentation structure, IDE configuration, GitHub templates, security baseline, and development environment setup
+description: Automated repository onboarding for both greenfield and brownfield projects — scans existing repos or scaffolds new ones based on intended tech stack, creating custom instructions, documentation structure, IDE configuration, GitHub templates, security baseline, and development environment setup
 ---
 
 # OnboardCopilot: Automated Repository Setup
 
 Scan this repository and perform the following comprehensive onboarding tasks.
+
+## Greenfield vs Brownfield Detection
+
+Before starting, determine the repository mode:
+
+1. **Check for existing source code**: Look for source files (`.js`, `.ts`, `.py`, `.go`, `.rs`, `.java`, `.rb`, etc.), dependency manifests (`package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`, `pom.xml`, `Gemfile`, etc.), and build configurations.
+
+2. **Classify the repository**:
+   - **Brownfield** (existing code): Proceed with codebase scanning and detection as described in each section.
+   - **Greenfield** (blank/empty repo — no source code, no dependency manifests): Prompt the user for their intended tech stack before proceeding.
+
+3. **Greenfield tech stack prompt**: If the repository is greenfield, ask the user:
+   - **Primary language(s)**: e.g., TypeScript, Python, Go, Rust, Java
+   - **Framework(s)**: e.g., Next.js, FastAPI, Spring Boot, Gin, Actix
+   - **Package manager**: e.g., npm, pnpm, yarn, pip, poetry, cargo
+   - **Testing framework**: e.g., Jest, Vitest, pytest, go test, JUnit
+   - **Database** (if any): e.g., PostgreSQL, MongoDB, SQLite
+   - **Deployment target** (if known): e.g., Vercel, AWS, Docker, Kubernetes
+
+4. **Use the user's answers as the "detected" tech stack** for all subsequent sections. Where brownfield sections say "detected" or "analyze", greenfield mode uses the user's stated intentions instead. All scaffolding (`.gitignore`, `.env.example`, IDE config, pre-commit hooks, etc.) is generated based on the intended stack.
+
+> Throughout this document, **"detected tech stack"** means either scanned from existing code (brownfield) or provided by the user (greenfield).
 
 ## General Guidance
 
@@ -45,6 +67,8 @@ When delegating:
 ## 1. Codebase Analysis
 
 > **Sub-agent delegation**: Use `@research-agent` to conduct the codebase analysis. Provide it with the repository root path and ask it to identify all technologies, frameworks, versions, and patterns listed below. Incorporate its findings into the analysis output.
+
+> **Greenfield mode**: If the repository is empty, skip scanning. Instead, record the user's tech stack answers from the Greenfield Detection step as the analysis output. Use these answers as the "detected" stack for all subsequent sections.
 
 Analyze and document the following:
 - Primary programming languages and their versions
@@ -97,6 +121,8 @@ Create the following directories if they don't exist:
 ### .env.example Template
 Scan the codebase for environment variable usage and create `.env.example`. If no environment variables are detected, create a minimal template with common placeholders and a note for the team to populate:
 
+> **Greenfield mode**: Generate a starter `.env.example` based on the intended tech stack. Include common variables for the chosen framework (e.g., `DATABASE_URL` for database projects, `PORT` and `NODE_ENV` for Node.js, `SECRET_KEY` and `DEBUG` for Django, etc.).
+
 - Search for environment variable patterns:
   - JavaScript/Node: `process.env.VARIABLE_NAME`
   - Python: `os.getenv()`, `os.environ[]`
@@ -128,6 +154,8 @@ Scan the codebase for environment variable usage and create `.env.example`. If n
 
 ### .gitignore Enhancement
 Analyze detected tech stack and update `.gitignore` with:
+
+> **Greenfield mode**: Generate a complete `.gitignore` from scratch based on the user's intended tech stack. Apply all language-specific patterns listed below for the chosen language(s) and framework(s).
 
 **Language-specific patterns:**
 - Python: `__pycache__/`, `*.py[cod]`, `*.egg-info/`, `.pytest_cache/`, `venv/`, `.venv/`
@@ -169,6 +197,8 @@ Preserve existing `.gitignore` entries, add comments for each section, and remov
 ## 4. IDE Configuration
 
 Create `.vscode/` directory with the following files:
+
+> **Greenfield mode**: Generate IDE configuration based on the user's intended tech stack. Select extensions, formatters, and linters for the chosen language(s) and framework(s).
 
 ### .vscode/extensions.json
 Based on detected tech stack, recommend essential extensions:
@@ -390,6 +420,8 @@ Create `.github/CODEOWNERS`:
 
 Create `.pre-commit-config.yaml` based on detected languages:
 
+> **Greenfield mode**: Generate pre-commit hooks (or ecosystem-native equivalent) for the user's intended language(s). Include universal hooks plus language-specific hooks for the chosen stack.
+
 **Universal hooks:**
 - Trailing whitespace removal
 - End-of-file fixer
@@ -433,6 +465,8 @@ Keep hooks fast (< 2 seconds total) to avoid developer friction.
 ## 8. Custom Instructions
 
 Create or update `.github/copilot-instructions.md`:
+
+> **Greenfield mode**: Populate the custom instructions with the user's intended tech stack. Fill in language, framework, and architecture fields based on their answers rather than leaving them blank. Add recommended patterns and conventions for the chosen stack.
 
 ```markdown
 # Project-Specific Guidelines for GitHub Copilot
@@ -835,6 +869,8 @@ This framework will be enforced through:
 
 > **Sub-agent delegation**: Use `@security-agent` to perform the security assessment. Provide it with the dependency manifest file paths and tech stack detected in Section 1. The security agent will scan for vulnerabilities, secrets, and configuration issues.
 
+> **Greenfield mode**: Since there are no dependencies or code to scan, generate a proactive security checklist instead. Include common security considerations for the user's chosen tech stack (e.g., CORS configuration for web APIs, SQL injection prevention for database projects, secret management setup). Title it "Security Setup Checklist" rather than "Security Baseline Report".
+
 Create `docs/context/[YYYY-MM-DD]-security-baseline.md`:
 
 Perform initial security assessment:
@@ -915,7 +951,12 @@ Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 ## Executive Summary
 This repository has been automatically analyzed and configured with development best practices, documentation structure, GitHub Copilot custom instructions, and specialized agents.
 
+## Onboarding Mode
+- [ ] **Brownfield** (existing codebase scanned)
+- [ ] **Greenfield** (scaffolded from intended tech stack)
+
 ## Technologies Detected
+> In greenfield mode, this section reflects the user's stated intended stack rather than detected dependencies.
 
 ### Languages & Versions
 - 
