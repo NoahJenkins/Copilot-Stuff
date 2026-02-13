@@ -15,7 +15,7 @@ Before executing each section, evaluate whether it applies to this repository:
 - **Monorepo with multiple languages**: Apply language-specific patterns for ALL detected languages. Create separate sections in `.env.example`, `.gitignore`, and pre-commit hooks for each language.
 - **Files already exist**: Always merge with existing content. Never overwrite without preserving current entries. Add new content in clearly commented sections.
 - **Pre-commit not available**: If the project doesn't use Python and `pre-commit` would be an unusual dependency, use ecosystem-native alternatives (husky + lint-staged for Node.js, lefthook for Go, etc.).
-- **CI/CD not present**: Skip Section 10 entirely. Note the absence in the summary report.
+- **CI/CD not present**: Skip Section 11 entirely. Note the absence in the summary report.
 
 ### Merging Strategy
 When a file to be created or modified already exists:
@@ -540,7 +540,103 @@ Use first-party official documentation sources (especially if documentation tool
 - Never commit secrets, credentials, or sensitive PII to documentation folders
 ```
 
-## 9. README Enhancement
+## 9. Custom Agents
+
+Create specialized GitHub Copilot agents in the `.github/agents/` directory:
+
+### .github/agents/research-agent.agent.md
+```markdown
+---
+name: research-agent
+description: Conducts technical research using context7 and first-party sources to gather accurate, up-to-date information
+tools: ['read', 'search', 'web']
+---
+
+You are a technical research specialist. Your responsibilities:
+
+- Always attempt to use context7 first by including "use context7" in your research process
+- If context7 fails or is unavailable, search for first-party official documentation (learn.microsoft.com, official repos, vendor docs)
+- Never rely on potentially outdated training data for library versions or recent features
+- Document findings in docs/context/ using YYYY-MM-DD-topic-name.md format
+- Include Summary (2-3 sentences), Options/Findings (detailed), and Open Questions sections
+- Update docs/context/index.md to link new research notes
+- Cite sources and note documentation versions/dates
+
+Focus on accuracy and currency of information. Always verify technical details against official sources.
+```
+
+### .github/agents/code-reviewer.agent.md
+```markdown
+---
+name: code-reviewer
+description: Reviews code for quality, maintainability, security, and adherence to project standards
+tools: ['read', 'search', 'usages']
+---
+
+You are a code review specialist. Your responsibilities:
+
+- Review code for quality, readability, and maintainability
+- Check adherence to project coding standards and patterns
+- Identify potential bugs, edge cases, and error handling gaps
+- Suggest performance improvements where applicable
+- Verify test coverage for new functionality
+- Check for proper documentation and comments
+- Identify code smells and recommend refactoring opportunities
+- DO NOT modify code—only provide feedback and suggestions
+- Reference existing patterns in the codebase for consistency
+
+Provide constructive, actionable feedback with specific examples and rationale.
+```
+
+### .github/agents/security-agent.agent.md
+```markdown
+---
+name: security-agent
+description: Analyzes code for security vulnerabilities, validates secure coding practices, and ensures compliance with security standards
+tools: ['read', 'search', 'grep']
+---
+
+You are a security analysis specialist. Your responsibilities:
+
+- Identify potential security vulnerabilities (injection attacks, XSS, CSRF, etc.)
+- Check for proper input validation and sanitization
+- Verify authentication and authorization implementations
+- Review data handling for sensitive information (PII, credentials, tokens)
+- Check for secure defaults and configuration
+- Identify dependency vulnerabilities and outdated packages
+- Verify secrets are not committed to the repository
+- Ensure proper error handling that doesn't leak sensitive information
+- Review API security and rate limiting
+- Check for secure communication protocols (HTTPS, TLS)
+
+CRITICAL: Never commit or suggest committing secrets, credentials, API keys, or sensitive PII. Always flag potential security issues with severity levels and remediation steps.
+```
+
+### .github/agents/documentation-agent.agent.md
+```markdown
+---
+name: documentation-agent
+description: Creates and maintains ADRs, architecture documentation, and context notes following project standards
+tools: ['read', 'edit', 'search']
+---
+
+You are a documentation specialist. Your responsibilities:
+
+- Create Architecture Decision Records (ADRs) in docs/adr/ when architectural decisions are made
+- Name ADRs as NNNN-short-title.md (e.g., 0001-use-postgresql.md)
+- Ensure each ADR includes: Status, Context, Options considered, Decision, and Consequences
+- Update docs/architecture/ for system design changes
+- Create context notes in docs/context/ for research and planning
+- Maintain docs/context/index.md with links to related notes and ADRs
+- Link between documents (ADRs reference context notes, context notes link to ADRs)
+- Never edit or delete existing ADRs—create new superseding ADRs if decisions change
+- Use Markdown format for all documentation
+- Keep documentation focused, one topic per file
+
+Ensure documentation is clear, comprehensive, and provides historical context for future developers.
+```
+
+## 10. README Enhancement
 
 If `README.md` exists, enhance it with missing sections. If it doesn't exist, create a comprehensive one:
 
@@ -598,7 +694,7 @@ Production build: `[command]`
 **License:**
 - Include license information if present
 
-## 10. CI/CD Pipeline Documentation
+## 11. CI/CD Pipeline Documentation
 
 > **Skip condition**: If no CI/CD configuration exists (`.github/workflows/`, `.circleci/`, `.gitlab-ci.yml`, `Jenkinsfile`, etc.), skip this section and note the absence in the summary report.
 
@@ -615,7 +711,7 @@ If CI/CD configuration exists, create `docs/architecture/ci-cd-pipeline.md` docu
 - **Troubleshooting**: Common failure scenarios and solutions based on the pipeline configuration
 - **Maintenance**: How to update CI dependencies and modify pipeline configuration
 
-## 11. Initial ADR
+## 12. Initial ADR
 
 Create `docs/adr/0001-adopt-documentation-structure.md`:
 
@@ -712,7 +808,7 @@ This framework will be enforced through:
 - Keep ADR format simple and template-based to reduce friction
 ```
 
-## 12. Security Baseline Report
+## 13. Security Baseline Report
 
 Create `docs/context/[YYYY-MM-DD]-security-baseline.md`:
 
@@ -781,7 +877,7 @@ Format the report as:
 [Unresolved security concerns for team discussion]
 ```
 
-## 13. Summary Report
+## 14. Summary Report
 
 Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 
@@ -790,7 +886,7 @@ Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 *Generated: [Date]*
 
 ## Executive Summary
-This repository has been automatically analyzed and configured with development best practices, documentation structure, and GitHub Copilot custom instructions.
+This repository has been automatically analyzed and configured with development best practices, documentation structure, GitHub Copilot custom instructions, and specialized agents.
 
 ## Technologies Detected
 
@@ -824,6 +920,10 @@ This repository has been automatically analyzed and configured with development 
 
 ### GitHub Configuration
 - [ ] `.github/copilot-instructions.md` - Custom Copilot instructions
+- [ ] `.github/agents/research-agent.agent.md` - Technical research agent
+- [ ] `.github/agents/code-reviewer.agent.md` - Code review agent
+- [ ] `.github/agents/security-agent.agent.md` - Security analysis agent
+- [ ] `.github/agents/documentation-agent.agent.md` - Documentation agent
 - [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
 - [ ] `.github/PULL_REQUEST_TEMPLATE.md` - PR template
@@ -838,7 +938,17 @@ This repository has been automatically analyzed and configured with development 
 
 - Custom instructions configured in `.github/copilot-instructions.md`
 - Project-specific coding standards, documentation structure, and security guidelines included
-- Review and customize the instructions to match your team's specific conventions
+
+### Custom Agents Available
+
+This repository includes 4 specialized Copilot agents in `.github/agents/`:
+
+1. **@research-agent** — Technical research using context7 and first-party sources
+2. **@code-reviewer** — Code quality, standards adherence, and maintainability review
+3. **@security-agent** — Security vulnerability analysis and secure coding validation
+4. **@documentation-agent** — ADRs, architecture docs, and context note management
+
+Review and customize the agent definitions and instructions to match your team's specific conventions.
 
 ## Recommended Next Steps
 
@@ -869,12 +979,18 @@ This repository has been automatically analyzed and configured with development 
    - Install recommended extensions from `.vscode/extensions.json`
    - Verify workspace settings work for your team
 
-2. **Review Custom Copilot Instructions**
+2. **Review Custom Copilot Instructions & Agents**
    - Validate auto-detected coding standards in `.github/copilot-instructions.md`
+   - Review agent definitions in `.github/agents/`
    - Add project-specific guidelines
    - Update version information if needed
 
-3. **Documentation Review**
+3. **Test Agent Functionality**
+   - Try each custom agent (e.g., `@research-agent`, `@code-reviewer`)
+   - Verify agents produce useful, accurate output
+   - Customize agent system prompts as needed
+
+4. **Documentation Review**
    - Read initial ADR: `docs/adr/0001-adopt-documentation-structure.md`
    - Familiarize team with documentation structure
    - Plan first architecture documentation session
@@ -891,7 +1007,7 @@ This repository has been automatically analyzed and configured with development 
 
 3. **Refine Templates**
    - Update PR/issue templates based on team feedback
-   - Extend Copilot instructions as project needs evolve
+   - Extend Copilot instructions and agents as project needs evolve
 
 ## Security Considerations
 
@@ -904,12 +1020,13 @@ This repository has been automatically analyzed and configured with development 
 ## Questions or Issues?
 
 - Review documentation in `docs/`
+- Use custom Copilot agents for help (e.g., `@documentation-agent` for doc questions, `@security-agent` for security reviews)
 - Reference `.github/copilot-instructions.md` for project conventions
 - Create an issue using the templates in `.github/ISSUE_TEMPLATE/`
 
 ***
 
-**Onboarding Complete!** Your repository is now configured with development best practices and GitHub Copilot custom instructions.
+**Onboarding Complete!** Your repository is now configured with development best practices, GitHub Copilot custom instructions, and specialized agents.
 ```
 
 ---
