@@ -591,6 +591,29 @@ Use first-party official documentation sources (especially if documentation tool
 - Link between documents (ADRs reference context notes, context notes link to ADRs)
 - Documentation is version-controlled alongside code
 - Never commit secrets, credentials, or sensitive PII to documentation folders
+
+## Sub-Agent Delegation
+
+This repository has specialized Copilot agents in `.github/agents/`. **Delegate tasks to the appropriate agent** rather than handling everything directly:
+
+| Task type | Delegate to | How to invoke |
+|-----------|------------|---------------|
+| Technical research, library docs, version lookups, API references | `@research-agent` | Use for any question requiring up-to-date technical documentation or exploratory research |
+| Code quality review, standards compliance, refactoring suggestions | `@code-reviewer` | Use when reviewing code changes, PRs, or assessing code quality |
+| Security analysis, vulnerability scanning, secrets detection | `@security-agent` | Use for security reviews, dependency audits, or assessing attack surface |
+| ADRs, architecture docs, context notes, README updates | `@documentation-agent` | Use when creating or updating any documentation in `docs/` |
+
+### When to delegate
+- **Research**: Before implementing unfamiliar patterns, integrating new libraries, or answering questions about framework best practices → `@research-agent`
+- **Code review**: When reviewing pull requests, assessing code quality, or checking standards adherence → `@code-reviewer`
+- **Security**: When adding authentication, handling user input, managing secrets, updating dependencies, or assessing vulnerabilities → `@security-agent`
+- **Documentation**: When architectural decisions are made, after significant refactors, or when creating planning/research notes → `@documentation-agent`
+
+### Delegation guidelines
+- Provide the sub-agent with relevant context (file paths, code snippets, requirements)
+- Let the sub-agent complete its full analysis before acting on results
+- Multiple agents can be used in sequence (e.g., `@research-agent` for research → `@documentation-agent` to write the ADR)
+- When a task spans multiple agent specializations, break it into sub-tasks and delegate each to the appropriate agent
 ```
 
 ## 9. Custom Agents
