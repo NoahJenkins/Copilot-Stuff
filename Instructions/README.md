@@ -6,6 +6,7 @@ This directory contains reusable GitHub Copilot custom instruction artifacts.
 
 ### sync-agents.instructions.md
 
+- Description: Synchronizes GitHub Copilot instructions into `CLAUDE.md`, `GEMINI.md`, and `AGENTS.md` from `.github/copilot-instructions.md` as the source of truth.
 - Source: [sync-agents.instructions.md](./sync-agents.instructions.md)
 - Raw URL: `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Instructions/sync-agents.instructions.md`
 

@@ -6,6 +6,7 @@ This directory contains reusable GitHub Copilot agent artifacts.
 
 ### frontend-agent.md
 
+- Description: Specialized front-end build agent for responsive web/mobile UI that produces two design iterations, validates with Playwright MCP screenshots/tests, and follows the existing project stack.
 - Source: [frontend-agent.md](./frontend-agent.md)
 - Raw URL: `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Agents/frontend-agent.md`
 

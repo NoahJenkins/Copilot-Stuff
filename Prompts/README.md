@@ -6,6 +6,7 @@ This directory contains reusable GitHub Copilot prompt artifacts.
 
 ### onboard-copilot.prompt.md
 
+- Description: Automated repository onboarding for greenfield and brownfield projects, including tech-stack detection/scaffolding and setup of instructions, docs, templates, and security baseline.
 - Source: [onboard-copilot.prompt.md](./onboard-copilot.prompt.md)
 - Raw URL: `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md`
 
