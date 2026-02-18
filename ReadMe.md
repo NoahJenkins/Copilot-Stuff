@@ -20,15 +20,15 @@ Each directory README includes install buttons for every artifact in that catego
 
 ### Prompts
 
-- [onboard-copilot.prompt.md](./Prompts/onboard-copilot.prompt.md): Automated repository onboarding for greenfield and brownfield projects, including tech-stack detection/scaffolding and setup of instructions, docs, templates, and security baseline.
+- [onboard-copilot.prompt.md](./Prompts/onboard-copilot.prompt.md): Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
 
 ### Agents
 
-- [frontend-agent.md](./Agents/frontend-agent.md): Specialized front-end build agent for responsive web/mobile UI that produces two design iterations, validates with Playwright MCP screenshots/tests, and follows the existing project stack.
+- [frontend-agent.md](./Agents/frontend-agent.md): Builds responsive web and mobile UI with two design iterations and Playwright MCP validation using the existing stack.
 
 ### Instructions
 
-- [sync-agents.instructions.md](./Instructions/sync-agents.instructions.md): Synchronizes GitHub Copilot instructions into `CLAUDE.md`, `GEMINI.md`, and `AGENTS.md` from `.github/copilot-instructions.md` as the source of truth.
+- [sync-agents.instructions.md](./Instructions/sync-agents.instructions.md): Syncs GitHub Copilot instructions from .github/copilot-instructions.md into CLAUDE.md, GEMINI.md, and AGENTS.md.
 
 ---
 *Created by [Noah Jenkins](https://github.com/NoahJenkins)*
