@@ -6,9 +6,9 @@
 
 To use this prompt directly in VS Code, click the button below:
 
-| [Direct Install in VS Code](vscode:chat-prompt/install?url=https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md) | [Direct Install in VS Code Insiders](vscode-insiders:chat-prompt/install?url=https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md) |
+| [Direct Install in VS Code](https://vscode.dev/redirect?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2F.github%2Fprompts%2Fonboard-copilot.prompt.md) | [Direct Install in VS Code Insiders](https://vscode.dev/redirect?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2F.github%2Fprompts%2Fonboard-copilot.prompt.md) |
 | :--- | :--- |
-| [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](vscode:chat-prompt/install?url=https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md) | [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](vscode-insiders:chat-prompt/install?url=https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md) |
+| [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2F.github%2Fprompts%2Fonboard-copilot.prompt.md) | [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2F.github%2Fprompts%2Fonboard-copilot.prompt.md) |
 
 ## ✨ Features
 
@@ -28,7 +28,7 @@ To use this prompt directly in VS Code, click the button below:
 
 ## 📄 Prompt File
 
-The full prompt file is located at [Prompts/onboard-copilot.prompt.md](Prompts/onboard-copilot.prompt.md).
+The full prompt file is located at [.github/prompts/onboard-copilot.prompt.md](.github/prompts/onboard-copilot.prompt.md).
 
 ---
 *Created by [Noah Jenkins](https://github.com/NoahJenkins)*
