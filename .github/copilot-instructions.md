@@ -11,6 +11,8 @@ This repository organizes artifacts by type:
 
 Use this structure when validating any additions or changes.
 
+Note: files located at the repository root in Agents/, Instructions/, and Prompts/ are not intended for use inside this repository. They are individual artifact files (agents, instructions, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
+
 ## README updates
 
 - [ ] New prompt artifacts are listed in `Prompts/README.md`.
