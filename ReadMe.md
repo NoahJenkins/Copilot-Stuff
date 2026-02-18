@@ -15,8 +15,8 @@ To use this prompt directly in VS Code, click the button below:
 - **Greenfield & Brownfield Detection**: Automatically adapts based on whether the repo is empty or has existing code.
 - **Tech Stack Analysis**: Detects primary languages, frameworks, and tools.
 - **Automated Documentation**: Generates OR updates READMEs, contribution guides, and architectural decision records.
-- **IDE Configuration**: Sets up `.vscode/settings.json` and extensions.
-- **Environment Setup**: Creates `.env.example` and provides setup guidance.
+- **IDE Configuration**: Updates existing `.vscode` workspace settings and extension recommendations when present.
+- **Environment Setup**: Updates `.env.example` only when a `.env` file already exists, and provides setup guidance.
 - **Security Baseline**: Scans for common security needs and sets up basic protection.
 - **GitHub Templates**: Generates issue and pull request templates.
 

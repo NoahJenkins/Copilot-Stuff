@@ -24,7 +24,7 @@ Before starting, determine the repository mode:
    - **Database** (if any): e.g., PostgreSQL, MongoDB, SQLite
    - **Deployment target** (if known): e.g., Vercel, AWS, Docker, Kubernetes
 
-4. **Use the user's answers as the "detected" tech stack** for all subsequent sections. Where brownfield sections say "detected" or "analyze", greenfield mode uses the user's stated intentions instead. All scaffolding (`.gitignore`, `.env.example`, IDE config, pre-commit hooks, etc.) is generated based on the intended stack.
+4. **Use the user's answers as the "detected" tech stack** for all subsequent sections. Where brownfield sections say "detected" or "analyze", greenfield mode uses the user's stated intentions instead. Scaffolding is generated based on the intended stack where applicable.
 
 > Throughout this document, **"detected tech stack"** means either scanned from existing code (brownfield) or provided by the user (greenfield).
 
@@ -32,11 +32,11 @@ Before starting, determine the repository mode:
 
 ### Edge Cases & Conditional Logic
 Before executing each section, evaluate whether it applies to this repository:
-- **New/empty repository with no git history**: Skip CODEOWNERS generation (Section 6). Create placeholder templates instead.
-- **No environment variables detected**: Create a minimal `.env.example` with a comment noting no variables were found, plus common placeholders (e.g., `NODE_ENV`, `PORT`).
-- **Monorepo with multiple languages**: Apply language-specific patterns for ALL detected languages. Create separate sections in `.env.example`, `.gitignore`, and pre-commit hooks for each language.
+- **New/empty repository with no git history**: Skip CODEOWNERS generation (Section 6). Do not create a CODEOWNERS file.
+- **No `.env` file in repository**: Do not create `.env.example`.
+- **Monorepo with multiple languages**: Apply language-specific patterns for ALL detected languages. Create separate sections in `.env.example` (only when applicable), `.gitignore`, and pre-commit hooks for each language.
 - **Files already exist**: Always merge with existing content. Never overwrite without preserving current entries. Add new content in clearly commented sections.
-- **Pre-commit not available**: If the project doesn't use Python and `pre-commit` would be an unusual dependency, use ecosystem-native alternatives (husky + lint-staged for Node.js, lefthook for Go, etc.).
+- **Pre-commit not available**: If the project doesn't use Python and `pre-commit` would be an unusual dependency, use ecosystem-native alternatives that do not require creating `.husky/` (for example, `lefthook`).
 - **CI/CD not present**: Skip Section 11 entirely. Note the absence in the summary report.
 
 ### Merging Strategy
@@ -119,9 +119,9 @@ Create the following directories if they don't exist:
 ## 3. Environment Configuration
 
 ### .env.example Template
-Scan the codebase for environment variable usage and create `.env.example`. If no environment variables are detected, create a minimal template with common placeholders and a note for the team to populate:
+Only if a `.env` file already exists in the repository, scan the codebase for environment variable usage and create or update `.env.example`. If no `.env` file exists, do not create `.env.example`. If `.env` exists but no environment variables are detected, create a minimal template with common placeholders and a note for the team to populate:
 
-> **Greenfield mode**: Generate a starter `.env.example` based on the intended tech stack. Include common variables for the chosen framework (e.g., `DATABASE_URL` for database projects, `PORT` and `NODE_ENV` for Node.js, `SECRET_KEY` and `DEBUG` for Django, etc.).
+> **Greenfield mode**: Only generate a starter `.env.example` when a `.env` file already exists in the repository. Include common variables for the chosen framework (e.g., `DATABASE_URL` for database projects, `PORT` and `NODE_ENV` for Node.js, `SECRET_KEY` and `DEBUG` for Django, etc.).
 
 - Search for environment variable patterns:
   - JavaScript/Node: `process.env.VARIABLE_NAME`
@@ -131,7 +131,7 @@ Scan the codebase for environment variable usage and create `.env.example`. If n
   - Java: `System.getenv()`
   - Shell scripts: `$VARIABLE_NAME`
 
-- Create `.env.example` with:
+- If creating or updating `.env.example`, include:
   - All detected environment variables as empty or example values
   - Clear comments describing each variable's purpose
   - Required vs optional variables clearly marked
@@ -196,7 +196,7 @@ Preserve existing `.gitignore` entries, add comments for each section, and remov
 
 ## 4. IDE Configuration
 
-Create `.vscode/` directory with the following files:
+If `.vscode/` already exists, update the following files as needed. Do not create the `.vscode/` directory or new files inside it:
 
 > **Greenfield mode**: Generate IDE configuration based on the user's intended tech stack. Select extensions, formatters, and linters for the chosen language(s) and framework(s).
 
@@ -391,30 +391,7 @@ Describe specific test scenarios:
 
 ## 6. CODEOWNERS File
 
-Create `.github/CODEOWNERS`:
-
-> **Skip condition**: If the repository has no git history or is newly initialized, create a placeholder CODEOWNERS with `# TODO: Populate with actual team members` comments and skip git history analysis.
-
-- Analyze git history to identify primary contributors per directory
-- Use `git log --format='%an' --numstat` to find who modifies which areas
-- Create initial CODEOWNERS mapping:
-  ```
-  # Default owners for everything
-  * @owner-username
-
-  # Documentation
-  /docs/ @documentation-team
-
-  # Specific directories based on git history analysis
-  /src/frontend/ @frontend-leads
-  /src/backend/ @backend-leads
-  /tests/ @qa-leads
-  
-  # Configuration files
-  /.github/ @devops-team
-  ```
-
-- If unable to determine ownership from git history, create a basic template with placeholders and notes for manual review
+Do not create or modify `.github/CODEOWNERS` as part of this onboarding flow.
 
 ## 7. Pre-commit Hooks Configuration
 
@@ -460,7 +437,7 @@ repos:
 
 Keep hooks fast (< 2 seconds total) to avoid developer friction.
 
-> **Alternative for Node.js projects**: If the project is Node.js-based and doesn't use Python, use `husky` + `lint-staged` instead of `pre-commit`. For Go projects, consider `lefthook`. Always match the hook tool to the project's ecosystem.
+> **Alternative for non-Python projects**: If `pre-commit` is not a good fit, consider alternatives such as `lefthook`. Do not create `.husky/` as part of this onboarding flow.
 
 ## 8. Custom Instructions
 
@@ -733,7 +710,7 @@ If `README.md` exists, enhance it with missing sections. If it doesn't exist, cr
 ### Installation
 1. Clone the repository
 2. Install dependencies: `[command]`
-3. Copy environment template: `cp .env.example .env`
+3. If `.env.example` exists, copy environment template: `cp .env.example .env`
 4. Configure environment variables (see Configuration section)
 
 ### Running Locally
@@ -749,7 +726,7 @@ Production build: `[command]`
 ```
 
 **Configuration:**
-- Link to `.env.example`
+- Link to `.env.example` (if present)
 - Describe required vs optional environment variables
 - External service dependencies
 
@@ -1003,10 +980,8 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `docs/context/index.md` - Context notes index
 
 ### Development Environment
-- [ ] `.env.example` - Environment variable template
+- [ ] `.env.example` - Environment variable template (only if `.env` exists)
 - [ ] `.gitignore` - Enhanced with tech-stack patterns
-- [ ] `.vscode/extensions.json` - Recommended extensions
-- [ ] `.vscode/settings.json` - Workspace settings
 - [ ] `.pre-commit-config.yaml` - Pre-commit hooks
 
 ### GitHub Configuration
@@ -1018,7 +993,6 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
 - [ ] `.github/PULL_REQUEST_TEMPLATE.md` - PR template
-- [ ] `.github/CODEOWNERS` - Code ownership mapping
 
 ### Documentation
 - [ ] `README.md` - Enhanced with Quick Start and documentation links
@@ -1045,12 +1019,11 @@ Review and customize the agent definitions and instructions to match your team's
 
 ### Immediate Actions (Required)
 1. **Configure Environment Variables**
-   - Review `.env.example`
+   - Review `.env.example` (if present)
    - Create `.env` file with actual values
    - Ensure all required variables are set
 
 2. **Review and Customize Templates**
-   - Update `.github/CODEOWNERS` with actual team members
    - Customize issue/PR templates for your workflow
    - Review pre-commit hooks and enable/disable as needed
 
