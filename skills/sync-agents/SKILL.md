@@ -1,3 +1,8 @@
+---
+name: sync-agents
+description: 'Sync GitHub Copilot instructions, custom agents, and skills into Claude Code, Gemini CLI, and OpenAI Codex files.'
+---
+
 # Sync Agent Instructions, Agents, and Skills from GitHub Copilot
 
 Mirror all GitHub Copilot customizations — instructions, custom agents, and agent skills —

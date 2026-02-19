@@ -1,3 +1,8 @@
+---
+name: sync-agentsv2
+description: 'Sync GitHub Copilot instructions, custom agents, and skills to detected agent ecosystems only.'
+---
+
 # Sync Agent Instructions, Agents, and Skills from GitHub Copilot
 
 Mirror all GitHub Copilot customizations — instructions, custom agents, and agent skills —

@@ -1,20 +1,20 @@
 # Copilot Stuff
 
-This repository contains reusable GitHub Copilot artifacts organized by type: prompts, agents, and instructions.
+This repository contains reusable GitHub Copilot artifacts organized by type: prompts, instructions, and skills.
 
 ## Table of Contents
 
 - [Prompts](./Prompts/README.md)
-- [Agents](./Agents/README.md)
 - [Instructions](./Instructions/README.md)
+- [Skills](./skills/README.md)
 
 ## Artifact Directories
 
 - **Prompts**: [Prompts/README.md](./Prompts/README.md)
-- **Agents**: [Agents/README.md](./Agents/README.md)
 - **Instructions**: [Instructions/README.md](./Instructions/README.md)
+- **Skills**: [skills/README.md](./skills/README.md)
 
-Each directory README includes install buttons for every artifact in that category, with links for both VS Code and VS Code Insiders.
+Each directory README includes artifact details and raw source links.
 
 ## Included Artifacts
 
@@ -22,13 +22,10 @@ Each directory README includes install buttons for every artifact in that catego
 
 - [onboard-copilot.prompt.md](./Prompts/onboard-copilot.prompt.md): Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
 
-### Agents
+### Skills
 
-- [frontend-agent.md](./Agents/frontend-agent.md): Builds responsive web and mobile UI with two design iterations and Playwright MCP validation using the existing stack.
-
-### Instructions
-
-- [sync-agents.instructions.md](./Instructions/sync-agents.instructions.md): Syncs GitHub Copilot instructions from .github/copilot-instructions.md into CLAUDE.md, GEMINI.md, and AGENTS.md.
+- [skills/sync-agents/SKILL.md](./skills/sync-agents/SKILL.md): Syncs GitHub Copilot instructions, custom agents, and skills into Claude Code, Gemini CLI, and OpenAI Codex targets.
+- [skills/sync-agentsv2/SKILL.md](./skills/sync-agentsv2/SKILL.md): Syncs GitHub Copilot instructions, custom agents, and skills to detected agent ecosystems using a detection-first flow.
 
 ---
 *Created by [Noah Jenkins](https://github.com/NoahJenkins)*
