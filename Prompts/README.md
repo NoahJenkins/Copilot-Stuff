@@ -1,15 +1,19 @@
-# Prompts
+# 🎯 Prompts
 
-This directory contains reusable GitHub Copilot prompt artifacts.
+Reusable GitHub Copilot prompt files for common workflows.
 
-## Available Artifacts
+## How to use prompt files
 
-### onboard-copilot.prompt.md
+**Install**
+- Click the install button for VS Code or VS Code Insiders.
+- Confirm the destination when VS Code asks where to save the prompt.
 
-- Description: Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
-- Source: [onboard-copilot.prompt.md](./onboard-copilot.prompt.md)
-- Raw URL: `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md`
+**Run**
+- In Chat, type `/onboard-copilot`.
+- Or run `Chat: Run Prompt` from the Command Palette.
 
-| VS Code | VS Code Insiders |
+## Prompt catalog
+
+| Prompt | Description |
 | :--- | :--- |
-| [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2FPrompts%2Fonboard-copilot.prompt.md) | [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2FPrompts%2Fonboard-copilot.prompt.md) |
+| [onboard-copilot.prompt.md](./onboard-copilot.prompt.md)<br />[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2FPrompts%2Fonboard-copilot.prompt.md)<br />[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2FPrompts%2Fonboard-copilot.prompt.md)<br />Raw: `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md` | Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults. |
