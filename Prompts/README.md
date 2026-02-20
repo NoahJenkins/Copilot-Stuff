@@ -20,6 +20,8 @@ Reusable GitHub Copilot prompt files for common workflows.
 
 Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
 
+> **Note:** This is a large, multi-step workflow prompt. For best results, use `codex-5.3` if available, as it handles long-running agentic tasks more reliably.
+
 **Install**
 
 [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2FPrompts%2Fonboard-copilot.prompt.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2FPrompts%2Fonboard-copilot.prompt.md)
