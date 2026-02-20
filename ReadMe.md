@@ -13,6 +13,14 @@ This repository contains reusable GitHub Copilot artifacts organized by type: pr
 
 Each directory README includes artifact details and install instructions.
 
+## Docs Structure
+
+This repository now includes a lightweight documentation framework for architecture, decisions, and working notes:
+- [docs/architecture/](./docs/architecture/) for system-level design documentation
+- [docs/adr/](./docs/adr/) for Architecture Decision Records (ADRs)
+- [docs/context/](./docs/context/) for dated research and planning notes
+- [docs/TODO.md](./docs/TODO.md) for the living project task tracker
+
 ## Included Artifacts
 
 ### Prompts

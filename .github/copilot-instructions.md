@@ -27,6 +27,30 @@ Note: files located at the repository root in Agents/, Instructions/, and Prompt
 - [ ] Both VS Code and VS Code Insiders install buttons are present for each artifact.
 - [ ] Raw artifact URLs referenced by install links are reachable and return content.
 
+## Documentation Update Policy (Automatic, No Prompt)
+
+For any non-trivial code change, update documentation in the same turn without asking for confirmation.
+
+- [ ] Perform a docs impact check after every code edit.
+- [ ] If impacted, automatically update relevant files under `docs/`, including:
+	- `docs/TODO.md`
+	- `docs/context/index.md`
+	- A new dated context note in `docs/context/`
+	- A new ADR in `docs/adr/` when architecture/behavior/dependency/runtime decisions changed
+	- `docs/architecture/` when execution flow/system design changed
+- [ ] Do NOT ask “do you want me to update docs?” when changes are clear.
+- [ ] Only ask the user if the required documentation target is ambiguous.
+- [ ] If no docs changes are needed, explicitly state why in the final response.
+
+### Autonomy rule
+- [ ] Assume user consent for documentation updates that are directly related to implemented code changes.
+
+### Delegation rule
+- [ ] Use `@documentation-agent` automatically after implementation for docs updates.
+
+### Completion rule
+- [ ] A task is incomplete until required docs updates are applied.
+
 ## Prompt file guide
 
 **Apply to files ending in `.prompt.md` (in `Prompts/` and `.github/prompts/`)**
