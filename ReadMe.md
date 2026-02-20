@@ -11,7 +11,6 @@ This repository contains reusable GitHub Copilot artifacts organized by type: pr
 ## Artifact Directories
 
 - **Prompts**: [Prompts/README.md](./Prompts/README.md)
-- **Instructions**: [Instructions/README.md](./Instructions/README.md)
 - **Skills**: [skills/README.md](./skills/README.md)
 
 Each directory README includes artifact details and raw source links.
