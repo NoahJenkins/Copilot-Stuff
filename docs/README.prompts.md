@@ -1,3 +1,4 @@
+````markdown
 # 🎯 Prompts
 
 Reusable GitHub Copilot prompt files for common workflows.
@@ -30,3 +31,5 @@ Onboards greenfield and brownfield repositories by setting up stack-aware docs, 
 ```
 https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/Prompts/onboard-copilot.prompt.md
 ```
+
+````

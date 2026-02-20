@@ -8,9 +8,9 @@ This repository contains reusable GitHub Copilot artifacts organized by type: pr
 
 | Directory | README |
 | :--- | :--- |
-| Prompts | [Prompts/README.md](./Prompts/README.md) |
-| Agents | [agents/README.md](./agents/README.md) |
-| Skills | [skills/README.md](./skills/README.md) |
+| Prompts | [docs/README.prompts.md](./docs/README.prompts.md) |
+| Agents | [docs/README.agents.md](./docs/README.agents.md) |
+| Skills | [docs/README.skills.md](./docs/README.skills.md) |
 
 Each directory README includes artifact details and install instructions.
 
