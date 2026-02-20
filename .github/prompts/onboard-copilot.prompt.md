@@ -677,6 +677,43 @@ This repository has specialized Copilot agents in `.github/agents/`. **Delegate 
 
 Install specialized GitHub Copilot agents into `.github/agents/` for **every** onboarding-tagged core artifact from this repository instead of embedding agent bodies in this prompt.
 
+### Known-Good Install Snippet (macOS/Linux)
+
+Use this exact snippet for reliable installation of mandatory onboarding-core agents:
+
+```bash
+set -euo pipefail
+
+mkdir -p .github/agents
+
+for f in code-reviewer.agent.md documentation-specialist.agent.md research-agent.agent.md security-specialist.agent.md; do
+  url="https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/$f"
+  tmp="$(mktemp)"
+
+  curl --fail --location --silent --show-error \
+    --retry 3 --retry-all-errors --retry-delay 1 \
+    -o "$tmp" "$url"
+
+  test -s "$tmp"
+  head -n 1 "$tmp" | grep -q '^---'
+  grep -q 'onboarding-tags' "$tmp"
+
+  cp "$tmp" ".github/agents/$f"
+  rm -f "$tmp"
+
+  echo "INSTALLED:$f"
+done
+
+# Mandatory post-install verification
+for f in code-reviewer.agent.md documentation-specialist.agent.md research-agent.agent.md security-specialist.agent.md; do
+  test -s ".github/agents/$f"
+  head -n 1 ".github/agents/$f" | grep -q '^---'
+  grep -q 'onboarding-tags' ".github/agents/$f"
+done
+
+echo "VERIFIED:all-onboarding-core-agents"
+```
+
 ### Tag-Driven Agent Selection (Mandatory Core)
 
 Use `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` as the canonical source of agent metadata.
@@ -703,12 +740,25 @@ Do not treat the target repository's local `agents/` directory (or absence of on
 - **Execution environment requirement (high priority):**
   - For macOS/Linux, use shell-based download/install flow (`curl` or equivalent) as the required implementation path.
   - PowerShell (`.ps1`) support is optional and Windows-only; do not make `.ps1` a prerequisite for Unix environments.
+  - Prefer **one agent per command** (or a very short loop) over long multi-line scripts in a single terminal invocation; long scripts can partially execute in some agent runners.
+  - Use strict curl flags for reliability: `--fail --location --silent --show-error --retry 3 --retry-all-errors --retry-delay 1`.
   - Validate each downloaded file before install: HTTP 200, non-empty content, starts with front matter `---`, and includes `onboarding-tags` metadata.
+  - After each install, print deterministic status output (e.g., `INSTALLED:<filename>`).
+  - Perform a mandatory post-install verification pass:
+    - Confirm every selected `onboarding-core` filename exists in `.github/agents/`
+    - Confirm each installed file is non-empty and still contains front matter + `onboarding-tags`
+    - If any expected status line or file is missing, treat the step as failed and retry that file up to 3 times
   - Retry failed downloads up to 3 times; if still failing, stop and report an error for that mandatory agent.
 - If download fails for any selected `onboarding-core` agent after retries, do not use local fallback sources; fail the onboarding agent-install step and report the blocking error in the summary report.
 - Do not hardcode individual agent file contents in this prompt.
 - Preserve front matter and body exactly as published in the source artifact.
 - If target file already exists, merge by keeping existing customizations and appending any missing canonical sections under `# Added by OnboardCopilot`.
+
+#### Reliability Failure Handling
+
+- If the terminal output suggests partial execution (for example, only shell setup lines appear and no `INSTALLED:` lines), do not assume success.
+- Re-run installation in smaller units (single-file commands) and re-verify each file.
+- Record, in the summary report, whether installation succeeded on first attempt or required recovery retries.
 
 ### Delegation Mapping
 
