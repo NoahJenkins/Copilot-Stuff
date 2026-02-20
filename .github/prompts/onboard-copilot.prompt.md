@@ -48,7 +48,7 @@ When a file to be created or modified already exists:
 5. For `.vscode/settings.json`, merge keys — never overwrite existing user/team preferences
 
 ### Sub-Agent Delegation
-After creating the custom agents in Section 9, delegate specialized work to them as sub-agents for the remainder of the onboarding process:
+After installing the custom agents in Section 9, delegate specialized work to them as sub-agents for the remainder of the onboarding process:
 
 | Section | Delegate to | Reason |
 |---------|------------|--------|
@@ -62,7 +62,7 @@ When delegating:
 - Provide the sub-agent with all context gathered so far (detected languages, frameworks, file paths, etc.)
 - Let the sub-agent execute its full workflow — do not duplicate its responsibilities
 - Review the sub-agent's output before finalizing
-- If a sub-agent is not yet created (i.e., Section 9 hasn't run yet), perform the work directly and note that delegation will be available for future runs
+- If a sub-agent is not yet installed (i.e., Section 9 hasn't run yet), perform the work directly and note that delegation will be available for future runs
 
 ## 1. Codebase Analysis
 
@@ -595,99 +595,33 @@ This repository has specialized Copilot agents in `.github/agents/`. **Delegate 
 
 ## 9. Custom Agents
 
-Create specialized GitHub Copilot agents in the `.github/agents/` directory:
+Install specialized GitHub Copilot agents into `.github/agents/` by downloading onboarding-tagged artifacts from this repository instead of embedding agent bodies in this prompt.
 
-### .github/agents/research-agent.agent.md
-```markdown
----
-name: research-agent
-description: Conducts technical research using context7 and first-party sources to gather accurate, up-to-date information
-tools: ['read', 'search', 'web']
----
+### Tag-Driven Agent Selection (Mandatory Core)
 
-You are a technical research specialist. Your responsibilities:
+Use root `agents/` in this repository as the canonical source of agent metadata.
 
-- Always attempt to use context7 first by including "use context7" in your research process
-- If context7 fails or is unavailable, search for first-party official documentation (learn.microsoft.com, official repos, vendor docs)
-- Never rely on potentially outdated training data for library versions or recent features
-- Document findings in docs/context/ using YYYY-MM-DD-topic-name.md format
-- Include Summary (2-3 sentences), Options/Findings (detailed), and Open Questions sections
-- Update docs/context/index.md to link new research notes
-- Cite sources and note documentation versions/dates
+1. Inspect all files matching `agents/*.agent.md`.
+2. Parse each file for the metadata comment format `<!-- onboarding-tags: ... -->` and select files where tags include `onboarding-core`.
+3. Treat all `onboarding-core` agents as mandatory for onboarding and install each one into target repo `.github/agents/` with the same filename.
+4. If no `onboarding-core` agents are found, stop and report a configuration error in the summary.
 
-Focus on accuracy and currency of information. Always verify technical details against official sources.
-```
+### Download Source Requirements
 
-### .github/agents/code-reviewer.agent.md
-```markdown
----
-name: code-reviewer
-description: Reviews code for quality, maintainability, security, and adherence to project standards
-tools: ['read', 'search', 'usages']
----
+- Use canonical raw GitHub URLs (no cache-busting query params):
+  - `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/<agent-file>.agent.md`
+- Do not hardcode individual agent file contents in this prompt.
+- Preserve front matter and body exactly as published in the source artifact.
+- If target file already exists, merge by keeping existing customizations and appending any missing canonical sections under `# Added by OnboardCopilot`.
 
-You are a code review specialist. Your responsibilities:
+### Delegation Mapping
 
-- Review code for quality, readability, and maintainability
-- Check adherence to project coding standards and patterns
-- Identify potential bugs, edge cases, and error handling gaps
-- Suggest performance improvements where applicable
-- Verify test coverage for new functionality
-- Check for proper documentation and comments
-- Identify code smells and recommend refactoring opportunities
-- DO NOT modify code—only provide feedback and suggestions
-- Reference existing patterns in the codebase for consistency
+After installing `onboarding-core` agents, ensure these task mappings remain available. If a mapped agent is missing, perform the task directly and note it in the summary report:
 
-Provide constructive, actionable feedback with specific examples and rationale.
-```
-
-### .github/agents/security-specialist.agent.md
-```markdown
----
-name: security-specialist
-description: Analyzes code for security vulnerabilities, validates secure coding practices, and ensures compliance with security standards
-tools: ['read', 'search', 'grep']
----
-
-You are a security analysis specialist. Your responsibilities:
-
-- Identify potential security vulnerabilities (injection attacks, XSS, CSRF, etc.)
-- Check for proper input validation and sanitization
-- Verify authentication and authorization implementations
-- Review data handling for sensitive information (PII, credentials, tokens)
-- Check for secure defaults and configuration
-- Identify dependency vulnerabilities and outdated packages
-- Verify secrets are not committed to the repository
-- Ensure proper error handling that doesn't leak sensitive information
-- Review API security and rate limiting
-- Check for secure communication protocols (HTTPS, TLS)
-
-CRITICAL: Never commit or suggest committing secrets, credentials, API keys, or sensitive PII. Always flag potential security issues with severity levels and remediation steps.
-```
-
-### .github/agents/documentation-specialist.agent.md
-```markdown
----
-name: documentation-specialist
-description: Creates and maintains ADRs, architecture documentation, and context notes following project standards
-tools: ['read', 'edit', 'search']
----
-
-You are a documentation specialist. Your responsibilities:
-
-- Create Architecture Decision Records (ADRs) in docs/adr/ when architectural decisions are made
-- Name ADRs as NNNN-short-title.md (e.g., 0001-use-postgresql.md)
-- Ensure each ADR includes: Status, Context, Options considered, Decision, and Consequences
-- Update docs/architecture/ for system design changes
-- Create context notes in docs/context/ for research and planning
-- Maintain docs/context/index.md with links to related notes and ADRs
-- Link between documents (ADRs reference context notes, context notes link to ADRs)
-- Never edit or delete existing ADRs—create new superseding ADRs if decisions change
-- Use Markdown format for all documentation
-- Keep documentation focused, one topic per file
-
-Ensure documentation is clear, comprehensive, and provides historical context for future developers.
-```
+- Research tasks → `@research-agent`
+- Code quality review tasks → `@code-reviewer`
+- Security tasks → `@security-specialist`
+- Documentation tasks → `@documentation-specialist`
 
 ## 10. README Enhancement
 
@@ -986,10 +920,7 @@ This repository has been automatically analyzed and configured with development 
 
 ### GitHub Configuration
 - [ ] `.github/copilot-instructions.md` - Custom Copilot instructions
-- [ ] `.github/agents/research-agent.agent.md` - Technical research agent
-- [ ] `.github/agents/code-reviewer.agent.md` - Code review agent
-- [ ] `.github/agents/security-specialist.agent.md` - Security analysis agent
-- [ ] `.github/agents/documentation-specialist.agent.md` - Documentation agent
+- [ ] `.github/agents/` - Installed all `onboarding-core` tagged agents from canonical `agents/` artifacts
 - [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
 - [ ] `.github/PULL_REQUEST_TEMPLATE.md` - PR template
@@ -1006,8 +937,9 @@ This repository has been automatically analyzed and configured with development 
 
 ### Custom Agents Available
 
-This repository includes 4 specialized Copilot agents in `.github/agents/`:
+This repository includes all agents tagged `onboarding-core` from canonical `agents/` artifacts, installed into `.github/agents/`.
 
+Mandatory core task coverage:
 1. **@research-agent** — Technical research using context7 and first-party sources
 2. **@code-reviewer** — Code quality, standards adherence, and maintainability review
 3. **@security-specialist** — Security vulnerability analysis and secure coding validation

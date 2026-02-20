@@ -14,6 +14,16 @@ Reusable GitHub Copilot agent files for specialized workflows.
 - Select `prompt-engineer` or `copilot-engineer` as the active agent.
 - If your client supports direct mentions, use `@prompt-engineer` or `@copilot-engineer` in chat.
 
+## Onboarding tags
+
+Agent files support onboarding tags via an inline metadata comment near the top of each file.
+
+- Canonical source for onboarding is root `agents/*.agent.md`.
+- Use format: `<!-- onboarding-tags: onboarding-core, <other-tag> -->`.
+- Agents with `onboarding-tags` containing `onboarding-core` are mandatory for onboarding flows.
+- Onboarding prompts should download these artifacts using canonical raw GitHub URLs and install them into target `.github/agents/`.
+- To add a new default onboarding agent, add `onboarding-core` to its `onboarding-tags` metadata comment.
+
 ## Agent catalog
 
 ---
