@@ -12,7 +12,7 @@ This repository now enforces automatic documentation updates for non-trivial cod
   - Cons: Slightly higher implementation effort per change.
 - Decision support findings:
   - The project already includes prompt-driven onboarding patterns that expect ADR/context/architecture maintenance.
-  - Delegating docs updates to `@documentation-agent` aligns with existing specialized-agent workflows.
+  - Delegating docs updates to `@documentation-specialist` aligns with existing specialized-agent workflows.
 
 ## Open Questions
 - Should PR checks later enforce documentation-update policy compliance automatically?

@@ -53,10 +53,10 @@ After creating the custom agents in Section 9, delegate specialized work to them
 | Section | Delegate to | Reason |
 |---------|------------|--------|
 | 1. Codebase Analysis | `@research-agent` | Technical research, version lookups, framework identification |
-| 11. CI/CD Pipeline Documentation | `@documentation-agent` | Structured documentation creation |
-| 12. Initial ADR | `@documentation-agent` | ADR authoring follows agent's specialization |
-| 13. Security Baseline Report | `@security-agent` | Vulnerability scanning, secrets detection, dependency audit |
-| 14. Summary Report | `@documentation-agent` | Final report authoring |
+| 11. CI/CD Pipeline Documentation | `@documentation-specialist` | Structured documentation creation |
+| 12. Initial ADR | `@documentation-specialist` | ADR authoring follows agent's specialization |
+| 13. Security Baseline Report | `@security-specialist` | Vulnerability scanning, secrets detection, dependency audit |
+| 14. Summary Report | `@documentation-specialist` | Final report authoring |
 
 When delegating:
 - Provide the sub-agent with all context gathered so far (detected languages, frameworks, file paths, etc.)
@@ -577,19 +577,19 @@ This repository has specialized Copilot agents in `.github/agents/`. **Delegate 
 |-----------|------------|---------------|
 | Technical research, library docs, version lookups, API references | `@research-agent` | Use for any question requiring up-to-date technical documentation or exploratory research |
 | Code quality review, standards compliance, refactoring suggestions | `@code-reviewer` | Use when reviewing code changes, PRs, or assessing code quality |
-| Security analysis, vulnerability scanning, secrets detection | `@security-agent` | Use for security reviews, dependency audits, or assessing attack surface |
-| ADRs, architecture docs, context notes, README updates | `@documentation-agent` | Use when creating or updating any documentation in `docs/` |
+| Security analysis, vulnerability scanning, secrets detection | `@security-specialist` | Use for security reviews, dependency audits, or assessing attack surface |
+| ADRs, architecture docs, context notes, README updates | `@documentation-specialist` | Use when creating or updating any documentation in `docs/` |
 
 ### When to delegate
 - **Research**: Before implementing unfamiliar patterns, integrating new libraries, or answering questions about framework best practices → `@research-agent`
 - **Code review**: When reviewing pull requests, assessing code quality, or checking standards adherence → `@code-reviewer`
-- **Security**: When adding authentication, handling user input, managing secrets, updating dependencies, or assessing vulnerabilities → `@security-agent`
-- **Documentation**: When architectural decisions are made, after significant refactors, or when creating planning/research notes → `@documentation-agent`
+- **Security**: When adding authentication, handling user input, managing secrets, updating dependencies, or assessing vulnerabilities → `@security-specialist`
+- **Documentation**: When architectural decisions are made, after significant refactors, or when creating planning/research notes → `@documentation-specialist`
 
 ### Delegation guidelines
 - Provide the sub-agent with relevant context (file paths, code snippets, requirements)
 - Let the sub-agent complete its full analysis before acting on results
-- Multiple agents can be used in sequence (e.g., `@research-agent` for research → `@documentation-agent` to write the ADR)
+- Multiple agents can be used in sequence (e.g., `@research-agent` for research → `@documentation-specialist` to write the ADR)
 - When a task spans multiple agent specializations, break it into sub-tasks and delegate each to the appropriate agent
 ```
 
@@ -641,10 +641,10 @@ You are a code review specialist. Your responsibilities:
 Provide constructive, actionable feedback with specific examples and rationale.
 ```
 
-### .github/agents/security-agent.agent.md
+### .github/agents/security-specialist.agent.md
 ```markdown
 ---
-name: security-agent
+name: security-specialist
 description: Analyzes code for security vulnerabilities, validates secure coding practices, and ensures compliance with security standards
 tools: ['read', 'search', 'grep']
 ---
@@ -665,10 +665,10 @@ You are a security analysis specialist. Your responsibilities:
 CRITICAL: Never commit or suggest committing secrets, credentials, API keys, or sensitive PII. Always flag potential security issues with severity levels and remediation steps.
 ```
 
-### .github/agents/documentation-agent.agent.md
+### .github/agents/documentation-specialist.agent.md
 ```markdown
 ---
-name: documentation-agent
+name: documentation-specialist
 description: Creates and maintains ADRs, architecture documentation, and context notes following project standards
 tools: ['read', 'edit', 'search']
 ---
@@ -751,7 +751,7 @@ Production build: `[command]`
 
 > **Skip condition**: If no CI/CD configuration exists (`.github/workflows/`, `.circleci/`, `.gitlab-ci.yml`, `Jenkinsfile`, etc.), skip this section and note the absence in the summary report.
 
-> **Sub-agent delegation**: Use `@documentation-agent` to create the CI/CD pipeline documentation. Provide it with the CI/CD configuration file paths detected in Section 1.
+> **Sub-agent delegation**: Use `@documentation-specialist` to create the CI/CD pipeline documentation. Provide it with the CI/CD configuration file paths detected in Section 1.
 
 If CI/CD configuration exists, create `docs/architecture/ci-cd-pipeline.md` documenting:
 
@@ -768,7 +768,7 @@ If CI/CD configuration exists, create `docs/architecture/ci-cd-pipeline.md` docu
 
 ## 12. Initial ADR
 
-> **Sub-agent delegation**: Use `@documentation-agent` to create this ADR. It is pre-configured with ADR naming conventions, required sections, and immutability rules.
+> **Sub-agent delegation**: Use `@documentation-specialist` to create this ADR. It is pre-configured with ADR naming conventions, required sections, and immutability rules.
 
 Create `docs/adr/0001-adopt-documentation-structure.md`:
 
@@ -867,7 +867,7 @@ This framework will be enforced through:
 
 ## 13. Security Baseline Report
 
-> **Sub-agent delegation**: Use `@security-agent` to perform the security assessment. Provide it with the dependency manifest file paths and tech stack detected in Section 1. The security agent will scan for vulnerabilities, secrets, and configuration issues.
+> **Sub-agent delegation**: Use `@security-specialist` to perform the security assessment. Provide it with the dependency manifest file paths and tech stack detected in Section 1. The security specialist will scan for vulnerabilities, secrets, and configuration issues.
 
 > **Greenfield mode**: Since there are no dependencies or code to scan, generate a proactive security checklist instead. Include common security considerations for the user's chosen tech stack (e.g., CORS configuration for web APIs, SQL injection prevention for database projects, secret management setup). Title it "Security Setup Checklist" rather than "Security Baseline Report".
 
@@ -940,7 +940,7 @@ Format the report as:
 
 ## 14. Summary Report
 
-> **Sub-agent delegation**: Use `@documentation-agent` to compile the final onboarding report. Provide it with the complete results from all previous sections — technologies detected, files created, security findings, and any skipped sections.
+> **Sub-agent delegation**: Use `@documentation-specialist` to compile the final onboarding report. Provide it with the complete results from all previous sections — technologies detected, files created, security findings, and any skipped sections.
 
 Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 
@@ -988,8 +988,8 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `.github/copilot-instructions.md` - Custom Copilot instructions
 - [ ] `.github/agents/research-agent.agent.md` - Technical research agent
 - [ ] `.github/agents/code-reviewer.agent.md` - Code review agent
-- [ ] `.github/agents/security-agent.agent.md` - Security analysis agent
-- [ ] `.github/agents/documentation-agent.agent.md` - Documentation agent
+- [ ] `.github/agents/security-specialist.agent.md` - Security analysis agent
+- [ ] `.github/agents/documentation-specialist.agent.md` - Documentation agent
 - [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
 - [ ] `.github/PULL_REQUEST_TEMPLATE.md` - PR template
@@ -1010,8 +1010,8 @@ This repository includes 4 specialized Copilot agents in `.github/agents/`:
 
 1. **@research-agent** — Technical research using context7 and first-party sources
 2. **@code-reviewer** — Code quality, standards adherence, and maintainability review
-3. **@security-agent** — Security vulnerability analysis and secure coding validation
-4. **@documentation-agent** — ADRs, architecture docs, and context note management
+3. **@security-specialist** — Security vulnerability analysis and secure coding validation
+4. **@documentation-specialist** — ADRs, architecture docs, and context note management
 
 Review and customize the agent definitions and instructions to match your team's specific conventions.
 
@@ -1084,7 +1084,7 @@ Review and customize the agent definitions and instructions to match your team's
 ## Questions or Issues?
 
 - Review documentation in `docs/`
-- Use custom Copilot agents for help (e.g., `@documentation-agent` for doc questions, `@security-agent` for security reviews)
+- Use custom Copilot agents for help (e.g., `@documentation-specialist` for doc questions, `@security-specialist` for security reviews)
 - Reference `.github/copilot-instructions.md` for project conventions
 - Create an issue using the templates in `.github/ISSUE_TEMPLATE/`
 

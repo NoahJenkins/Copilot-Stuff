@@ -83,7 +83,7 @@ This framework is reinforced through:
 - Need to establish what qualifies as “significant enough” for an ADR
 
 ### Mitigation Strategies
-- Use `@documentation-agent` for docs updates after non-trivial implementation
+- Use `@documentation-specialist` for docs updates after non-trivial implementation
 - Include ADR expectations in templates and instructions
 - Conduct periodic documentation review during retrospectives
 - Keep ADR format simple and template-based to reduce friction

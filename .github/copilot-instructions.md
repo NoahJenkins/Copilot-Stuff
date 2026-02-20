@@ -46,7 +46,7 @@ For any non-trivial code change, update documentation in the same turn without a
 - [ ] Assume user consent for documentation updates that are directly related to implemented code changes.
 
 ### Delegation rule
-- [ ] Use `@documentation-agent` automatically after implementation for docs updates.
+- [ ] Use `@documentation-specialist` automatically after implementation for docs updates.
 
 ### Completion rule
 - [ ] A task is incomplete until required docs updates are applied.
