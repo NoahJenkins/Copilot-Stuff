@@ -1,6 +1,6 @@
 # Copilot Stuff
 
-This repository contains reusable GitHub Copilot artifacts organized by type: prompts, instructions, and skills.
+This repository contains reusable GitHub Copilot artifacts organized by type: prompts, instructions, and skill. These are tools I am using to extract more value and performance from github copilot (and other agents using the sync-agents skills). 
 
 > Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot) — a fantastic community-driven collection of Copilot prompts, instructions, and tools. If you find this repo useful, you'll love that one too. Highly recommend checking it out (and contributing!).
 
