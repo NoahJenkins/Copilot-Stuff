@@ -1,7 +1,7 @@
 ---
 name: security-specialist
 description: Analyzes code for security vulnerabilities, validates secure coding practices, and ensures compliance with security standards
-model: gpt-4o
+model: codex-5.3
 tools: ['read', 'search', 'grep']
 ---
 
