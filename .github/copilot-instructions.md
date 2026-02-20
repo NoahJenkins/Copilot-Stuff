@@ -4,18 +4,18 @@ The following instructions are only to be applied when performing a code review.
 
 This repository organizes artifacts by type:
 
-- `Prompts/`
+- `prompts/`
 - `Agents/`
 - `Instructions/`
 - root index in `ReadMe.md`
 
 Use this structure when validating any additions or changes.
 
-Note: files located at the repository root in Agents/, Instructions/, and Prompts/ are not intended for use inside this repository. They are individual artifact files (agents, instructions, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
+Note: files located at the repository root in Agents/, Instructions/, and prompts/ are not intended for use inside this repository. They are individual artifact files (agents, instructions, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
 
 ## README updates
 
-- [ ] New prompt artifacts are listed in `Prompts/README.md`.
+- [ ] New prompt artifacts are listed in `prompts/README.md`.
 - [ ] New agent artifacts are listed in `Agents/README.md`.
 - [ ] New instruction artifacts are listed in `Instructions/README.md`.
 - [ ] If a new top-level artifact category is added, `ReadMe.md` is updated.
@@ -53,7 +53,7 @@ For any non-trivial code change, update documentation in the same turn without a
 
 ## Prompt file guide
 
-**Apply to files ending in `.prompt.md` (in `Prompts/` and `.github/prompts/`)**
+**Apply to files ending in `.prompt.md` (in `prompts/` and `.github/prompts/`)**
 
 - [ ] The prompt has markdown front matter.
 - [ ] The prompt has a `description` field.

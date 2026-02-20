@@ -26,7 +26,7 @@ This repository now includes a lightweight documentation framework for architect
 
 ### Prompts
 
-- [onboard-copilot.prompt.md](./Prompts/onboard-copilot.prompt.md): Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
+- [onboard-copilot.prompt.md](./prompts/onboard-copilot.prompt.md): Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
 
 ### Agents
 
