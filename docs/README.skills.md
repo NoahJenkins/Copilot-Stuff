@@ -49,24 +49,7 @@ Invoke-RestMethod https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/ma
 
 ---
 
-### [sync-agentsv2](./sync-agentsv2/SKILL.md)
 
-Syncs GitHub Copilot instructions, custom agents, and skills to detected agent ecosystems using a detection-first approach.
-
-**Install target:** `.github/skills/sync-agentsv2/SKILL.md`
-
-**macOS/Linux**
-```bash
-mkdir -p .github/skills/sync-agentsv2 && curl -fsSL \
-  https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/skills/sync-agentsv2/SKILL.md \
-  -o .github/skills/sync-agentsv2/SKILL.md
-```
-
-**Windows (PowerShell)**
-```powershell
-$dest = ".github/skills/sync-agentsv2"
-New-Item -ItemType Directory -Force -Path $dest > $null
-Invoke-RestMethod https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/skills/sync-agentsv2/SKILL.md -OutFile "$dest/SKILL.md"
 ```
 
 ## Notes

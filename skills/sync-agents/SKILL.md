@@ -1,14 +1,19 @@
 ---
 name: sync-agents
-description: 'Sync GitHub Copilot instructions, custom agents, and skills into Claude Code, Gemini CLI, and OpenAI Codex files.'
+description: 'Synchronize GitHub Copilot instructions, custom agents, and skills into detected AI coding agent configurations in this repository. Use when asked to mirror .github/copilot-instructions.md, .github/instructions, .github/agents, or .github/skills into Claude, Codex, Cursor, Gemini, Windsurf, and related tooling.'
 ---
 
-# Sync Agent Instructions, Agents, and Skills from GitHub Copilot
+# Sync Agent Instructions, Agents, and Skills
 
 Mirror all GitHub Copilot customizations — instructions, custom agents, and agent skills —
-into the canonical files for Claude Code, Gemini CLI, and OpenAI Codex.
+into every detected AI coding agent configuration found in this repository.
+
+This skill supports **12 agent ecosystems**. Rather than creating files for every
+agent unconditionally, it **detects which agents are already configured** in the repo and
+syncs only those.
 
 **Source locations (Copilot / source of truth):**
+
 - `.github/copilot-instructions.md` — global instructions
 - `.github/instructions/*.instructions.md` — path-scoped instructions
 - `.github/agents/*.agent.md` — custom agent profiles
@@ -26,6 +31,7 @@ Never delete `.github/copilot-instructions.md` or anything inside `.github/`.
 Read `.github/copilot-instructions.md` and store its full content.
 
 If the file does not exist, stop and tell the user:
+
 > "No `.github/copilot-instructions.md` found. Please create this file first — it is the source of truth for all AI agent instructions."
 
 Also scan and store the contents of:
@@ -36,35 +42,66 @@ Also scan and store the contents of:
 
 ---
 
-### Step 2 — Create directory scaffolding
+### Step 2 — Detect active agents
 
-```bash
-# Claude Code
-mkdir -p .claude/commands
-mkdir -p .claude/agents
-mkdir -p .claude/skills
+Scan the repository root for the presence of the following files and directories.
+For each one found, mark that agent as **active** and include it in subsequent sync steps.
+**Do not create** directories or files for agents that are not already present.
 
-# Gemini CLI (instructions only — no agents/skills concept in Gemini CLI)
-mkdir -p .gemini
+| Agent               | Detection Signal(s)                                  | Category          |
+| ------------------- | ---------------------------------------------------- | ----------------- |
+| **Claude Code**     | `CLAUDE.md` at repo root **or** `.claude/` directory | Full sync         |
+| **Gemini CLI**      | `GEMINI.md` at repo root **or** `.gemini/` directory | Full sync         |
+| **OpenAI Codex**    | `AGENTS.md` at repo root **or** `.agents/` directory | Full sync         |
+| **OpenCode**        | `.opencode/` directory **or** `.opencode.json`       | Full sync         |
+| **Cursor**          | `.cursor/` directory **or** `.cursorrules` file      | Full sync         |
+| **Windsurf**        | `.windsurf/` directory **or** `.windsurfrules` file  | Full sync         |
+| **Cline**           | `.clinerules` file **or** `.clinerules/` directory   | Full sync         |
+| **Roo Code**        | `.roo/` directory **or** `.roorules` file            | Full sync         |
+| **Kilo Code**       | `.kilocode/` directory                               | Full sync         |
+| **JetBrains Junie** | `.junie/` directory                                  | Full sync         |
+| **Zed**             | `.rules` file at repo root                           | Instructions only |
+| **Augment Code**    | `.augment/` directory                                | Full sync         |
 
-# Codex skills (open standard; Codex reads from .agents/skills/)
-mkdir -p .agents/skills
+If **no agents are detected**, tell the user:
 
-# AGENTS.md goes at repo root (no subdirectory needed for Codex)
+> "No agent configuration directories or files were detected in this repository. To enable syncing, initialize at least one agent's configuration (e.g., create a `CLAUDE.md` file, a `.cursor/` directory, etc.) and re-run this command."
+
+List the detected agents before proceeding:
+
+```
+🔍 Detected agents: <comma-separated list of detected agent names>
+   Skipping (not detected): <comma-separated list of undetected agent names>
 ```
 
 ---
 
-### Step 3 — Write `CLAUDE.md` (Claude Code)
+### Step 3 — Sync instructions to detected agents
 
-Create or overwrite `CLAUDE.md` at the repo root with this structure:
+For each agent marked as **active** in Step 2, sync the global instructions and any
+path-scoped instructions using the agent-specific format described below.
 
-```
+Every synced file must include a **sync header** (as a comment appropriate to the format)
+indicating:
+
+- The file is auto-synced and should not be edited directly
+- The source of truth path (`.github/copilot-instructions.md` or the specific instructions file)
+- How to re-sync (`/sync-agents`)
+
+---
+
+#### 3A — Claude Code
+
+**Global instructions → `CLAUDE.md`**
+
+Create or overwrite `CLAUDE.md` at the repo root:
+
+```markdown
 <!--
   ╔══════════════════════════════════════════════════════════════╗
   ║  AUTO-SYNCED — DO NOT EDIT THIS FILE DIRECTLY               ║
   ║  Source of truth: .github/copilot-instructions.md           ║
-  ║  To update: run /sync-agents.instructions in Claude Code     ║
+  ║  To update: run /sync-agents                                ║
   ╚══════════════════════════════════════════════════════════════╝
 -->
 
@@ -72,7 +109,7 @@ Create or overwrite `CLAUDE.md` at the repo root with this structure:
 
 > **Source of truth:** [`.github/copilot-instructions.md`](.github/copilot-instructions.md)
 >
-> This file is automatically generated by the `/sync-agents.instructions` command.
+> This file is automatically generated by the `/sync-agents` command.
 > To propagate changes, update `.github/copilot-instructions.md` and re-run that command.
 
 ---
@@ -80,25 +117,19 @@ Create or overwrite `CLAUDE.md` at the repo root with this structure:
 [INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
 ```
 
-If there are path-specific `.github/instructions/*.instructions.md` files, also create
-matching `.claude/instructions/` files in the same structure, each with a header:
-```
-<!-- Synced from .github/instructions/<filename>.instructions.md — do not edit directly -->
-```
-followed by the body content of the source file (strip the applyTo frontmatter — Claude Code
-does not use it; include it as a plain markdown comment instead so context is preserved).
+**Path-scoped instructions → `.claude/instructions/`**
+
+If path-specific `.github/instructions/*.instructions.md` files exist, create matching
+files in `.claude/instructions/` with a sync header comment. Strip the `applyTo` frontmatter
+(Claude Code does not use it) but preserve it as a markdown comment for context.
 
 ---
 
-### Step 4 — Write `GEMINI.md` (Gemini CLI)
+#### 3B — Gemini CLI
 
-Create or overwrite `GEMINI.md` at the repo root.
+**Global instructions → `GEMINI.md`**
 
-Gemini CLI natively supports the `@path/to/file.md` import syntax, which causes it to
-**dynamically load the referenced file at runtime** — meaning GEMINI.md will always reflect
-the current state of `.github/copilot-instructions.md` without needing to re-run this command.
-
-Write exactly this content (substituting any existing path-specific file imports below):
+Gemini CLI supports `@path/to/file.md` import syntax for dynamic loading at runtime.
 
 ```markdown
 <!--
@@ -106,7 +137,7 @@ Write exactly this content (substituting any existing path-specific file imports
   ║  SOURCE OF TRUTH: .github/copilot-instructions.md           ║
   ║  This file uses Gemini CLI's native @import syntax so it    ║
   ║  always loads the latest copilot instructions at runtime.   ║
-  ║  Run /sync-agents.instructions to update path-specific files.║
+  ║  Run /sync-agents to update path-specific files.            ║
   ╚══════════════════════════════════════════════════════════════╝
 -->
 
@@ -120,26 +151,22 @@ Write exactly this content (substituting any existing path-specific file imports
 @.github/copilot-instructions.md
 ```
 
-If there are `.github/instructions/*.instructions.md` files, append additional imports
-after the main import, one per line in the format `@.github/instructions/<filename>.instructions.md`,
-preceded by a comment noting what the file covers (extract from the applyTo value or filename).
-
-If there are also subdirectory-specific instructions (files with an `applyTo` pointing to a
-specific directory), create matching `GEMINI.md` files inside those directories using the same
-`@` import syntax pointing back to the original `.github/instructions/` file.
+**Path-scoped instructions:** Append additional `@` imports, one per line. If any have
+`applyTo` targeting a subdirectory, create matching `GEMINI.md` files in those directories
+using the same `@` import syntax pointing back to `.github/instructions/`.
 
 ---
 
-### Step 5 — Write `AGENTS.md` (OpenAI Codex)
+#### 3C — OpenAI Codex
 
-Create or overwrite `AGENTS.md` at the repo root with this structure:
+**Global instructions → `AGENTS.md`**
 
-```
+```markdown
 <!--
   ╔══════════════════════════════════════════════════════════════╗
   ║  AUTO-SYNCED — DO NOT EDIT THIS FILE DIRECTLY               ║
   ║  Source of truth: .github/copilot-instructions.md           ║
-  ║  To update: run /sync-agents.instructions in Claude Code     ║
+  ║  To update: run /sync-agents                                ║
   ╚══════════════════════════════════════════════════════════════╝
 -->
 
@@ -147,7 +174,7 @@ Create or overwrite `AGENTS.md` at the repo root with this structure:
 
 > **Source of truth:** [`.github/copilot-instructions.md`](.github/copilot-instructions.md)
 >
-> This file is automatically generated by the `/sync-agents.instructions` command.
+> This file is automatically generated by the `/sync-agents` command.
 > To propagate changes, update `.github/copilot-instructions.md` and re-run that command.
 
 ---
@@ -155,118 +182,312 @@ Create or overwrite `AGENTS.md` at the repo root with this structure:
 [INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
 ```
 
-For each `.github/instructions/*.instructions.md` file that has an `applyTo` targeting a
-specific subdirectory path, create a corresponding `AGENTS.md` inside that subdirectory
-with the same structure and a note indicating it was synced from that instructions file.
-
-Codex reads one `AGENTS.md` per directory level and merges them top-down, so subdirectory
-files will correctly scope their overrides.
+**Path-scoped instructions:** For each `.github/instructions/*.instructions.md` with an
+`applyTo` targeting a subdirectory, create a corresponding `AGENTS.md` inside that subdirectory.
+Codex reads one `AGENTS.md` per directory level and merges top-down.
 
 ---
 
-### Step 6 — Sync custom agents
+#### 3D — OpenCode
 
-**Claude Code** (`.claude/agents/`)
+OpenCode **reuses `AGENTS.md`** at the repo root (same as Codex). If `AGENTS.md` was already
+written in Step 3C, OpenCode will automatically pick it up — no additional file needed.
 
-Agent Skills is an open standard. VS Code explicitly supports both `.github/agents/*.agent.md`
-(Copilot format) and `.claude/agents/*.md` (Claude format) interchangeably, so the files
-are compatible with only minor differences to note:
+If OpenCode is detected but Codex is NOT, write `AGENTS.md` using the same format as Step 3C.
 
-- Copilot uses `.agent.md` extension; Claude Code uses plain `.md`
-- Claude Code uses comma-separated `tools` strings in frontmatter; Copilot uses YAML arrays —
-  both are accepted by VS Code, so preserve the Copilot array format, it will work in both
+**Custom commands:** If `.github/skills/` contains skills, optionally create matching
+`.opencode/commands/<skill-name>.md` files containing the skill's body content as a
+reusable prompt. Prepend each with a sync header comment.
 
-For each `.github/agents/<name>.agent.md` file found in Step 1:
-1. Create `.claude/agents/<name>.md` (drop the `.agent` infix from the extension)
-2. Write the full YAML frontmatter block verbatim, then add this line immediately after
-   the opening `---` and before any existing fields:
+---
+
+#### 3E — Cursor
+
+**Global instructions → `.cursor/rules/global-instructions.mdc`**
+
+Cursor uses `.mdc` files (Markdown with YAML frontmatter) in `.cursor/rules/`.
+
+```markdown
+---
+# AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly
+# Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents
+description: "Global project instructions synced from GitHub Copilot"
+alwaysApply: true
+---
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+**Path-scoped instructions → `.cursor/rules/<name>.mdc`**
+
+For each `.github/instructions/<name>.instructions.md`, create `.cursor/rules/<name>.mdc`:
+
+- Set `description` from the filename or first heading
+- Set `globs` from the `applyTo` frontmatter value (if present)
+- Set `alwaysApply: false` (the glob handles activation)
+- Write the body content after the frontmatter
+
+---
+
+#### 3F — Windsurf
+
+**Global instructions → `.windsurf/rules/global-instructions.md`**
+
+Windsurf uses plain Markdown files in `.windsurf/rules/`.
+
+```markdown
+<!-- AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly -->
+<!-- Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents -->
+
+# Global Project Instructions
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+**Path-scoped instructions → `.windsurf/rules/<name>.md`**
+
+For each `.github/instructions/<name>.instructions.md`, create a matching `.md` file
+with sync header and body content.
+
+---
+
+#### 3G — Cline
+
+**Global instructions → `.clinerules/global-instructions.md`**
+
+Cline reads Markdown files from the `.clinerules/` directory. If only a `.clinerules` file
+(not directory) exists, convert it to a directory first by moving the existing file to
+`.clinerules/_original.md`, then proceed.
+
+```markdown
+<!-- AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly -->
+<!-- Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents -->
+
+# Global Project Instructions
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+**Path-scoped instructions → `.clinerules/<name>.md`**
+
+For each `.github/instructions/<name>.instructions.md`, create a matching `.md` file.
+
+---
+
+#### 3H — Roo Code
+
+**Global instructions → `.roo/rules/global-instructions.md`**
+
+Roo Code reads `.md` files recursively from `.roo/rules/` in alphabetical order.
+
+```markdown
+<!-- AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly -->
+<!-- Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents -->
+
+# Global Project Instructions
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+**Path-scoped instructions → `.roo/rules/<name>.md`**
+
+For each `.github/instructions/<name>.instructions.md`, create a matching `.md` file.
+
+---
+
+#### 3I — Kilo Code
+
+**Global instructions → `.kilocode/rules/global-instructions.md`**
+
+Kilo Code reads Markdown files from `.kilocode/rules/`.
+
+```markdown
+<!-- AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly -->
+<!-- Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents -->
+
+# Global Project Instructions
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+**Path-scoped instructions → `.kilocode/rules/<name>.md`**
+
+For each `.github/instructions/<name>.instructions.md`, create a matching `.md` file.
+
+---
+
+#### 3J — JetBrains Junie
+
+**All instructions → `.junie/guidelines.md`**
+
+Junie uses a single `guidelines.md` file. Concatenate all instructions into one file.
+
+```markdown
+<!-- AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly -->
+<!-- Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents -->
+
+# Project Guidelines
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+
+---
+
+<!-- Path-scoped instructions follow (if any) -->
+
+[FOR EACH .github/instructions/*.instructions.md, INSERT:]
+
+## [filename context / applyTo info]
+
+[body content]
+```
+
+Since Junie only reads a single file, all path-scoped instructions are appended to the
+same file with clear section headers.
+
+---
+
+#### 3K — Zed
+
+**Global instructions → `.rules`**
+
+Zed reads a `.rules` file at the project root. It is plain text (no frontmatter).
+
+```
+# AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly
+# Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+Zed also auto-detects `.cursorrules`, `.windsurfrules`, `AGENTS.md`, `CLAUDE.md`, and
+`GEMINI.md` — so if those files were written by earlier steps, Zed gets additional coverage
+automatically.
+
+Path-scoped instructions are **not supported** by Zed's `.rules` format. If path-scoped
+instructions exist, append a note:
+
+```
+# NOTE: Path-scoped instructions exist in .github/instructions/ but cannot be
+# represented in Zed's .rules format. See those files for directory-specific guidance.
+```
+
+---
+
+#### 3L — Augment Code
+
+**Global instructions → `.augment/rules/global-instructions.md`**
+
+Augment Code uses Markdown files with optional YAML frontmatter in `.augment/rules/`.
+
+```markdown
+---
+# AUTO-SYNCED from .github/copilot-instructions.md — do not edit directly
+# Source of truth: .github/copilot-instructions.md | Re-sync: /sync-agents
+always_apply: true
+---
+
+# Global Project Instructions
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+**Path-scoped instructions → `.augment/rules/<name>.md`**
+
+For each `.github/instructions/<name>.instructions.md`, create `.augment/rules/<name>.md`:
+
+- Set `always_apply: false` and `agent_requested: true` in the YAML frontmatter
+- Include a `description` derived from the filename or `applyTo` value
+- Write the body content after the frontmatter
+
+---
+
+### Step 4 — Sync custom agents (where supported)
+
+Custom agent profiles (`.github/agents/*.agent.md`) can only be synced to agents
+that support sub-agent profiles. Currently, only **Claude Code** supports this.
+
+**If Claude Code is active:**
+
+For each `.github/agents/<name>.agent.md`:
+
+1. Create `.claude/agents/<name>.md` (drop the `.agent` infix)
+2. Write the full YAML frontmatter block verbatim, adding these YAML comments after `---`:
    ```
    # AUTO-SYNCED from .github/agents/<name>.agent.md — do not edit directly
-   # Source of truth: .github/agents/ | Re-sync: /sync-agents.instructions
+  # Source of truth: .github/agents/ | Re-sync: /sync-agents
    ```
-   (as a YAML comment so it doesn't break frontmatter parsing)
 3. Write the body prompt verbatim after the closing `---`
 
-**OpenAI Codex** — Codex is a single-agent system; it has no sub-agent profile concept
-equivalent to `.agent.md`. Skip agent syncing for Codex.
-
-**Gemini CLI** — Gemini CLI has no sub-agent profile concept. Skip agent syncing for Gemini.
+**All other agents:** No sub-agent profile concept exists. Skip agent syncing.
 
 ---
 
-### Step 7 — Sync agent skills
+### Step 5 — Sync agent skills (where supported)
 
-Agent Skills use an **open standard** (`SKILL.md` with YAML frontmatter). The format is
-identical across Copilot, Claude Code, and Codex — only the storage path differs:
+Agent Skills use an open standard (`SKILL.md` with YAML frontmatter). The format is
+identical across Copilot, Claude Code, and Codex — only the storage path differs.
 
-| Tool | Skills path |
-|---|---|
-| GitHub Copilot (source) | `.github/skills/<skill-name>/SKILL.md` |
-| Claude Code | `.claude/skills/<skill-name>/SKILL.md` |
-| OpenAI Codex | `.agents/skills/<skill-name>/SKILL.md` |
-| Gemini CLI | ❌ No skills concept |
+| Tool                    | Skills path                      | Supported?           |
+| ----------------------- | -------------------------------- | -------------------- |
+| GitHub Copilot (source) | `.github/skills/<name>/SKILL.md` | ✅ Source            |
+| Claude Code             | `.claude/skills/<name>/SKILL.md` | ✅ If detected       |
+| OpenAI Codex / OpenCode | `.agents/skills/<name>/SKILL.md` | ✅ If detected       |
+| All others              | —                                | ❌ No skills concept |
 
-For each `.github/skills/<skill-name>/` directory found in Step 1:
+For each `.github/skills/<skill-name>/` directory:
 
-**Claude Code:**
+**If Claude Code is active:**
+
 1. Create `.claude/skills/<skill-name>/` directory
-2. Write `.claude/skills/<skill-name>/SKILL.md` with the **full contents** of the source
-   `SKILL.md` verbatim — the format is identical, no translation needed
-3. Add a YAML comment on the first line inside the frontmatter block:
-   ```
-   # AUTO-SYNCED from .github/skills/<skill-name>/SKILL.md — do not edit directly
-   ```
-4. If any bundled asset files (scripts, examples, reference docs) exist alongside the source
-   `SKILL.md`, copy them into the `.claude/skills/<skill-name>/` directory as-is.
-   These files are referenced by the SKILL.md body and must travel with it.
+2. Write `SKILL.md` verbatim with a YAML sync comment
+3. Copy any bundled asset files as-is
 
-**OpenAI Codex:**
+**If Codex or OpenCode is active:**
+
 1. Create `.agents/skills/<skill-name>/` directory
-2. Write `.agents/skills/<skill-name>/SKILL.md` with the same full verbatim contents
-   plus the same YAML comment noting the source
-3. Copy any bundled asset files into `.agents/skills/<skill-name>/` as-is
+2. Write `SKILL.md` verbatim with a YAML sync comment
+3. Copy any bundled asset files as-is
 
-**Important — `name` field constraint:** The `name` field in the SKILL.md frontmatter
-**must exactly match the parent directory name**. Since you are preserving the directory
-name from `.github/skills/<skill-name>/`, this will naturally be correct. Do not rename
-the directory or alter the `name` field.
+**Important — `name` field constraint:** The `name` field in SKILL.md frontmatter must
+exactly match the parent directory name. Do not rename directories or alter the field.
 
-**Gemini CLI:** No skills concept exists in Gemini CLI. Skip skill syncing for Gemini.
-If `.github/skills/` contains skills, append a note to `GEMINI.md` after the main import:
+**Gemini CLI (if active):** Append a note to `GEMINI.md`:
+
 ```markdown
 <!-- NOTE: Agent Skills are not supported by Gemini CLI. -->
 <!-- Skills available in this repo: <comma-separated skill names> -->
 <!-- See .github/skills/ for skill definitions usable by Copilot, Claude, and Codex. -->
 ```
 
+**All others:** No skills concept. Skip.
+
 ---
 
-### Step 8 — Verify and report
+### Step 6 — Verify and report
 
-After writing all files, list every file created or updated and confirm:
+After writing all files, list every file created or updated, grouped by agent:
 
 ```
-✅ Sync complete. Files written:
+✅ Sync complete.
 
-INSTRUCTIONS
-  - CLAUDE.md                                  (Claude Code root instructions)
-  - .claude/instructions/<files>               (if path-specific files existed)
-  - GEMINI.md                                  (Gemini CLI — live @import link)
-  - .gemini/<subdir>/GEMINI.md                 (if path-specific subdirs existed)
-  - AGENTS.md                                  (OpenAI Codex root instructions)
-  - <subdir>/AGENTS.md                         (if path-specific subdirs existed)
+🔍 Detected agents: <list>
+📁 Source of truth: .github/ (copilot-instructions.md, agents/, skills/, instructions/)
 
-CUSTOM AGENTS
-  - .claude/agents/<name>.md                   (one per .github/agents/*.agent.md)
-  (Codex and Gemini have no sub-agent profile concept — skipped)
+Files written:
 
-SKILLS
-  - .claude/skills/<name>/SKILL.md             (one per .github/skills/<name>/)
-  - .agents/skills/<name>/SKILL.md             (one per .github/skills/<name>/)
-  (Gemini CLI has no skills concept — skipped, noted in GEMINI.md)
+  [Agent Name]
+    - <file path>                              (<description>)
+    ...
 
-Source of truth: .github/ (copilot-instructions.md, agents/, skills/, instructions/)
-To keep all agents in sync, run /sync-agents.instructions after any Copilot update.
+  [Agent Name]
+    - <file path>                              (<description>)
+    ...
+
+  SKIPPED (not detected in repo):
+    - <agent name>: <detection signal not found>
+    ...
+
+To keep all agents in sync, run /sync-agents after any .github/ update.
 ```
 
 ---
@@ -275,30 +496,38 @@ To keep all agents in sync, run /sync-agents.instructions after any Copilot upda
 
 ### Instructions
 
-| Agent | Primary File | Format | Notes |
-|---|---|---|---|
-| GitHub Copilot | `.github/copilot-instructions.md` | Markdown | **Source of truth** |
-| Claude Code | `CLAUDE.md` | Markdown | Copied at sync time |
-| Gemini CLI | `GEMINI.md` | Markdown + `@imports` | Live import — no re-sync needed |
-| OpenAI Codex | `AGENTS.md` | Markdown | Copied at sync time |
+| Agent           | Primary File                      | Format                 | Sync Method         |
+| --------------- | --------------------------------- | ---------------------- | ------------------- |
+| GitHub Copilot  | `.github/copilot-instructions.md` | Markdown               | **Source of truth** |
+| Claude Code     | `CLAUDE.md`                       | Markdown               | Full copy           |
+| Gemini CLI      | `GEMINI.md`                       | Markdown + `@imports`  | Live import         |
+| OpenAI Codex    | `AGENTS.md`                       | Markdown               | Full copy           |
+| OpenCode        | `AGENTS.md` (shared w/ Codex)     | Markdown               | Full copy           |
+| Cursor          | `.cursor/rules/*.mdc`             | MDC (Markdown + YAML)  | Translated          |
+| Windsurf        | `.windsurf/rules/*.md`            | Markdown               | Full copy           |
+| Cline           | `.clinerules/*.md`                | Markdown               | Full copy           |
+| Roo Code        | `.roo/rules/*.md`                 | Markdown               | Full copy           |
+| Kilo Code       | `.kilocode/rules/*.md`            | Markdown               | Full copy           |
+| JetBrains Junie | `.junie/guidelines.md`            | Markdown (single file) | Concatenated        |
+| Zed             | `.rules`                          | Plain text             | Full copy           |
+| Augment Code    | `.augment/rules/*.md`             | Markdown + YAML        | Translated          |
 
 ### Custom Agents
 
-| Agent | Path | Notes |
-|---|---|---|
-| GitHub Copilot | `.github/agents/*.agent.md` | **Source of truth** |
-| Claude Code | `.claude/agents/*.md` | Copied at sync; format-compatible |
-| Gemini CLI | ❌ Not supported | No sub-agent profile concept |
-| OpenAI Codex | ❌ Not supported | Single-agent system |
+| Agent          | Path                        | Notes                             |
+| -------------- | --------------------------- | --------------------------------- |
+| GitHub Copilot | `.github/agents/*.agent.md` | **Source of truth**               |
+| Claude Code    | `.claude/agents/*.md`       | Copied at sync; format-compatible |
+| All others     | ❌ Not supported            | No sub-agent profile concept      |
 
 ### Skills (Open Standard)
 
-| Agent | Path | Notes |
-|---|---|---|
-| GitHub Copilot | `.github/skills/<n>/SKILL.md` | **Source of truth** |
-| Claude Code | `.claude/skills/<n>/SKILL.md` | Verbatim copy — format identical |
-| OpenAI Codex | `.agents/skills/<n>/SKILL.md` | Verbatim copy — format identical |
-| Gemini CLI | ❌ Not supported | Noted as comment in GEMINI.md |
+| Agent                   | Path                          | Notes               |
+| ----------------------- | ----------------------------- | ------------------- |
+| GitHub Copilot          | `.github/skills/<n>/SKILL.md` | **Source of truth** |
+| Claude Code             | `.claude/skills/<n>/SKILL.md` | Verbatim copy       |
+| OpenAI Codex / OpenCode | `.agents/skills/<n>/SKILL.md` | Verbatim copy       |
+| All others              | ❌ Not supported              | No skills concept   |
 
 ---
 
@@ -312,4 +541,13 @@ To keep all agents in sync, run /sync-agents.instructions after any Copilot upda
 - **Gemini CLI** GEMINI.md + `@import`: https://google-gemini.github.io/gemini-cli/docs/cli/gemini-md.html
 - **OpenAI Codex** AGENTS.md: https://developers.openai.com/codex/guides/agents-md/
 - **OpenAI Codex** skills: https://developers.openai.com/codex/skills/
+- **OpenCode** AGENTS.md + commands: https://opencode.ai/docs/customization
+- **Cursor** rules: https://docs.cursor.com/context/rules-for-ai
+- **Windsurf** rules: https://docs.windsurf.com/windsurf/customize#rules
+- **Cline** custom instructions: https://docs.cline.bot/improving-your-workflow/cline-rules
+- **Roo Code** custom instructions: https://docs.roocode.com/features/custom-instructions
+- **Kilo Code** custom rules: https://kilo.ai/docs/features/custom-rules
+- **JetBrains Junie** guidelines: https://www.jetbrains.com/help/junie/guidelines.html
+- **Zed** rules: https://zed.dev/docs/ai/rules
+- **Augment Code** rules: https://docs.augmentcode.com/using-augment/augment-rules
 - **VS Code** custom agents (cross-tool format compatibility): https://code.visualstudio.com/docs/copilot/customization/custom-agents
