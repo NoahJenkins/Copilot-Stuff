@@ -675,7 +675,7 @@ This repository has specialized Copilot agents in `.github/agents/`. **Delegate 
 
 ## 9. Custom Agents
 
-Install specialized GitHub Copilot agents into `.github/agents/` by downloading onboarding-tagged artifacts from this repository instead of embedding agent bodies in this prompt.
+Install specialized GitHub Copilot agents into `.github/agents/` for **every** onboarding-tagged core artifact from this repository instead of embedding agent bodies in this prompt.
 
 ### Tag-Driven Agent Selection (Mandatory Core)
 
@@ -684,12 +684,15 @@ Use root `agents/` in this repository as the canonical source of agent metadata.
 1. Inspect all files matching `agents/*.agent.md`.
 2. Parse each file for the metadata comment format `<!-- onboarding-tags: ... -->` and select files where tags include `onboarding-core`.
 3. Treat all `onboarding-core` agents as mandatory for onboarding and install each one into target repo `.github/agents/` with the same filename.
-4. If no `onboarding-core` agents are found, stop and report a configuration error in the summary.
+4. Do not filter this set to a predefined subset: if a file has the `onboarding-core` tag, it must be installed.
+5. If no `onboarding-core` agents are found, stop and report a configuration error in the summary.
 
 ### Download Source Requirements
 
 - Use canonical raw GitHub URLs (no cache-busting query params):
   - `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/<agent-file>.agent.md`
+- Download each selected `onboarding-core` agent from the canonical raw URL first.
+- If download fails for a selected `onboarding-core` agent, install it from local source `agents/<agent-file>.agent.md` to ensure mandatory coverage, and record the fallback in the summary report.
 - Do not hardcode individual agent file contents in this prompt.
 - Preserve front matter and body exactly as published in the source artifact.
 - If target file already exists, merge by keeping existing customizations and appending any missing canonical sections under `# Added by OnboardCopilot`.
