@@ -116,6 +116,59 @@ Create the following directories if they don't exist:
 - Create `docs/context/index.md` that groups related notes and links to resulting ADRs
 - These notes support ADRs but are more informal and exploratory
 
+### docs/TODO.md
+- Purpose: Living task tracker for all major project work
+- Create `docs/TODO.md` if it does not exist; if it exists, merge and preserve existing tasks
+- Add a `Last Updated` line at the top of the file (ISO date format: `YYYY-MM-DD`) and refresh it whenever tasks change
+- Track major tasks using checkboxes (e.g., `- [ ]` for open, `- [x]` for completed)
+- Organize tasks by section when helpful (e.g., Onboarding, Architecture, Security, Follow-ups)
+- Include a `Blocked` section for tasks waiting on external dependencies (people, approvals, vendor access, infrastructure, etc.)
+- Include a short `Definition of Done` checklist so task completion is consistent across contributors
+- Actively maintain this file throughout execution:
+  - Add new major tasks as they are identified
+  - Mark tasks completed immediately when finished
+  - Move tasks into/out of `Blocked` as dependency status changes
+  - Update the `Last Updated` date whenever any task state changes
+  - Add brief `# TODO:` notes for unclear ownership or follow-up actions
+- If creating a new file, initialize it with this starter template:
+
+```markdown
+# Project Task Tracker
+
+Last Updated: 2026-02-19
+
+> Living document for major project tasks. Update status continuously during planning and implementation.
+
+## Onboarding
+- [ ] Run repository analysis and detect tech stack
+- [ ] Establish docs structure (`docs/architecture/`, `docs/adr/`, `docs/context/`)
+- [ ] Create initial ADR (`docs/adr/0001-adopt-documentation-structure.md`)
+- [ ] Generate onboarding summary report
+
+## Architecture & Documentation
+- [ ] Add/update architecture documentation
+- [ ] Add context/research notes and update `docs/context/index.md`
+- [ ] Record new architectural decisions as ADRs
+
+## Security & Quality
+- [ ] Run dependency/security audit
+- [ ] Review secret handling and `.gitignore` coverage
+- [ ] Address critical/high findings
+
+## Blocked
+- [ ] # TODO: Add blocked tasks here with dependency notes (e.g., waiting on approvals, access, vendor responses)
+
+## Follow-ups
+- [ ] # TODO: Add team-specific onboarding tasks
+- [ ] # TODO: Assign owners and due dates for open items
+
+## Definition of Done
+- [ ] Acceptance criteria are met
+- [ ] Relevant docs are updated (`README`, ADRs, context notes, or architecture docs as applicable)
+- [ ] Security/quality checks for the change are completed
+- [ ] Any follow-up work is captured as new TODO items
+```
+
 ## 3. Environment Configuration
 
 ### .env.example Template
@@ -495,6 +548,9 @@ Write an ADR when decisions affect structure, dependencies, non-functional requi
 ### docs/context/
 Exploratory research, planning session notes, and working documentation. Files named `YYYY-MM-DD-topic-name.md` with Summary, Options/Findings, and Open Questions sections. Maintain an `index.md` linking related notes to resulting ADRs.
 
+### docs/TODO.md
+Living project task tracker. Add major tasks as they arise, keep checkbox status current (`- [ ]` / `- [x]`), and mark completed tasks immediately as work finishes.
+
 ## Information Sources Priority
 
 ### 1. Primary: Documentation Lookup Tools
@@ -545,22 +601,45 @@ Use first-party official documentation sources (especially if documentation tool
 - Development server: 
 - Production build: 
 
-## When to Update Documentation
+## Documentation Update Policy (Automatic, No Prompt)
 
-### Create or Update ADRs
-- After significant design or architecture sessions
-- When decisions affect structure, dependencies, or interfaces
-- When adopting new technologies or patterns
+For any non-trivial code change, update documentation in the same turn without asking for confirmation.
 
-### Create Context Notes
-- After research or exploratory work
-- During planning sessions
-- When documenting "why" behind experiments
+### Required behavior
+- Perform a docs impact check after every code edit.
+- If impacted, automatically update relevant files under `docs/`, including:
+  - `docs/TODO.md`
+  - `docs/context/index.md`
+  - A new dated context note in `docs/context/`
+  - A new ADR in `docs/adr/` when architecture/behavior/dependency/runtime decisions changed
+  - `docs/architecture/` when execution flow/system design changed
+- Do NOT ask "do you want me to update docs?" when required changes are clear.
+- Only ask the user if the required documentation target is ambiguous.
+- If no docs changes are needed, explicitly state why in the final response.
 
-### Update Architecture Docs
-- After refactors that change system structure
-- When adding new major components or services
-- When data flows or integrations change
+### Autonomy rule
+- Assume user consent for documentation updates that are directly related to implemented code changes.
+
+### Completion gate
+- A task is incomplete until required documentation updates are applied.
+
+### Delegation requirement
+- Use `@documentation-specialist` automatically after implementation for docs updates.
+
+### ADR triggers
+- Create or update ADRs after significant design or architecture sessions.
+- Create or update ADRs when decisions affect structure, dependencies, interfaces, runtime, or behavior.
+- Create or update ADRs when adopting new technologies or patterns.
+
+### Context note triggers
+- Create context notes after research or exploratory work.
+- Create context notes during planning sessions.
+- Create context notes when documenting "why" behind experiments.
+
+### Architecture doc triggers
+- Update architecture docs after refactors that change system structure.
+- Update architecture docs when adding new major components or services.
+- Update architecture docs when data flows or integrations change.
 
 ## General Documentation Principles
 - Keep files focused on one topic
@@ -591,6 +670,7 @@ This repository has specialized Copilot agents in `.github/agents/`. **Delegate 
 - Let the sub-agent complete its full analysis before acting on results
 - Multiple agents can be used in sequence (e.g., `@research-agent` for research → `@documentation-specialist` to write the ADR)
 - When a task spans multiple agent specializations, break it into sub-tasks and delegate each to the appropriate agent
+- After any non-trivial implementation change, use `@documentation-specialist` automatically to apply required docs updates in the same turn
 ```
 
 ## 9. Custom Agents
@@ -671,6 +751,7 @@ Production build: `[command]`
 - [Architecture Documentation](./docs/architecture/)
 - [Architecture Decision Records](./docs/adr/)
 - [Planning & Research Notes](./docs/context/)
+- [Project Task Tracker](./docs/TODO.md)
 ```
 
 **Contributing:**
@@ -910,6 +991,7 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `docs/architecture/` - System design documentation
 - [ ] `docs/adr/` - Architecture Decision Records
 - [ ] `docs/context/` - Research and planning notes
+- [ ] `docs/TODO.md` - Living tracker for major project tasks
 - [ ] `docs/adr/0001-adopt-documentation-structure.md` - Initial ADR
 - [ ] `docs/context/index.md` - Context notes index
 
@@ -1036,7 +1118,13 @@ Execute all tasks in the order listed above. For each task:
 4. **Use consistent formatting and style**: Match the existing codebase conventions where possible
 5. **Add clear comments**: Explain generated content with comments (e.g., `# Added by OnboardCopilot`)
 6. **Create placeholder values**: Where team-specific information is needed, use `# TODO:` prefixed comments
-7. **Skip gracefully**: If a section cannot be completed (e.g., no git history for CODEOWNERS), note it in the summary report and move on
+7. **Run docs impact check after every code edit**: If impacted, update required `docs/` targets in the same turn without asking for confirmation; only ask if target location is ambiguous
+8. **Use @documentation-specialist automatically after implementation**: Delegate documentation updates to `@documentation-specialist` with full context when available
+9. **Completion gate**: Treat work as incomplete until all required documentation updates are applied
+10. **Skip gracefully**: If a section cannot be completed (e.g., no git history for CODEOWNERS), note it in the summary report and move on
+11. **Actively maintain docs/TODO.md**: Add newly discovered major tasks during execution and mark tasks completed as soon as they are finished
+12. **Initialize TODO template when needed**: If `docs/TODO.md` is created during onboarding, seed it with the standard starter template from Section 2, then adapt it to the detected stack and project scope
+13. **Report blocked work in final summary**: Include any remaining items from the `Blocked` section of `docs/TODO.md`, along with dependency notes and recommended next action
 
 After completing all tasks, provide a summary of:
 - What was created
