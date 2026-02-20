@@ -1,7 +1,7 @@
 ---
 name: documentation-specialist
 description: Creates and maintains ADRs, architecture documentation, and context notes following project standards
-model: gpt-4o
+model: sonnet 4.6
 tools: ['read', 'edit', 'search']
 ---
 

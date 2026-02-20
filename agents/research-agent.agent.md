@@ -1,7 +1,7 @@
 ---
 name: research-agent
 description: Conducts technical research using context7 and first-party sources to gather accurate, up-to-date information
-model: gpt-4o
+model: Gemini 3 pro
 tools: ['read', 'search', 'web']
 ---
 

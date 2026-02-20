@@ -1,7 +1,7 @@
 ---
 name: prompt-engineer
 description: Creates and improves custom GitHub Copilot prompts using first-party best practices from Microsoft, GitHub, OpenAI, and Anthropic.
-model: codex-5.3
+model: sonnet 4.6
 tools: ["codebase", "search", "editFiles", "fetch", "usages"]
 ---
 
