@@ -692,6 +692,11 @@ Use root `agents/` in this repository as the canonical source of agent metadata.
 - Use canonical raw GitHub URLs (no cache-busting query params):
   - `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/<agent-file>.agent.md`
 - Download each selected `onboarding-core` agent from the canonical raw URL first.
+- **Execution environment requirement (high priority):**
+  - For macOS/Linux, use shell-based download/install flow (`curl` or equivalent) as the required implementation path.
+  - PowerShell (`.ps1`) support is optional and Windows-only; do not make `.ps1` a prerequisite for Unix environments.
+  - Validate each downloaded file before install: HTTP 200, non-empty content, starts with front matter `---`, and includes `onboarding-tags` metadata.
+  - Retry failed downloads up to 3 times before falling back to local source.
 - If download fails for a selected `onboarding-core` agent, install it from local source `agents/<agent-file>.agent.md` to ensure mandatory coverage, and record the fallback in the summary report.
 - Do not hardcode individual agent file contents in this prompt.
 - Preserve front matter and body exactly as published in the source artifact.
