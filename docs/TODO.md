@@ -4,6 +4,16 @@ Last Updated: 2026-02-20
 
 > Living document for major project tasks. Update status continuously during planning and implementation.
 
+## Agent Quality
+- [x] Standardize all root agent artifacts with Role/Scope/Inputs/Process/Output/Handoffs/Limits structure
+- [x] Add explicit inter-agent handoff contracts (code-reviewer ↔ security-specialist, research-agent → documentation-specialist, copilot-engineer ↔ prompt-engineer)
+- [x] Remove tool-specific hard-references (context7) from research-agent for portability
+- [x] Fix documentation-specialist as default owner for context-note creation
+- [x] Fix broken `agents/README.md` reference in copilot-engineer → `docs/README.agents.md`
+- [x] Fix path/casing errors in `.github/copilot-instructions.md` (`Agents/` → `agents/`, etc.)
+- [x] Add four missing agents to `docs/README.agents.md` catalog
+- [x] Fix broken skill path reference in `ReadMe.md`
+
 ## Onboarding
 - [x] Run repository analysis and detect tech stack
 - [x] Establish docs structure (`docs/architecture/`, `docs/adr/`, `docs/context/`)

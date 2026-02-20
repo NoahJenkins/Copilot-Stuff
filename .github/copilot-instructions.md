@@ -4,20 +4,19 @@ The following instructions are only to be applied when performing a code review.
 
 This repository organizes artifacts by type:
 
+- `agents/`
 - `prompts/`
-- `Agents/`
-- `Instructions/`
+- `skills/`
 - root index in `ReadMe.md`
 
 Use this structure when validating any additions or changes.
 
-Note: files located at the repository root in Agents/, Instructions/, and prompts/ are not intended for use inside this repository. They are individual artifact files (agents, instructions, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
+Note: files located at the repository root in `agents/` and `prompts/` are not intended for use inside this repository. They are individual artifact files (agents, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
 
 ## README updates
 
-- [ ] New prompt artifacts are listed in `prompts/README.md`.
-- [ ] New agent artifacts are listed in `Agents/README.md`.
-- [ ] New instruction artifacts are listed in `Instructions/README.md`.
+- [ ] New prompt artifacts are listed in `docs/README.prompts.md`.
+- [ ] New agent artifacts are listed in `docs/README.agents.md`.
 - [ ] If a new top-level artifact category is added, `ReadMe.md` is updated.
 
 ## Install button checks
@@ -79,7 +78,7 @@ For any non-trivial code change, update documentation in the same turn without a
 
 ## Agent file guide
 
-**Apply to agent files in `Agents/` (e.g., `*-agent.md` and `.agent.md`)**
+**Apply to agent files in `agents/` (e.g., `*-agent.md` and `.agent.md`)**
 
 - [ ] The agent has markdown front matter.
 - [ ] The agent has a `description` field.

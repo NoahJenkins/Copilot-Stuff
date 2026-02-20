@@ -39,7 +39,7 @@ This repository now includes a lightweight documentation framework for architect
 
 ### Skills
 
-- [skills/sync-agents/SKILL.md](./skills/sync-agentsv2/SKILL.md): Syncs GitHub Copilot instructions, custom agents, and skills to detected agent ecosystems using a detection-first flow.
+- [skills/sync-agents/SKILL.md](./skills/sync-agents/SKILL.md): Syncs GitHub Copilot instructions, custom agents, and skills to detected agent ecosystems using a detection-first flow.
 
 ## License
 
