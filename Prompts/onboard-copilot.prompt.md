@@ -679,13 +679,21 @@ Install specialized GitHub Copilot agents into `.github/agents/` for **every** o
 
 ### Tag-Driven Agent Selection (Mandatory Core)
 
-Use root `agents/` in this repository as the canonical source of agent metadata.
+Use `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` as the canonical source of agent metadata.
+Do not treat the target repository's local `agents/` directory (or absence of one) as a source-of-truth signal for mandatory onboarding agent availability.
 
-1. Inspect all files matching `agents/*.agent.md`.
+1. Inspect all files in `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` matching `*.agent.md`.
 2. Parse each file for the metadata comment format `<!-- onboarding-tags: ... -->` and select files where tags include `onboarding-core`.
 3. Treat all `onboarding-core` agents as mandatory for onboarding and install each one into target repo `.github/agents/` with the same filename.
 4. Do not filter this set to a predefined subset: if a file has the `onboarding-core` tag, it must be installed.
 5. If no `onboarding-core` agents are found, stop and report a configuration error in the summary.
+6. Invoke delegated tasks using the matching Copilot agent tag (for example, `documentation-specialist.agent.md` → `@documentation-specialist`).
+
+### Failure Reporting (Canonical Source Only)
+
+- Any missing-agent error must reference canonical GitHub discovery/download/validation outcomes from `main/agents`.
+- Do not report missing agents based on local root checks such as "repository root has no `agents/*.agent.md` metadata sources".
+- If mandatory agents cannot be resolved from canonical source, report that agent installation is blocked due to canonical source resolution failure and include which canonical files/tags failed.
 
 ### Download Source Requirements
 
@@ -696,8 +704,8 @@ Use root `agents/` in this repository as the canonical source of agent metadata.
   - For macOS/Linux, use shell-based download/install flow (`curl` or equivalent) as the required implementation path.
   - PowerShell (`.ps1`) support is optional and Windows-only; do not make `.ps1` a prerequisite for Unix environments.
   - Validate each downloaded file before install: HTTP 200, non-empty content, starts with front matter `---`, and includes `onboarding-tags` metadata.
-  - Retry failed downloads up to 3 times before falling back to local source.
-- If download fails for a selected `onboarding-core` agent, install it from local source `agents/<agent-file>.agent.md` to ensure mandatory coverage, and record the fallback in the summary report.
+  - Retry failed downloads up to 3 times; if still failing, stop and report an error for that mandatory agent.
+- If download fails for any selected `onboarding-core` agent after retries, do not use local fallback sources; fail the onboarding agent-install step and report the blocking error in the summary report.
 - Do not hardcode individual agent file contents in this prompt.
 - Preserve front matter and body exactly as published in the source artifact.
 - If target file already exists, merge by keeping existing customizations and appending any missing canonical sections under `# Added by OnboardCopilot`.
