@@ -80,6 +80,8 @@ For any non-trivial code change, update documentation in the same turn without a
 
 **Apply to agent files in `agents/` (e.g., `*-agent.md` and `.agent.md`)**
 
+- [ ] Follow the shared agent structure standard in `.github/instructions/agent-structure.instructions.md` for new and revised agent artifacts.
+
 - [ ] The agent has markdown front matter.
 - [ ] The agent has a `description` field.
 - [ ] The `description` field is not empty.
