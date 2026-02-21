@@ -13,3 +13,6 @@
 
 - [2026-02-20 Testing and Infrastructure Agents](./2026-02-20-testing-infrastructure-agents.md)
   - Added testing-specialist and infrastructure-specialist as onboarding-expanded agents to close coverage gaps in QA and cloud infrastructure domains.
+
+- [2026-02-20 Agent Tools Update](./2026-02-20-agent-tools-update.md)
+  - Updated the tools used by the agents in the `agents/` directory to match the current GitHub Copilot custom agents configuration documentation.
