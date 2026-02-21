@@ -64,6 +64,7 @@ If guidance differs, choose the option that is clearest, testable, and least lik
 - Use lowercase, hyphenated filenames.
 - Include markdown front matter with non-empty `description`.
 - Add `name`, `model`, and `tools` when supported and useful.
+- When adding `tools`, ensure they match the current GitHub Copilot custom agents configuration documentation (e.g., `read`, `search`, `edit`, `web`). See [Custom agents configuration - Tools](https://docs.github.com/en/copilot/reference/custom-agents-configuration#tools).
 - Keep repository-level instructions broadly relevant, not task-specific.
 - Prefer path-specific instructions when guidance only applies to certain files.
 

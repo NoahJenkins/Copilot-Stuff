@@ -13,6 +13,7 @@ The tools used by the agents in the `agents/` directory were outdated and did no
   - `search`: Search for files or text in files.
   - `edit`: Allow LLM to edit files.
   - `web`: Allows fetching content from URLs and performing a web search.
+- Updated the `copilot-engineer` agent to reference the current GitHub Copilot custom agents configuration documentation when creating new agents, ensuring that new agents use valid tool aliases.
 
 ## References
 - [Custom agents configuration - Tools](https://docs.github.com/en/copilot/reference/custom-agents-configuration#tools)
