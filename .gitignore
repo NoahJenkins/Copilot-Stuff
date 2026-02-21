@@ -1,45 +1,45 @@
 # Ignore non-GitHub-Copilot agent sync artifacts
-AGENTS.md
-CLAUDE.md
-GEMINI.md
+**/AGENTS.md
+**/CLAUDE.md
+**/GEMINI.md
 
 # Codex
-/.agents/
+**/.agents/
 
 # Claude Code
-/.claude/
+**/.claude/
 
 # Gemini CLI
-/.gemini/
+**/.gemini/
 
 # OpenCode
-/.opencode/
-/.opencode.json
+**/.opencode/
+**/.opencode.json
 
 # Cursor
-/.cursor/
-/.cursorrules
+**/.cursor/
+**/.cursorrules
 
 # Windsurf
-/.windsurf/
-/.windsurfrules
+**/.windsurf/
+**/.windsurfrules
 
 # Cline
-/.clinerules
-/.clinerules/
+**/.clinerules
+**/.clinerules/
 
 # Roo Code
-/.roo/
-/.roorules
+**/.roo/
+**/.roorules
 
 # Kilo Code
-/.kilocode/
+**/.kilocode/
 
 # JetBrains Junie
-/.junie/
+**/.junie/
 
 # Zed
-/.rules
+**/.rules
 
 # Augment Code
-/.augment/
+**/.augment/
