@@ -1,7 +1,7 @@
 ---
 name: frontend-specialist
 description: Reviews and guides frontend architecture, UI reliability, performance, and accessibility across modern web stacks
-model: Claude Sonnet 4.6 (copilot)
+model: Gemini 3.1 Pro (Preview) (copilot)
 tools: ["read", "search", "edit", "web"]
 ---
 
