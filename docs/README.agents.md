@@ -207,6 +207,21 @@ Designs and maintains GitHub Copilot agents, prompts, and custom instructions us
 https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/copilot-engineer.agent.md
 ```
 
+---
+
+### [skill-engineer.agent.md](../agents/skill-engineer.agent.md)
+
+Designs and builds GitHub Copilot agent skills using first-party best practices from GitHub, Anthropic, OpenAI, and Microsoft.
+
+**Install**
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fskill-engineer.agent.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fskill-engineer.agent.md)
+
+**Raw URL**
+```
+https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/skill-engineer.agent.md
+```
+
 ## Archived agent versions
 
 Older agent versions are stored in [docs/archive/](./archive/) for reference only and are not considered active install targets.

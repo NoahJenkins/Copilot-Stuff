@@ -33,6 +33,7 @@ This repository now includes a lightweight documentation framework for architect
 
 - [agents/prompt-engineer.agent.md](./agents/prompt-engineer.agent.md): Specialized agent for creating and refining custom GitHub Copilot prompts using first-party prompt engineering best practices.
 - [agents/copilot-engineer.agent.md](./agents/copilot-engineer.agent.md): Specialized agent for building and maintaining GitHub Copilot agents, prompts, and instructions using first-party best practices.
+- [agents/skill-engineer.agent.md](./agents/skill-engineer.agent.md): Specialized agent for designing and building GitHub Copilot agent skills using first-party best practices from GitHub, Anthropic, OpenAI, and Microsoft.
 - [agents/research-agent.agent.md](./agents/research-agent.agent.md): Technical research specialist for up-to-date docs, API references, and version-aware guidance.
 - [agents/code-reviewer.agent.md](./agents/code-reviewer.agent.md): Code quality reviewer focused on maintainability, consistency, and actionable review feedback.
 - [agents/security-specialist.agent.md](./agents/security-specialist.agent.md): Security reviewer for vulnerabilities, secure defaults, and secrets hygiene.
