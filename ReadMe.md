@@ -20,6 +20,7 @@ This repository now includes a lightweight documentation framework for architect
 - [docs/architecture/](./docs/architecture/) for system-level design documentation
 - [docs/adr/](./docs/adr/) for Architecture Decision Records (ADRs)
 - [docs/context/](./docs/context/) for dated research and planning notes
+- [docs/archive/](./docs/archive/) for archived artifact versions kept for reference
 - [docs/TODO.md](./docs/TODO.md) for the living project task tracker
 
 ## Included Artifacts

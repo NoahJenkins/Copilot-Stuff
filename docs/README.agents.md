@@ -206,3 +206,7 @@ Designs and maintains GitHub Copilot agents, prompts, and custom instructions us
 ```
 https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/copilot-engineer.agent.md
 ```
+
+## Archived agent versions
+
+Older agent versions are stored in [docs/archive/](./archive/) for reference only and are not considered active install targets.

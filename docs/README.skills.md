@@ -52,3 +52,7 @@ Invoke-RestMethod https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/ma
 
 - VS Code supports one-click install links for prompts, agents, and instructions.
 - Skills currently use command-based installation because they are folder-based artifacts.
+
+## Archived skill versions
+
+Older skill versions are stored in [docs/archive/](./archive/) for reference only and are not considered active install targets.

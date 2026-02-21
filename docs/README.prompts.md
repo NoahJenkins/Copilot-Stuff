@@ -30,3 +30,7 @@ Onboards greenfield and brownfield repositories by setting up stack-aware docs, 
 ```
 https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/prompts/onboard-copilot.prompt.md
 ```
+
+## Archived prompt versions
+
+Older prompt versions are stored in [docs/archive/](./archive/) for reference only and are not considered active install targets.

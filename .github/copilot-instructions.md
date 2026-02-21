@@ -13,6 +13,13 @@ Use this structure when validating any additions or changes.
 
 Note: files located at the repository root in `agents/` and `prompts/` are not intended for use inside this repository. They are individual artifact files (agents, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
 
+## Archive folder policy
+
+- `docs/archive/` stores older artifact versions kept for historical reference and comparison.
+- Treat all files in `docs/archive/` as inactive reference material by default.
+- Do not use archived files as primary install targets when active equivalents exist in `agents/`, `prompts/`, `skills/`, or `instructions/`.
+- When updating catalogs or install guidance, prioritize active artifacts first and mention archive entries only as reference.
+
 ## README updates
 
 - [ ] New prompt artifacts are listed in `docs/README.prompts.md`.
