@@ -1,3 +1,4 @@
+# Ignore non github copilot agent files
 AGENTS.md
 /.agents/
 CLAUDE.md
