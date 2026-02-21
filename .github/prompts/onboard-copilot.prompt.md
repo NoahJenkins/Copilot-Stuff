@@ -58,6 +58,12 @@ After installing the custom agents in Section 9, delegate specialized work to th
 | 13. Security Baseline Report | `@security-specialist` | Vulnerability scanning, secrets detection, dependency audit |
 | 14. Summary Report | `@documentation-specialist` | Final report authoring |
 
+Optional expanded delegates (installed only when detected stack/repo characteristics warrant them):
+- Frontend-heavy repos → `@frontend-specialist`
+- Backend/service-heavy repos → `@backend-specialist`
+- Data-intensive repos (schema/migrations/query-heavy) → `@data-specialist`
+- CI/CD/infrastructure-heavy repos → `@devops-specialist`
+
 When delegating:
 - Provide the sub-agent with all context gathered so far (detected languages, frameworks, file paths, etc.)
 - Let the sub-agent execute its full workflow — do not duplicate its responsibilities
@@ -675,18 +681,50 @@ This repository has specialized Copilot agents in `.github/agents/`. **Delegate 
 
 ## 9. Custom Agents
 
-Install specialized GitHub Copilot agents into `.github/agents/` for **every** onboarding-tagged core artifact from this repository instead of embedding agent bodies in this prompt.
+Install specialized GitHub Copilot agents into `.github/agents/` using onboarding tags from this repository:
+- `onboarding-core` → mandatory
+- `onboarding-expanded` → optional, install only when the detected repository stack indicates relevance
 
 ### Known-Good Install Snippet (macOS/Linux)
 
-Use this exact snippet for reliable installation of mandatory onboarding-core agents:
+Use this exact snippet for reliable installation of mandatory onboarding-core agents plus conditionally selected onboarding-expanded agents:
 
 ```bash
 set -euo pipefail
 
 mkdir -p .github/agents
 
-for f in code-reviewer.agent.md documentation-specialist.agent.md research-agent.agent.md security-specialist.agent.md; do
+core_agents=(
+  code-reviewer.agent.md
+  documentation-specialist.agent.md
+  research-agent.agent.md
+  security-specialist.agent.md
+)
+
+expanded_agents=()
+
+# Populate these booleans from Section 1 detected stack (or greenfield user-provided stack)
+# has_frontend=true|false
+# has_backend=true|false
+# has_data=true|false
+# has_devops=true|false
+
+if [[ "${has_frontend:-false}" == "true" ]]; then
+  expanded_agents+=(frontend-specialist.agent.md)
+fi
+if [[ "${has_backend:-false}" == "true" ]]; then
+  expanded_agents+=(backend-specialist.agent.md)
+fi
+if [[ "${has_data:-false}" == "true" ]]; then
+  expanded_agents+=(data-specialist.agent.md)
+fi
+if [[ "${has_devops:-false}" == "true" ]]; then
+  expanded_agents+=(devops-specialist.agent.md)
+fi
+
+selected_agents=("${core_agents[@]}" "${expanded_agents[@]}")
+
+for f in "${selected_agents[@]}"; do
   url="https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/$f"
   tmp="$(mktemp)"
 
@@ -705,7 +743,14 @@ for f in code-reviewer.agent.md documentation-specialist.agent.md research-agent
 done
 
 # Mandatory post-install verification
-for f in code-reviewer.agent.md documentation-specialist.agent.md research-agent.agent.md security-specialist.agent.md; do
+for f in "${core_agents[@]}"; do
+  test -s ".github/agents/$f"
+  head -n 1 ".github/agents/$f" | grep -q '^---'
+  grep -q 'onboarding-tags' ".github/agents/$f"
+done
+
+# Optional verification (only for selected expanded agents)
+for f in "${expanded_agents[@]}"; do
   test -s ".github/agents/$f"
   head -n 1 ".github/agents/$f" | grep -q '^---'
   grep -q 'onboarding-tags' ".github/agents/$f"
@@ -714,29 +759,35 @@ done
 echo "VERIFIED:all-onboarding-core-agents"
 ```
 
-### Tag-Driven Agent Selection (Mandatory Core)
+### Tag-Driven Agent Selection (Mandatory Core + Optional Expanded)
 
 Use `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` as the canonical source of agent metadata.
 Do not treat the target repository's local `agents/` directory (or absence of one) as a source-of-truth signal for mandatory onboarding agent availability.
 
 1. Inspect all files in `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` matching `*.agent.md`.
-2. Parse each file for the metadata comment format `<!-- onboarding-tags: ... -->` and select files where tags include `onboarding-core`.
-3. Treat all `onboarding-core` agents as mandatory for onboarding and install each one into target repo `.github/agents/` with the same filename.
-4. Do not filter this set to a predefined subset: if a file has the `onboarding-core` tag, it must be installed.
-5. If no `onboarding-core` agents are found, stop and report a configuration error in the summary.
-6. Invoke delegated tasks using the matching Copilot agent tag (for example, `documentation-specialist.agent.md` → `@documentation-specialist`).
+2. Parse each file for the metadata comment format `<!-- onboarding-tags: ... -->`.
+3. Select all files tagged `onboarding-core` as mandatory and install each one into target repo `.github/agents/` with the same filename.
+4. Select files tagged `onboarding-expanded` as optional candidates. Install only those that match detected stack/repo signals:
+  - Frontend indicators (UI framework, component directories, client bundle tooling) → `frontend-specialist.agent.md`
+  - Backend indicators (API/server frameworks, service entrypoints) → `backend-specialist.agent.md`
+  - Data indicators (DB drivers, ORM usage, migrations/schema tooling) → `data-specialist.agent.md`
+  - DevOps indicators (CI workflows, Docker/Kubernetes/Terraform, release automation) → `devops-specialist.agent.md`
+5. In greenfield mode, derive optional selection from user-provided intended stack instead of filesystem scanning.
+6. If no `onboarding-core` agents are found, stop and report a configuration error in the summary.
+7. Invoke delegated tasks using the matching Copilot agent tag (for example, `documentation-specialist.agent.md` → `@documentation-specialist`).
 
 ### Failure Reporting (Canonical Source Only)
 
 - Any missing-agent error must reference canonical GitHub discovery/download/validation outcomes from `main/agents`.
 - Do not report missing agents based on local root checks such as "repository root has no `agents/*.agent.md` metadata sources".
 - If mandatory agents cannot be resolved from canonical source, report that agent installation is blocked due to canonical source resolution failure and include which canonical files/tags failed.
+- If optional `onboarding-expanded` agents cannot be resolved, continue onboarding and report a non-blocking warning for those optional agents.
 
 ### Download Source Requirements
 
 - Use canonical raw GitHub URLs (no cache-busting query params):
   - `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/<agent-file>.agent.md`
-- Download each selected `onboarding-core` agent from the canonical raw URL first.
+- Download each selected `onboarding-core` and conditionally selected `onboarding-expanded` agent from the canonical raw URL first.
 - **Execution environment requirement (high priority):**
   - For macOS/Linux, use shell-based download/install flow (`curl` or equivalent) as the required implementation path.
   - PowerShell (`.ps1`) support is optional and Windows-only; do not make `.ps1` a prerequisite for Unix environments.
@@ -748,8 +799,10 @@ Do not treat the target repository's local `agents/` directory (or absence of on
     - Confirm every selected `onboarding-core` filename exists in `.github/agents/`
     - Confirm each installed file is non-empty and still contains front matter + `onboarding-tags`
     - If any expected status line or file is missing, treat the step as failed and retry that file up to 3 times
+  - Perform optional verification for selected `onboarding-expanded` agents using the same checks, but treat failures as non-blocking warnings.
   - Retry failed downloads up to 3 times; if still failing, stop and report an error for that mandatory agent.
 - If download fails for any selected `onboarding-core` agent after retries, do not use local fallback sources; fail the onboarding agent-install step and report the blocking error in the summary report.
+- If download fails for a selected `onboarding-expanded` agent after retries, continue and report the optional-agent warning in the summary report.
 - Do not hardcode individual agent file contents in this prompt.
 - Preserve front matter and body exactly as published in the source artifact.
 - If target file already exists, merge by keeping existing customizations and appending any missing canonical sections under `# Added by OnboardCopilot`.
@@ -768,6 +821,12 @@ After installing `onboarding-core` agents, ensure these task mappings remain ava
 - Code quality review tasks → `@code-reviewer`
 - Security tasks → `@security-specialist`
 - Documentation tasks → `@documentation-specialist`
+
+When installed, use these optional `onboarding-expanded` mappings for stack-specific work:
+- Frontend architecture/performance/accessibility tasks → `@frontend-specialist`
+- Backend/API/reliability tasks → `@backend-specialist`
+- Data modeling/migration/query tasks → `@data-specialist`
+- CI/CD/deployment/runtime operations tasks → `@devops-specialist`
 
 ## 10. README Enhancement
 
@@ -814,10 +873,10 @@ Production build: `[command]`
 ```markdown
 ## Documentation
 
-- [Architecture Documentation](../../docs/architecture/)
-- [Architecture Decision Records](../../docs/adr/)
-- [Planning & Research Notes](../../docs/context/)
-- [Project Task Tracker](../../docs/TODO.md)
+- [Architecture Documentation](./docs/architecture/)
+- [Architecture Decision Records](./docs/adr/)
+- [Planning & Research Notes](./docs/context/)
+- [Project Task Tracker](./docs/TODO.md)
 ```
 
 **Contributing:**
