@@ -1,5 +1,45 @@
-# Ignore non github copilot agent files
+# Ignore non-GitHub-Copilot agent sync artifacts
 AGENTS.md
-/.agents/
 CLAUDE.md
 GEMINI.md
+
+# Codex
+/.agents/
+
+# Claude Code
+/.claude/
+
+# Gemini CLI
+/.gemini/
+
+# OpenCode
+/.opencode/
+/.opencode.json
+
+# Cursor
+/.cursor/
+/.cursorrules
+
+# Windsurf
+/.windsurf/
+/.windsurfrules
+
+# Cline
+/.clinerules
+/.clinerules/
+
+# Roo Code
+/.roo/
+/.roorules
+
+# Kilo Code
+/.kilocode/
+
+# JetBrains Junie
+/.junie/
+
+# Zed
+/.rules
+
+# Augment Code
+/.augment/
