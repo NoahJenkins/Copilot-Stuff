@@ -1,7 +1,7 @@
 ---
 name: documentation-specialist
 description: Creates and maintains ADRs, architecture documentation, and context notes following project standards
-model: sonnet 4.6
+model: Claude Sonnet 4.6 (copilot)
 tools: ['read', 'edit', 'search']
 ---
 

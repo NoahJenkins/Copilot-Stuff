@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Reviews code for quality, maintainability, security, and adherence to project standards
-model: codex-5.3
+model: GPT-5.3-Codex (copilot)
 tools: ['read', 'search', 'usages']
 ---
 

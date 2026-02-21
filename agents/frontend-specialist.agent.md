@@ -1,7 +1,7 @@
 ---
 name: frontend-specialist
 description: Reviews and guides frontend architecture, UI reliability, performance, and accessibility across modern web stacks
-model: sonnet 4.6
+model: Claude Sonnet 4.6 (copilot)
 tools: ["codebase", "search", "usages"]
 ---
 

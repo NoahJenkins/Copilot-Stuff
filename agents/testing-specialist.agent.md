@@ -1,7 +1,7 @@
 ---
 name: testing-specialist
 description: Reviews and guides test strategy, automation patterns, and quality assurance practices across all testing levels
-model: sonnet 4.6
+model: GPT-5.3-Codex (copilot)
 tools: ["codebase", "search", "usages"]
 ---
 

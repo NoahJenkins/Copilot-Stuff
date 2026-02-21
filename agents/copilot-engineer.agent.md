@@ -1,7 +1,7 @@
 ---
 name: copilot-engineer
 description: Designs and maintains GitHub Copilot agents, prompts, and custom instructions using first-party best practices from Microsoft, GitHub, OpenAI, and Anthropic.
-model: sonnet 4.6
+model: Claude Sonnet 4.6 (copilot)
 tools: ["codebase", "search", "editFiles", "fetch", "usages"]
 ---
 

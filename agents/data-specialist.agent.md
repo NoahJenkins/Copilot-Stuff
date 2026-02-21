@@ -1,7 +1,7 @@
 ---
 name: data-specialist
 description: Reviews data modeling, schema evolution, and persistence workflows for correctness, scalability, and maintainability
-model: sonnet 4.6
+model: GPT-5.3-Codex (copilot)
 tools: ["codebase", "search", "usages"]
 ---
 

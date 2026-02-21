@@ -1,7 +1,7 @@
 ---
 name: infrastructure-specialist
 description: Reviews and guides cloud infrastructure design, IaC practices, and platform architecture for reliability and scalability
-model: sonnet 4.6
+model: GPT-5.3-Codex (copilot)
 tools: ["codebase", "search", "usages"]
 ---
 

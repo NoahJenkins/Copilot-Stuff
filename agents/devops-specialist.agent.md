@@ -1,7 +1,7 @@
 ---
 name: devops-specialist
 description: Reviews build, deployment, and runtime operations workflows for reliability, repeatability, and maintainability
-model: sonnet 4.6
+model: GPT-5.3-Codex (copilot)
 tools: ["codebase", "search", "usages"]
 ---
 

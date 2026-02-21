@@ -1,7 +1,7 @@
 ---
 name: backend-specialist
 description: Reviews and guides backend service design, API reliability, and operational correctness across server-side stacks
-model: sonnet 4.6
+model: GPT-5.3-Codex (copilot)
 tools: ["codebase", "search", "usages"]
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: research-agent
 description: Conducts technical research using context7 and first-party sources to gather accurate, up-to-date information
-model: Gemini 3 pro
+model: Gemini 3 Flash (Preview) (copilot)
 tools: ['read', 'search', 'web']
 ---
 
