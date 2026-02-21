@@ -16,3 +16,6 @@
 
 - [2026-02-20 Agent Tools Update](./2026-02-20-agent-tools-update.md)
   - Updated the tools used by the agents in the `agents/` directory to match the current GitHub Copilot custom agents configuration documentation.
+
+- [2026-02-20 Agent Orchestration](./2026-02-20-agent-orchestration.md)
+  - Added explicit agent orchestration instructions to `.github/copilot-instructions.md` for delegating tasks to the four core agents in `.github/agents/`.

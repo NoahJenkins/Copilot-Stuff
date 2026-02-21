@@ -13,6 +13,17 @@ Use this structure when validating any additions or changes.
 
 Note: files located at the repository root in `agents/` and `prompts/` are not intended for use inside this repository. They are individual artifact files (agents, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
 
+## Agent Orchestration
+
+When performing tasks in this repository, use the following specialized agents located in `.github/agents/` to orchestrate specific workflows:
+
+- **`@copilot-engineer`**: Use for designing, building, and maintaining GitHub Copilot artifacts (agents, prompts, and custom instructions).
+- **`@documentation-specialist`**: Use for creating and maintaining ADRs, architecture documentation, context notes, and README updates.
+- **`@prompt-engineer`**: Use for creating, reviewing, and optimizing custom GitHub Copilot prompts using first-party best practices.
+- **`@research-agent`**: Use for conducting technical research, gathering context, and analyzing information to support implementation and planning decisions.
+
+Delegate tasks to these agents when a request falls within their specific domain to ensure high-quality, specialized outputs.
+
 ## Archive folder policy
 
 - `docs/archive/` stores older artifact versions kept for historical reference and comparison.
