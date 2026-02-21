@@ -10,3 +10,6 @@
 
 - [2026-02-20 Onboarding Expanded Agent Selection](./2026-02-20-onboarding-expanded-agent-selection.md)
   - Related ADR: [ADR 0002](../adr/0002-adopt-core-plus-expanded-onboarding-agent-model.md)
+
+- [2026-02-20 Testing and Infrastructure Agents](./2026-02-20-testing-infrastructure-agents.md)
+  - Added testing-specialist and infrastructure-specialist as onboarding-expanded agents to close coverage gaps in QA and cloud infrastructure domains.

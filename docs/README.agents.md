@@ -149,6 +149,36 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/devops-s
 
 ---
 
+### [testing-specialist.agent.md](./testing-specialist.agent.md)
+
+Optional onboarding-expanded specialist for test strategy, automation patterns, and quality assurance practices across all testing levels.
+
+**Install**
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Ftesting-specialist.agent.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Ftesting-specialist.agent.md)
+
+**Raw URL**
+```
+https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/testing-specialist.agent.md
+```
+
+---
+
+### [infrastructure-specialist.agent.md](./infrastructure-specialist.agent.md)
+
+Optional onboarding-expanded specialist for cloud infrastructure design, IaC practices, and platform architecture in infrastructure-heavy repositories.
+
+**Install**
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Finfrastructure-specialist.agent.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Finfrastructure-specialist.agent.md)
+
+**Raw URL**
+```
+https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/infrastructure-specialist.agent.md
+```
+
+---
+
 ### [prompt-engineer.agent.md](./prompt-engineer.agent.md)
 
 Creates and improves custom GitHub Copilot prompts using first-party best practices from Microsoft, GitHub, OpenAI, and Anthropic.

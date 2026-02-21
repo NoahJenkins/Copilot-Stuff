@@ -14,6 +14,7 @@ Last Updated: 2026-02-20
 - [x] Add four missing agents to `docs/README.agents.md` catalog
 - [x] Fix broken skill path reference in `ReadMe.md`
 - [x] Add `onboarding-expanded` specialist agents and conditional onboarding install/delegation logic
+- [x] Add testing-specialist and infrastructure-specialist onboarding-expanded agents
 
 ## Onboarding
 - [x] Run repository analysis and detect tech stack
