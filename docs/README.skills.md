@@ -1,5 +1,4 @@
-````markdown
-# 🎯 Skills
+# Skills
 
 Reusable GitHub Copilot skills for task-specific workflows.
 
@@ -49,12 +48,7 @@ Invoke-RestMethod https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/ma
 
 ---
 
-
-```
-
 ## Notes
 
 - VS Code supports one-click install links for prompts, agents, and instructions.
 - Skills currently use command-based installation because they are folder-based artifacts.
-
-````

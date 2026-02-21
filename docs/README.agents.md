@@ -1,5 +1,4 @@
-````markdown
-# 🤖 Agents
+# Agents
 
 Reusable GitHub Copilot agent files for specialized workflows.
 
@@ -21,8 +20,10 @@ Agent files support onboarding tags via an inline metadata comment near the top 
 - Canonical source for onboarding is root `agents/*.agent.md`.
 - Use format: `<!-- onboarding-tags: onboarding-core, <other-tag> -->`.
 - Agents with `onboarding-tags` containing `onboarding-core` are mandatory for onboarding flows.
+- Agents with `onboarding-tags` containing `onboarding-expanded` are optional and should be installed only when repo/stack detection indicates relevance.
 - Onboarding prompts should download these artifacts using canonical raw GitHub URLs and install them into target `.github/agents/`.
 - To add a new default onboarding agent, add `onboarding-core` to its `onboarding-tags` metadata comment.
+- To add an optional specialist onboarding agent, add `onboarding-expanded` with a capability tag (for example: `frontend`, `backend`, `data`, `devops`).
 
 ## Agent catalog
 
@@ -88,6 +89,66 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/document
 
 ---
 
+### [frontend-specialist.agent.md](./frontend-specialist.agent.md)
+
+Optional onboarding-expanded specialist for frontend architecture, accessibility, and performance guidance in UI-heavy repositories.
+
+**Install**
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Ffrontend-specialist.agent.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Ffrontend-specialist.agent.md)
+
+**Raw URL**
+```
+https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/frontend-specialist.agent.md
+```
+
+---
+
+### [backend-specialist.agent.md](./backend-specialist.agent.md)
+
+Optional onboarding-expanded specialist for backend APIs, service reliability, and operational correctness in server-side repositories.
+
+**Install**
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fbackend-specialist.agent.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fbackend-specialist.agent.md)
+
+**Raw URL**
+```
+https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/backend-specialist.agent.md
+```
+
+---
+
+### [data-specialist.agent.md](./data-specialist.agent.md)
+
+Optional onboarding-expanded specialist for data modeling, schema evolution, and persistence-layer reliability in data-intensive repositories.
+
+**Install**
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fdata-specialist.agent.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fdata-specialist.agent.md)
+
+**Raw URL**
+```
+https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/data-specialist.agent.md
+```
+
+---
+
+### [devops-specialist.agent.md](./devops-specialist.agent.md)
+
+Optional onboarding-expanded specialist for CI/CD, deployment workflows, and runtime operations in delivery-heavy repositories.
+
+**Install**
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fdevops-specialist.agent.md) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FNoahJenkins%2FCopilot-Stuff%2Fmain%2Fagents%2Fdevops-specialist.agent.md)
+
+**Raw URL**
+```
+https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/devops-specialist.agent.md
+```
+
+---
+
 ### [prompt-engineer.agent.md](./prompt-engineer.agent.md)
 
 Creates and improves custom GitHub Copilot prompts using first-party best practices from Microsoft, GitHub, OpenAI, and Anthropic.
@@ -115,5 +176,3 @@ Designs and maintains GitHub Copilot agents, prompts, and custom instructions us
 ```
 https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/copilot-engineer.agent.md
 ```
-
-````
