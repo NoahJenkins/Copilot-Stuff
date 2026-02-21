@@ -19,3 +19,6 @@
 
 - [2026-02-20 Agent Orchestration](./2026-02-20-agent-orchestration.md)
   - Added explicit agent orchestration instructions to `.github/copilot-instructions.md` for delegating tasks to the four core agents in `.github/agents/`.
+
+- [2026-02-20 Sync Agents Update](./2026-02-20-sync-agents-update.md)
+  - Updated the `sync-agents` skill to explicitly instruct the agent to completely overwrite the existing file content when inserting the content of `.github/copilot-instructions.md` to prevent duplication.

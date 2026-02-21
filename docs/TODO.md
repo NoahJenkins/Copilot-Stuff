@@ -17,6 +17,7 @@ Last Updated: 2026-02-20
 - [x] Update agent tools to match current GitHub Copilot documentation
 - [x] Update copilot-engineer agent to reference current tools documentation
 - [x] Add agent orchestration instructions to `.github/copilot-instructions.md`
+- [x] Update `sync-agents` skill to prevent appending duplicate content
 - [x] Add testing-specialist and infrastructure-specialist onboarding-expanded agents
 
 ## Onboarding

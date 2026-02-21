@@ -117,6 +117,8 @@ Create or overwrite `CLAUDE.md` at the repo root:
 [INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
 ```
 
+**Important:** When inserting the content of `.github/copilot-instructions.md`, ensure you completely overwrite the existing file content. Do not append the content to the existing file, as this will cause duplication.
+
 **Path-scoped instructions → `.claude/instructions/`**
 
 If path-specific `.github/instructions/*.instructions.md` files exist, create matching
@@ -181,6 +183,8 @@ using the same `@` import syntax pointing back to `.github/instructions/`.
 
 [INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
 ```
+
+**Important:** When inserting the content of `.github/copilot-instructions.md`, ensure you completely overwrite the existing file content. Do not append the content to the existing file, as this will cause duplication.
 
 **Path-scoped instructions:** For each `.github/instructions/*.instructions.md` with an
 `applyTo` targeting a subdirectory, create a corresponding `AGENTS.md` inside that subdirectory.
