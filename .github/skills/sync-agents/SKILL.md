@@ -401,6 +401,39 @@ For each `.github/instructions/<name>.instructions.md`, create `.augment/rules/<
 
 ---
 
+### Step 3M — Model normalization policy (all targets)
+
+Apply a single normalization policy for `model` fields across all detected targets.
+
+For each detected target, determine whether the synced artifact format supports an explicit
+agent/profile `model` field:
+
+- **Supports explicit model field in this sync flow:** Claude Code (`.claude/agents/*.md`)
+- **Does not support agent profile model fields in this sync flow:**
+  Gemini CLI, OpenAI Codex, OpenCode, Cursor, Windsurf, Cline, Roo Code, Kilo Code,
+  JetBrains Junie, Zed, Augment Code
+
+When a target supports an explicit model field, normalize source `model` values to that
+target's default family map before writing files.
+
+**Default target map (current):**
+
+| Target | Keep-as-is patterns | Rewrite patterns | Default fallback |
+| ------ | ------------------- | ---------------- | ---------------- |
+| Claude Code | `claude-*`, `sonnet`, `haiku`, `opus` | `gpt-*`, `o*`, `codex-*`, `gemini-*` | `sonnet` |
+
+**Normalization rules:**
+
+1. If model is target-native, keep unchanged.
+2. If model is non-native but recognized, rewrite to target default mapped value.
+3. If model is missing, inject target default mapped value.
+4. If model is present but unrecognized, rewrite to target default and preserve provenance with a comment.
+
+For targets that do not support agent profile models in this sync flow, do **not** inject
+synthetic `model` fields. Record each one as `not applicable` in Step 6 reporting.
+
+---
+
 ### Step 4 — Sync custom agents (where supported)
 
 Custom agent profiles (`.github/agents/*.agent.md`) can only be synced to agents
@@ -411,12 +444,32 @@ that support sub-agent profiles. Currently, only **Claude Code** supports this.
 For each `.github/agents/<name>.agent.md`:
 
 1. Create `.claude/agents/<name>.md` (drop the `.agent` infix)
-2. Write the full YAML frontmatter block verbatim, adding these YAML comments after `---`:
+2. Copy YAML frontmatter and body, and apply **Step 3M model normalization policy** using the Claude target map.
+3. Write the frontmatter, adding these YAML comments after `---`:
    ```
    # AUTO-SYNCED from .github/agents/<name>.agent.md — do not edit directly
   # Source of truth: .github/agents/ | Re-sync: /sync-agents
    ```
-3. Write the body prompt verbatim after the closing `---`
+4. Write the body prompt verbatim after the closing `---`
+
+**Model normalization rules (Copilot → Claude):**
+
+- If `model` is already Claude-native (starts with `claude-`, or is `sonnet`, `haiku`, or `opus`), keep it unchanged.
+- If `model` is Copilot/OpenAI/Gemini specific (examples: `gpt-5`, `gpt-5.3-codex`, `o3`, `o4-mini`, `gpt-4.1`, `gemini-*`, `codex-*`), rewrite it to `sonnet`.
+- If `model` is missing, add `model: sonnet` in the synced `.claude/agents/<name>.md` frontmatter.
+- If `model` is present but unrecognized, rewrite to `sonnet` and add a YAML comment directly above it:
+  ```yaml
+  # Normalized by /sync-agents from unsupported source model: <original-model>
+  model: sonnet
+  ```
+
+**Default map reference:**
+
+| Source model family | Synced Claude model |
+| ------------------- | ------------------- |
+| `claude-*`, `sonnet`, `haiku`, `opus` | Keep as-is |
+| `gpt-*`, `o*`, `codex-*`, `gemini-*` | `sonnet` |
+| Missing/unknown | `sonnet` |
 
 **All other agents:** No sub-agent profile concept exists. Skip agent syncing.
 
@@ -490,6 +543,28 @@ Files written:
 To keep all agents in sync, run /sync-agents after any .github/ update.
 ```
 
+Also include a model normalization subsection:
+
+```text
+🧠 Model normalization:
+
+  Applied:
+    - Claude Code: <N> agent file(s) normalized using target map
+
+  Not applicable (no agent profile model field in this sync flow):
+    - Gemini CLI
+    - OpenAI Codex
+    - OpenCode
+    - Cursor
+    - Windsurf
+    - Cline
+    - Roo Code
+    - Kilo Code
+    - JetBrains Junie
+    - Zed
+    - Augment Code
+```
+
 ---
 
 ## Sync Coverage Reference
@@ -517,7 +592,7 @@ To keep all agents in sync, run /sync-agents after any .github/ update.
 | Agent          | Path                        | Notes                             |
 | -------------- | --------------------------- | --------------------------------- |
 | GitHub Copilot | `.github/agents/*.agent.md` | **Source of truth**               |
-| Claude Code    | `.claude/agents/*.md`       | Copied at sync; format-compatible |
+| Claude Code    | `.claude/agents/*.md`       | Copied at sync; `model` normalized for Claude |
 | All others     | ❌ Not supported            | No sub-agent profile concept      |
 
 ### Skills (Open Standard)
