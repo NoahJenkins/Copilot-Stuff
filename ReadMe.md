@@ -37,6 +37,12 @@ This repository now includes a lightweight documentation framework for architect
 - [agents/code-reviewer.agent.md](./agents/code-reviewer.agent.md): Code quality reviewer focused on maintainability, consistency, and actionable review feedback.
 - [agents/security-specialist.agent.md](./agents/security-specialist.agent.md): Security reviewer for vulnerabilities, secure defaults, and secrets hygiene.
 - [agents/documentation-specialist.agent.md](./agents/documentation-specialist.agent.md): Documentation specialist for ADRs, architecture docs, and context note maintenance.
+- [agents/frontend-specialist.agent.md](./agents/frontend-specialist.agent.md): Optional onboarding-expanded specialist for frontend architecture, accessibility, and performance guidance in UI-heavy repositories.
+- [agents/backend-specialist.agent.md](./agents/backend-specialist.agent.md): Optional onboarding-expanded specialist for backend APIs, service reliability, and operational correctness in server-side repositories.
+- [agents/data-specialist.agent.md](./agents/data-specialist.agent.md): Optional onboarding-expanded specialist for data modeling, schema evolution, and persistence-layer reliability in data-intensive repositories.
+- [agents/devops-specialist.agent.md](./agents/devops-specialist.agent.md): Optional onboarding-expanded specialist for CI/CD, deployment workflows, and runtime operations in delivery-heavy repositories.
+- [agents/testing-specialist.agent.md](./agents/testing-specialist.agent.md): Optional onboarding-expanded specialist for test strategy, automation patterns, and quality assurance practices across all testing levels.
+- [agents/infrastructure-specialist.agent.md](./agents/infrastructure-specialist.agent.md): Optional onboarding-expanded specialist for cloud infrastructure design, IaC practices, and platform architecture in infrastructure-heavy repositories.
 
 ### Skills
 

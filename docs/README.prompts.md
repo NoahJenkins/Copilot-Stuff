@@ -16,7 +16,7 @@ Reusable GitHub Copilot prompt files for common workflows.
 
 ---
 
-### [onboard-copilot.prompt.md](./onboard-copilot.prompt.md)
+### [onboard-copilot.prompt.md](../prompts/onboard-copilot.prompt.md)
 
 Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
 
@@ -30,6 +30,8 @@ Onboards greenfield and brownfield repositories by setting up stack-aware docs, 
 ```
 https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/.github/prompts/onboard-copilot.prompt.md
 ```
+
+> **Note:** This file exists in two locations: `prompts/onboard-copilot.prompt.md` (root distribution copy, browseable on GitHub) and `.github/prompts/onboard-copilot.prompt.md` (VS Code install target). Both copies are identical and kept in sync.
 
 ## Archived prompt versions
 

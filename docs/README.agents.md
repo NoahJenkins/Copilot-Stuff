@@ -10,8 +10,8 @@ Reusable GitHub Copilot agent files for specialized workflows.
 
 **Run**
 - Open Chat and switch to Agent mode.
-- Select `prompt-engineer` or `copilot-engineer` as the active agent.
-- If your client supports direct mentions, use `@prompt-engineer` or `@copilot-engineer` in chat.
+- Select `<agent-name>` as the active agent.
+- If your client supports direct mentions, use `@<agent-name>` in chat.
 
 ## Onboarding tags
 
@@ -29,7 +29,7 @@ Agent files support onboarding tags via an inline metadata comment near the top 
 
 ---
 
-### [code-reviewer.agent.md](./code-reviewer.agent.md)
+### [code-reviewer.agent.md](../agents/code-reviewer.agent.md)
 
 Reviews code for quality, maintainability, and adherence to project standards. Provides actionable feedback without modifying code.
 
@@ -44,7 +44,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/code-rev
 
 ---
 
-### [security-specialist.agent.md](./security-specialist.agent.md)
+### [security-specialist.agent.md](../agents/security-specialist.agent.md)
 
 Analyzes code and configuration for security vulnerabilities. Produces severity-graded findings with evidence and concrete remediation steps.
 
@@ -59,7 +59,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/security
 
 ---
 
-### [research-agent.agent.md](./research-agent.agent.md)
+### [research-agent.agent.md](../agents/research-agent.agent.md)
 
 Conducts technical research using official documentation sources to gather accurate, up-to-date information and produce structured findings for documentation.
 
@@ -74,7 +74,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/research
 
 ---
 
-### [documentation-specialist.agent.md](./documentation-specialist.agent.md)
+### [documentation-specialist.agent.md](../agents/documentation-specialist.agent.md)
 
 Creates and maintains ADRs, architecture documentation, and context notes. Default owner for context-note creation and documentation indexing.
 
@@ -89,7 +89,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/document
 
 ---
 
-### [frontend-specialist.agent.md](./frontend-specialist.agent.md)
+### [frontend-specialist.agent.md](../agents/frontend-specialist.agent.md)
 
 Optional onboarding-expanded specialist for frontend architecture, accessibility, and performance guidance in UI-heavy repositories.
 
@@ -104,7 +104,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/frontend
 
 ---
 
-### [backend-specialist.agent.md](./backend-specialist.agent.md)
+### [backend-specialist.agent.md](../agents/backend-specialist.agent.md)
 
 Optional onboarding-expanded specialist for backend APIs, service reliability, and operational correctness in server-side repositories.
 
@@ -119,7 +119,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/backend-
 
 ---
 
-### [data-specialist.agent.md](./data-specialist.agent.md)
+### [data-specialist.agent.md](../agents/data-specialist.agent.md)
 
 Optional onboarding-expanded specialist for data modeling, schema evolution, and persistence-layer reliability in data-intensive repositories.
 
@@ -134,7 +134,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/data-spe
 
 ---
 
-### [devops-specialist.agent.md](./devops-specialist.agent.md)
+### [devops-specialist.agent.md](../agents/devops-specialist.agent.md)
 
 Optional onboarding-expanded specialist for CI/CD, deployment workflows, and runtime operations in delivery-heavy repositories.
 
@@ -149,7 +149,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/devops-s
 
 ---
 
-### [testing-specialist.agent.md](./testing-specialist.agent.md)
+### [testing-specialist.agent.md](../agents/testing-specialist.agent.md)
 
 Optional onboarding-expanded specialist for test strategy, automation patterns, and quality assurance practices across all testing levels.
 
@@ -164,7 +164,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/testing-
 
 ---
 
-### [infrastructure-specialist.agent.md](./infrastructure-specialist.agent.md)
+### [infrastructure-specialist.agent.md](../agents/infrastructure-specialist.agent.md)
 
 Optional onboarding-expanded specialist for cloud infrastructure design, IaC practices, and platform architecture in infrastructure-heavy repositories.
 
@@ -179,7 +179,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/infrastr
 
 ---
 
-### [prompt-engineer.agent.md](./prompt-engineer.agent.md)
+### [prompt-engineer.agent.md](../agents/prompt-engineer.agent.md)
 
 Creates and improves custom GitHub Copilot prompts using first-party best practices from Microsoft, GitHub, OpenAI, and Anthropic.
 
@@ -194,7 +194,7 @@ https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/prompt-e
 
 ---
 
-### [copilot-engineer.agent.md](./copilot-engineer.agent.md)
+### [copilot-engineer.agent.md](../agents/copilot-engineer.agent.md)
 
 Designs and maintains GitHub Copilot agents, prompts, and custom instructions using first-party best practices from Microsoft, GitHub, OpenAI, and Anthropic.
 

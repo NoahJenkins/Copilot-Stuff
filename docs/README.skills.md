@@ -26,7 +26,7 @@ The installer creates `.github/skills/<skill-name>/` (if needed) and downloads `
 
 ---
 
-### [sync-agents](./sync-agents/SKILL.md)
+### [sync-agents](../skills/sync-agents/SKILL.md)
 
 Syncs GitHub Copilot instructions, custom agents, and skills into Claude Code, Gemini CLI, and OpenAI Codex formats.
 
