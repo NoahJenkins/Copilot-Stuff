@@ -43,6 +43,11 @@ Last Updated: 2026-02-20
 - [ ] # TODO: Add team-specific onboarding tasks
 - [ ] # TODO: Assign owners and due dates for open items
 
+## Skills
+- [x] Create `dependabot-automation` skill (Dependabot auto-merge, branch protection alignment, XSS remediation)
+- [ ] Add quarterly Dependabot allowlist review reminder
+- [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
+
 ## Definition of Done
 - [ ] Acceptance criteria are met
 - [x] Relevant docs are updated (`README`, ADRs, context notes, or architecture docs as applicable)
