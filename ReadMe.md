@@ -10,6 +10,7 @@ This repository contains reusable GitHub Copilot artifacts organized by type: pr
 | :--- | :--- |
 | Prompts | [docs/README.prompts.md](./docs/README.prompts.md) |
 | Agents | [docs/README.agents.md](./docs/README.agents.md) |
+| Instructions | [docs/README.instructions.md](./docs/README.instructions.md) |
 | Skills | [docs/README.skills.md](./docs/README.skills.md) |
 
 Each directory README includes artifact details and install instructions.
@@ -44,6 +45,15 @@ This repository now includes a lightweight documentation framework for architect
 - [agents/devops-specialist.agent.md](./agents/devops-specialist.agent.md): Optional onboarding-expanded specialist for CI/CD, deployment workflows, and runtime operations in delivery-heavy repositories.
 - [agents/testing-specialist.agent.md](./agents/testing-specialist.agent.md): Optional onboarding-expanded specialist for test strategy, automation patterns, and quality assurance practices across all testing levels.
 - [agents/infrastructure-specialist.agent.md](./agents/infrastructure-specialist.agent.md): Optional onboarding-expanded specialist for cloud infrastructure design, IaC practices, and platform architecture in infrastructure-heavy repositories.
+
+### Instructions
+
+- [instructions/security.instructions.md](./instructions/security.instructions.md): Security requirements for API routes, middleware, and data access code.
+- [instructions/documentation.instructions.md](./instructions/documentation.instructions.md): Documentation structure, ADR format, and update policy.
+- [instructions/testing.instructions.md](./instructions/testing.instructions.md): Test file conventions, framework choices, and coverage expectations.
+- [instructions/frontend.instructions.md](./instructions/frontend.instructions.md): Frontend component conventions and UI-layer patterns.
+- [instructions/pr-commits.instructions.md](./instructions/pr-commits.instructions.md): Git commit format, branch naming, and pull request conventions.
+- [instructions/agent-structure.instructions.md](./instructions/agent-structure.instructions.md): Standardizes how new Copilot agent artifacts are authored.
 
 ### Skills
 
