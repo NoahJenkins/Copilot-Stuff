@@ -262,7 +262,19 @@ gh api repos/{owner}/{repo}/branches/main/protection \
   --input <path-to-protection-json>
 ```
 
-Capture and display the API response to verify the applied settings.
+After applying, **verify `enforce_admins: false` was accepted** by reading it back:
+
+```bash
+gh api repos/{owner}/{repo}/branches/main/protection \
+  --jq '.enforce_admins.enabled'
+# Must print: false
+```
+
+If the output is `true`, the setting was not applied correctly. Check that the
+account has admin permissions on the repository and retry. Do not proceed until
+this returns `false`.
+
+Capture and display the full API response alongside the `enforce_admins` check output.
 
 ### B4 — Update the setup script
 
