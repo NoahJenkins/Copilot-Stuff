@@ -500,183 +500,228 @@ Keep hooks fast (< 2 seconds total) to avoid developer friction.
 
 ## 8. Custom Instructions
 
-Create or update `.github/copilot-instructions.md`:
+Create `.github/copilot-instructions.md` **and** the path-specific instruction files described below.
 
-> **Greenfield mode**: Populate the custom instructions with the user's intended tech stack. Fill in language, framework, and architecture fields based on their answers rather than leaving them blank. Add recommended patterns and conventions for the chosen stack.
+**Goal:** The main file must load on every request and answer only: *"What does any developer need to know to work in this repo?"* Keep it to 50–70 lines. All domain-specific rules belong in path-scoped `.github/instructions/*.instructions.md` files that load only when relevant.
+
+> **Greenfield mode**: Fill in all fields with the user's stated intended stack rather than leaving placeholders blank.
+
+---
+
+### 8a. `.github/copilot-instructions.md` (always-loaded, ≤70 lines)
 
 ```markdown
-# Project-Specific Guidelines for GitHub Copilot
+# [Project Name] — GitHub Copilot Instructions
 
 ## Project Overview
-[Auto-generated based on codebase analysis]
-- Primary language(s): 
-- Framework(s): 
-- Architecture pattern: 
+[1–3 sentences: what the project does and who uses it]
+- Primary language(s): [detected]
+- Framework(s): [detected]
+- Architecture: [detected pattern — e.g., monolith, microservices, serverless]
 
-## Coding Standards
+## Tech Stack
 
-### Language & Framework Versions
-[List detected versions of key dependencies]
+| Layer | Technology | Version |
+|---|---|---|
+| Language | | |
+| Framework | | |
+| Package manager | | |
+| Database | | |
+| Testing | | |
+| Lint / format | | |
 
-### Code Style
-[Document observed patterns:]
-- Naming conventions (camelCase, snake_case, PascalCase)
-- File organization patterns
-- Import/module structure
-- Error handling patterns
-- Testing patterns observed
+## Commands
 
-### Testing Conventions
-- Test file naming: 
-- Test framework: 
-- Coverage expectations: 
-- Mocking approach: 
+```shell
+Install:          [command]
+Dev server:       [command]
+Run tests:        [command]
+Test + coverage:  [command]
+Production build: [command]
+Lint:             [command]
+```
 
-## Documentation Structure
-
-This repository follows a structured documentation approach:
-
-### docs/architecture/
-High-level architecture overviews, system diagrams, and data flow documentation. Update when overall system design changes significantly.
-
-### docs/adr/ (Architecture Decision Records)
-Architecture Decision Records documenting significant architectural choices. Files are named `NNNN-short-title.md` (e.g., `0001-use-postgresql.md`). ADRs are immutable and append-only.
-
-**Each ADR must include:**
-- Status (proposed, accepted, deprecated, superseded)
-- Context (problem, constraints, requirements)
-- Options considered (alternatives with pros/cons)
-- Decision (what was chosen and why)
-- Consequences (trade-offs, implications)
-
-Write an ADR when decisions affect structure, dependencies, non-functional requirements, interfaces, or construction techniques.
-
-### docs/context/
-Exploratory research, planning session notes, and working documentation. Files named `YYYY-MM-DD-topic-name.md` with Summary, Options/Findings, and Open Questions sections. Maintain an `index.md` linking related notes to resulting ADRs.
-
-### docs/TODO.md
-Living project task tracker. Add major tasks as they arise, keep checkbox status current (`- [ ]` / `- [x]`), and mark completed tasks immediately as work finishes.
-
-## Information Sources Priority
-
-### 1. Primary: Documentation Lookup Tools
-- **Use available documentation lookup tools** (e.g., Context7 MCP server, library documentation fetchers) for all technical documentation lookups when available
-- Look up:
-  - Library and framework documentation
-  - API references
-  - Language features and syntax
-  - Best practices for current versions
-- If no documentation tools are configured, proceed to first-party sources below
-
-### 2. Secondary: First-Party Official Documentation
-Use first-party official documentation sources (especially if documentation tools above are unavailable):
-- learn.microsoft.com for Microsoft technologies
-- Official GitHub repositories and documentation sites
-- Vendor-maintained documentation portals
-- Language specification documents
-
-### 3. Never Rely Solely on Training Data
-- Do not use potentially outdated training data for:
-  - Current library versions
-  - Recent framework features
-  - Breaking changes in newer versions
-  - Deprecated APIs or patterns
-- Always verify current best practices with official sources
-
-## Security Guidelines
-
-### Critical Requirements
-- **Never commit secrets, credentials, API keys, or tokens** to the repository
-- Always use environment variables for sensitive configuration
-- Validate and sanitize all user input
-- Use parameterized queries to prevent SQL injection
-- Implement proper authentication and authorization
-- Keep dependencies up to date with security patches
-
-### Code Review Focus
-- Input validation and sanitization
-- Authentication and authorization checks
-- Secure data handling (encryption, hashing)
-- Error handling that doesn't leak sensitive information
-- Dependency vulnerabilities
-
-## Build & Deployment
-[Document detected build and deployment patterns]
-- Build command: 
-- Test command: 
-- Development server: 
-- Production build: 
-
-## Documentation Update Policy (Automatic, No Prompt)
-
-For any non-trivial code change, update documentation in the same turn without asking for confirmation.
-
-### Required behavior
-- Perform a docs impact check after every code edit.
-- If impacted, automatically update relevant files under `docs/`, including:
-  - `docs/TODO.md`
-  - `docs/context/index.md`
-  - A new dated context note in `docs/context/`
-  - A new ADR in `docs/adr/` when architecture/behavior/dependency/runtime decisions changed
-  - `docs/architecture/` when execution flow/system design changed
-- Do NOT ask "do you want me to update docs?" when required changes are clear.
-- Only ask the user if the required documentation target is ambiguous.
-- If no docs changes are needed, explicitly state why in the final response.
-
-### Autonomy rule
-- Assume user consent for documentation updates that are directly related to implemented code changes.
-
-### Completion gate
-- A task is incomplete until required documentation updates are applied.
-
-### Delegation requirement
-- Use `@documentation-specialist` automatically after implementation for docs updates.
-
-### ADR triggers
-- Create or update ADRs after significant design or architecture sessions.
-- Create or update ADRs when decisions affect structure, dependencies, interfaces, runtime, or behavior.
-- Create or update ADRs when adopting new technologies or patterns.
-
-### Context note triggers
-- Create context notes after research or exploratory work.
-- Create context notes during planning sessions.
-- Create context notes when documenting "why" behind experiments.
-
-### Architecture doc triggers
-- Update architecture docs after refactors that change system structure.
-- Update architecture docs when adding new major components or services.
-- Update architecture docs when data flows or integrations change.
-
-## General Documentation Principles
-- Keep files focused on one topic
-- Use Markdown format for all documentation
-- Link between documents (ADRs reference context notes, context notes link to ADRs)
-- Documentation is version-controlled alongside code
-- Never commit secrets, credentials, or sensitive PII to documentation folders
+## Code Style
+- **Naming**: [e.g., camelCase functions, PascalCase components, kebab-case filenames]
+- **File organization**: [e.g., feature-based folders, co-located tests]
+- **Import order**: [e.g., external → internal → relative]
+- **Path aliases**: [e.g., `@/` → `src/`] *(omit if none)*
 
 ## Sub-Agent Delegation
 
-This repository has specialized Copilot agents in `.github/agents/`. **Delegate tasks to the appropriate agent** rather than handling everything directly:
+| Task | Agent |
+|---|---|
+| Technical research, version lookups, API docs | `@research-agent` |
+| Code quality review, standards compliance | `@code-reviewer` |
+| Security analysis, vulnerability scanning | `@security-specialist` |
+| ADRs, architecture docs, context notes | `@documentation-specialist` |
 
-| Task type | Delegate to | How to invoke |
-|-----------|------------|---------------|
-| Technical research, library docs, version lookups, API references | `@research-agent` | Use for any question requiring up-to-date technical documentation or exploratory research |
-| Code quality review, standards compliance, refactoring suggestions | `@code-reviewer` | Use when reviewing code changes, PRs, or assessing code quality |
-| Security analysis, vulnerability scanning, secrets detection | `@security-specialist` | Use for security reviews, dependency audits, or assessing attack surface |
-| ADRs, architecture docs, context notes, README updates | `@documentation-specialist` | Use when creating or updating any documentation in `docs/` |
+## Information Sources
+- Use documentation lookup tools (e.g., Context7) for library and API references when available.
+- Fall back to official vendor documentation (language specs, framework docs, vendor portals).
+- Do not rely on training data alone for current versions, recent features, or deprecated APIs.
+```
 
-### When to delegate
-- **Research**: Before implementing unfamiliar patterns, integrating new libraries, or answering questions about framework best practices → `@research-agent`
-- **Code review**: When reviewing pull requests, assessing code quality, or checking standards adherence → `@code-reviewer`
-- **Security**: When adding authentication, handling user input, managing secrets, updating dependencies, or assessing vulnerabilities → `@security-specialist`
-- **Documentation**: When architectural decisions are made, after significant refactors, or when creating planning/research notes → `@documentation-specialist`
+---
 
-### Delegation guidelines
-- Provide the sub-agent with relevant context (file paths, code snippets, requirements)
-- Let the sub-agent complete its full analysis before acting on results
-- Multiple agents can be used in sequence (e.g., `@research-agent` for research → `@documentation-specialist` to write the ADR)
-- When a task spans multiple agent specializations, break it into sub-tasks and delegate each to the appropriate agent
-- After any non-trivial implementation change, use `@documentation-specialist` automatically to apply required docs updates in the same turn
+### 8b. `.github/instructions/security.instructions.md`
+
+Create this file. Set `applyTo` to the paths where security-sensitive code lives in this project (e.g., API routes, middleware, data access layers). For a Next.js project this is typically `src/app/api/**,src/lib/**,src/middleware*`; adapt to the detected stack.
+
+```markdown
+---
+description: Security requirements for API routes, middleware, and data access code.
+applyTo: '[adapt to detected stack — e.g., src/app/api/**,src/lib/**,src/middleware*]'
+---
+
+## Secrets & Environment Variables
+- Never commit secrets, credentials, API keys, or tokens to the repository.
+- Always use environment variables for sensitive configuration; reference `.env.example` for required names.
+
+## Input Validation & Injection
+- Validate and sanitize all user-controlled input at the boundary (API routes, form handlers).
+- Use parameterized queries or an ORM — never string-concatenated SQL.
+- Encode output to prevent XSS; apply Content Security Policy headers where applicable.
+
+## Authentication & Authorization
+- Verify authentication and authorization on every protected route — never trust client-side checks alone.
+- Apply the principle of least privilege for service accounts and database roles.
+
+## Error Handling
+- Return generic error messages to clients; log full details server-side only.
+- Do not expose stack traces, internal paths, or dependency versions in error responses.
+
+## Dependency & Supply Chain
+- Keep dependencies up to date with security patches.
+- When adding a new dependency, prefer well-maintained packages with known provenance.
+- Run the language audit tool (`[e.g., npm audit / pip audit / cargo audit]`) before merging dependency changes.
+```
+
+---
+
+### 8c. `.github/instructions/documentation.instructions.md`
+
+```markdown
+---
+description: Documentation structure, ADR format, and update policy for this repository.
+applyTo: 'docs/**,*.md,*.mdx'
+---
+
+## Documentation Structure
+
+| Directory | Purpose |
+|---|---|
+| `docs/architecture/` | High-level design, system diagrams, data flow |
+| `docs/adr/` | Architecture Decision Records (immutable, append-only) |
+| `docs/context/` | Research notes, planning sessions, exploratory work |
+| `docs/TODO.md` | Living task tracker |
+
+## ADR Format
+Files named `NNNN-short-title.md`. Each ADR must include: **Status** (proposed / accepted / deprecated / superseded), **Context**, **Options Considered**, **Decision**, **Consequences**. Create a new ADR — never edit an existing one — when a decision is reversed or superseded.
+
+**Write an ADR when decisions affect**: structure, dependencies, interfaces, runtime behavior, or non-functional requirements.
+
+## Context Note Format
+Files named `YYYY-MM-DD-topic-name.md` with sections: **Summary** (2–3 sentences), **Options/Findings**, **Open Questions**. Maintain `docs/context/index.md` linking notes to their resulting ADRs.
+
+## Documentation Update Policy
+For any non-trivial change, update documentation in the same turn without asking for confirmation:
+- Update `docs/TODO.md` and `docs/context/index.md`.
+- Create a dated context note in `docs/context/` for research or exploratory work.
+- Create or update an ADR when an architecture, dependency, or runtime decision changes.
+- Update `docs/architecture/` when system structure or data flow changes.
+- A task is incomplete until required documentation updates are applied.
+- Use `@documentation-specialist` automatically after implementation for docs updates.
+- State explicitly why no docs update is needed when that is the case.
+```
+
+---
+
+### 8d. `.github/instructions/testing.instructions.md`
+
+```markdown
+---
+description: Test file conventions, framework choices, and coverage expectations.
+applyTo: '**/*.test.*,**/*.spec.*,**/__tests__/**,**/tests/**'
+---
+
+## Test Framework & Runner
+- Framework: [detected — e.g., Jest, Vitest, pytest, go test]
+- E2E / integration: [detected — e.g., Playwright, Cypress, Supertest] *(omit if none)*
+- Run command: `[command]`
+- Coverage command: `[command]`
+
+## File Naming & Location
+- Unit/integration tests: `[pattern — e.g., *.test.ts co-located with source]`
+- E2E tests: `[pattern — e.g., tests/*.spec.ts]`
+
+## Coverage Expectations
+- Minimum threshold: [detected or omit if none enforced]
+- New code must include tests for happy path, error cases, and edge cases.
+
+## Mocking & Test Data
+- Mocking approach: [detected — e.g., jest.mock(), unittest.mock, testify/mock]
+- Avoid testing implementation details; test observable behavior.
+- Isolate external dependencies (HTTP, database, filesystem) in unit tests.
+```
+
+---
+
+### 8e. `.github/instructions/frontend.instructions.md` *(create only if a frontend framework is detected)*
+
+```markdown
+---
+description: Frontend component conventions and UI-layer patterns.
+applyTo: '[adapt to detected stack — e.g., src/components/**,src/app/**]'
+---
+
+## Component Authoring
+- **Naming**: PascalCase for component files and exports (e.g., `UserCard.tsx`).
+- **Structure**: one component per file; co-locate styles and tests.
+- **Props**: define explicit prop types/interfaces; avoid `any`.
+
+## Styling
+- Approach: [detected — e.g., Tailwind utility classes, CSS Modules, styled-components]
+- [Tailwind]: prefer utility classes over custom CSS; extract repeated patterns to components, not custom classes.
+- Avoid inline styles except for dynamic values that cannot be expressed with utilities.
+
+## Framework-Specific Conventions
+- [Fill in based on detected framework, e.g.:]
+  - **Next.js**: route files must be named `page.tsx` / `layout.tsx` / `route.ts`; use Server Components by default, add `"use client"` only when necessary.
+  - **React**: prefer function components and hooks; avoid class components.
+- Accessibility: include ARIA labels on interactive elements; ensure keyboard navigability.
+```
+
+---
+
+### 8f. `.github/instructions/pr-commits.instructions.md`
+
+```markdown
+---
+description: Git commit format, branch naming, and pull request conventions.
+applyTo: '**'
+---
+
+## Commit Messages
+- Format: `<type>(<scope>): <short summary>` (e.g., `feat(auth): add OAuth2 login`)
+- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`
+- Keep the subject line under 72 characters; use the body for "why" when needed.
+- Reference issues in the body or footer: `Closes #123`
+
+## Branch Naming
+- Pattern: `<type>/<short-description>` (e.g., `feat/user-profile`, `fix/login-redirect`)
+- Use lowercase and hyphens; no spaces or underscores.
+
+## Pull Request Expectations
+- Title follows the same `<type>(<scope>): summary` format as commit messages.
+- Description must include: what changed, why it changed, and how to test it.
+- Link the PR to the relevant issue(s).
+- Keep PRs focused — one logical change per PR where possible.
+
+## Merge Strategy
+- [Detected or default: squash-and-merge to keep a linear history / merge commits to preserve branch history]
+- Do not merge with failing checks.
+- Delete the branch after merge.
 ```
 
 ## 9. Custom Agents
@@ -1126,7 +1171,12 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `.pre-commit-config.yaml` - Pre-commit hooks
 
 ### GitHub Configuration
-- [ ] `.github/copilot-instructions.md` - Custom Copilot instructions
+- [ ] `.github/copilot-instructions.md` - Universal Copilot instructions (project overview, stack, commands, style, agents, sources)
+- [ ] `.github/instructions/security.instructions.md` - Security rules for API/middleware/data-access paths
+- [ ] `.github/instructions/documentation.instructions.md` - ADR format, context note format, documentation update policy
+- [ ] `.github/instructions/testing.instructions.md` - Test conventions, framework, coverage expectations
+- [ ] `.github/instructions/frontend.instructions.md` - Component conventions, styling, framework patterns *(frontend repos only)*
+- [ ] `.github/instructions/pr-commits.instructions.md` - Commit format, branch naming, PR expectations, merge strategy
 - [ ] `.github/agents/` - Installed all `onboarding-core` tagged agents from canonical `agents/` artifacts
 - [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
@@ -1139,8 +1189,13 @@ This repository has been automatically analyzed and configured with development 
 
 ## GitHub Copilot Configuration
 
-- Custom instructions configured in `.github/copilot-instructions.md`
-- Project-specific coding standards, documentation structure, and security guidelines included
+- `.github/copilot-instructions.md` — lean, always-loaded file covering project overview, tech stack, commands, code style, agent delegation, and information sources
+- Path-specific instruction files load only when working in their target directories:
+  - `security.instructions.md` → API routes, middleware, data access layers
+  - `documentation.instructions.md` → `docs/`, `.md`, `.mdx` files
+  - `testing.instructions.md` → test and spec files
+  - `frontend.instructions.md` → component and app UI directories *(frontend repos only)*
+  - `pr-commits.instructions.md` → applies globally (commit format, branch naming, PR expectations)
 
 ### Custom Agents Available
 
