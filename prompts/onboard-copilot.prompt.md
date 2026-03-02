@@ -566,12 +566,12 @@ Lint:             [command]
 
 ### 8b. `.github/instructions/security.instructions.md`
 
-Create this file. Set `applyTo` to the paths where security-sensitive code lives in this project (e.g., API routes, middleware, data access layers). For a Next.js project this is typically `src/app/api/**,src/lib/**,src/middleware*`; adapt to the detected stack.
+Create this file. Set `applyTo` to the paths where security-sensitive code lives in this project (e.g., API routes, middleware, data access layers). For a Next.js project this is typically `src/app/api/**, src/lib/**, src/middleware*`; adapt to the detected stack.
 
 ```markdown
 ---
 description: Security requirements for API routes, middleware, and data access code.
-applyTo: '[adapt to detected stack — e.g., src/app/api/**,src/lib/**,src/middleware*]'
+applyTo: '[adapt to detected stack — e.g., src/app/api/**, src/lib/**, src/middleware*]'
 ---
 
 ## Secrets & Environment Variables
@@ -604,7 +604,7 @@ applyTo: '[adapt to detected stack — e.g., src/app/api/**,src/lib/**,src/middl
 ```markdown
 ---
 description: Documentation structure, ADR format, and update policy for this repository.
-applyTo: 'docs/**,*.md,*.mdx'
+applyTo: 'docs/**, *.md, *.mdx'
 ---
 
 ## Documentation Structure
@@ -642,7 +642,7 @@ For any non-trivial change, update documentation in the same turn without asking
 ```markdown
 ---
 description: Test file conventions, framework choices, and coverage expectations.
-applyTo: '**/*.test.*,**/*.spec.*,**/__tests__/**,**/tests/**'
+applyTo: '**/*.test.*, **/*.spec.*, **/__tests__/**, **/tests/**'
 ---
 
 ## Test Framework & Runner
@@ -672,7 +672,7 @@ applyTo: '**/*.test.*,**/*.spec.*,**/__tests__/**,**/tests/**'
 ```markdown
 ---
 description: Frontend component conventions and UI-layer patterns.
-applyTo: '[adapt to detected stack — e.g., src/components/**,src/app/**]'
+applyTo: '[adapt to detected stack — e.g., src/components/**, src/app/**]'
 ---
 
 ## Component Authoring
