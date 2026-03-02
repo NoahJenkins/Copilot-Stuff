@@ -1,140 +1,34 @@
-The following instructions are only to be applied when performing a code review.
+# Repository Overview
 
-## Repository context
+This repository is a collection of GitHub Copilot artifacts (agents, prompts, skills, instructions) that users install into their own repositories or workspaces. It is **not** an application — there is no build system, runtime, or test suite.
 
-This repository organizes artifacts by type:
+## Structure
 
-- `agents/`
-- `prompts/`
-- `skills/`
-- root index in `ReadMe.md`
+| Directory | Purpose |
+|---|---|
+| `agents/` | Agent artifacts for download and install into other repos |
+| `prompts/` | Prompt artifacts for download and install into other repos |
+| `skills/` | Skill artifacts (each in its own folder with a `SKILL.md`) |
+| `instructions/` | Reusable instruction artifacts |
+| `docs/` | ADRs, architecture notes, context notes, and indexes |
+| `.github/agents/` | Agents used **within this repo** for orchestration |
+| `.github/instructions/` | Path-specific instructions applied within this repo |
 
-Use this structure when validating any additions or changes.
-
-Note: files located at the repository root in `agents/` and `prompts/` are not intended for use inside this repository. They are individual artifact files (agents, prompts) meant to be downloaded and installed into other repositories or workspaces. This repository is a collection of Copilot tools that users can install into their own repositories or workspaces.
+Root-level `agents/` and `prompts/` files are individual artifacts meant to be copied out — not used here directly.
 
 ## Agent Orchestration
 
-When performing tasks in this repository, use the following specialized agents located in `.github/agents/` to orchestrate specific workflows:
+Use these specialized agents (in `.github/agents/`) for work within this repo:
 
-- **`@copilot-engineer`**: Use for designing, building, and maintaining GitHub Copilot artifacts (agents, prompts, and custom instructions).
-- **`@documentation-specialist`**: Use for creating and maintaining ADRs, architecture documentation, context notes, and README updates.
-- **`@prompt-engineer`**: Use for creating, reviewing, and optimizing custom GitHub Copilot prompts using first-party best practices.
-- **`@research-agent`**: Use for conducting technical research, gathering context, and analyzing information to support implementation and planning decisions.
+- **`@copilot-engineer`** — designing, building, and maintaining Copilot artifacts (agents, prompts, instructions)
+- **`@documentation-specialist`** — ADRs, architecture docs, context notes, README updates
+- **`@prompt-engineer`** — creating, reviewing, and optimizing prompt files
+- **`@research-agent`** — technical research and context gathering to support planning
 
-Delegate tasks to these agents when a request falls within their specific domain to ensure high-quality, specialized outputs.
+Delegate to the appropriate agent when a request falls within its domain.
 
-## Archive folder policy
+## Archive Policy
 
-- `docs/archive/` stores older artifact versions kept for historical reference and comparison.
-- Treat all files in `docs/archive/` as inactive reference material by default.
-- Do not use archived files as primary install targets when active equivalents exist in `agents/`, `prompts/`, `skills/`, or `instructions/`.
-- When updating catalogs or install guidance, prioritize active artifacts first and mention archive entries only as reference.
-
-## README updates
-
-- [ ] New prompt artifacts are listed in `docs/README.prompts.md`.
-- [ ] New agent artifacts are listed in `docs/README.agents.md`.
-- [ ] If a new top-level artifact category is added, `ReadMe.md` is updated.
-
-## Install button checks
-
-- [ ] Install links use canonical raw GitHub URLs (no cache-busting query parameters like `?v=`).
-- [ ] Install links match the artifact type (`chat-prompt`, `chat-agent`, `chat-instructions`).
-- [ ] Both VS Code and VS Code Insiders install buttons are present for each artifact.
-- [ ] Raw artifact URLs referenced by install links are reachable and return content.
-
-## Documentation Update Policy (Automatic, No Prompt)
-
-For any non-trivial code change, update documentation in the same turn without asking for confirmation.
-
-- [ ] Perform a docs impact check after every code edit.
-- [ ] If impacted, automatically update relevant files under `docs/`, including:
-	- `docs/TODO.md`
-	- `docs/context/index.md`
-	- A new dated context note in `docs/context/`
-	- A new ADR in `docs/adr/` when architecture/behavior/dependency/runtime decisions changed
-	- `docs/architecture/` when execution flow/system design changed
-- [ ] Do NOT ask “do you want me to update docs?” when changes are clear.
-- [ ] Only ask the user if the required documentation target is ambiguous.
-- [ ] If no docs changes are needed, explicitly state why in the final response.
-
-### Autonomy rule
-- [ ] Assume user consent for documentation updates that are directly related to implemented code changes.
-
-### Delegation rule
-- [ ] Use `@documentation-specialist` automatically after implementation for docs updates.
-
-### Completion rule
-- [ ] A task is incomplete until required docs updates are applied.
-
-## Prompt file guide
-
-**Apply to files ending in `.prompt.md` (in `prompts/` and `.github/prompts/`)**
-
-- [ ] The prompt has markdown front matter.
-- [ ] The prompt has a `description` field.
-- [ ] The `description` field is not empty.
-- [ ] The filename is lowercase with words separated by hyphens.
-- [ ] Encourage the use of `tools`, but it's not required.
-- [ ] Strongly encourage the use of `model` to specify the model the prompt is optimized for.
-- [ ] Strongly encourage the use of `name` to set a clear prompt name.
-- [ ] If a mode field is provided, ensure it uses a valid Copilot prompt mode for this repo.
-
-## Instruction file guide
-
-**Apply to files ending in `.instructions.md` and the repo-level Copilot instruction file**
-
-- [ ] Repo-level custom instructions are stored at `.github/copilot-instructions.md`.
-- [ ] Reusable instruction artifacts in `Instructions/` use `.instructions.md`.
-- [ ] Instruction files have markdown front matter.
-- [ ] Instruction files have a `description` field.
-- [ ] The `description` field is not empty.
-- [ ] The filename is lowercase with words separated by hyphens.
-- [ ] `.instructions.md` files include an `applyTo` field.
-- [ ] If multiple globs are used in `applyTo`, they are formatted like `'**/*.js, **/*.ts'`.
-
-## Agent file guide
-
-**Apply to agent files in `agents/` (e.g., `*-agent.md` and `.agent.md`)**
-
-- [ ] Follow the shared agent structure standard in `.github/instructions/agent-structure.instructions.md` for new and revised agent artifacts.
-
-- [ ] The agent has markdown front matter.
-- [ ] The agent has a `description` field.
-- [ ] The `description` field is not empty.
-- [ ] The filename is lowercase with words separated by hyphens.
-- [ ] Encourage the use of `tools`, but it's not required.
-- [ ] Strongly encourage the use of `model` to specify the model the agent is optimized for.
-- [ ] Strongly encourage the use of `name` to set a clear agent name.
-
-## Agent Skills guide
-
-**Only apply if a `skills/` directory exists**
-
-- [ ] The skill folder contains a `SKILL.md` file.
-- [ ] The `SKILL.md` file has markdown front matter.
-- [ ] The `SKILL.md` file has a `name` field.
-- [ ] The `name` value is lowercase with words separated by hyphens.
-- [ ] The `name` value matches the folder name.
-- [ ] The `SKILL.md` file has a `description` field.
-- [ ] The `description` field is not empty, at least 10 characters, and maximum 1024 characters.
-- [ ] The `description` value is wrapped in single quotes.
-- [ ] The folder name is lowercase with words separated by hyphens.
-- [ ] Any bundled assets (scripts, templates, data files) are referenced in `SKILL.md` instructions.
-- [ ] Bundled assets are reasonably sized (under 5MB per file).
-
-## Plugin guide
-
-**Only apply if a `plugins/` directory exists**
-
-- [ ] The plugin directory contains a `.github/plugin/plugin.json` file.
-- [ ] The plugin directory contains a `README.md` file.
-- [ ] The `plugin.json` file has a `name` field matching the directory name.
-- [ ] The `plugin.json` file has a `description` field.
-- [ ] The `description` field is not empty.
-- [ ] The directory name is lowercase with words separated by hyphens.
-- [ ] If `tags` is present, it is an array of lowercase hyphenated strings.
-- [ ] If `items` is present, each item has `path` and `kind` fields.
-- [ ] The `kind` value is one of: `prompt`, `agent`, `instruction`, `skill`, or `hook`.
-- [ ] The plugin does not reference non-existent files.
+- `docs/archive/` stores older artifact versions for historical reference only.
+- Treat archived files as inactive; do not use them as primary install targets when active equivalents exist.
+- When listing or linking artifacts, prioritize `agents/`, `prompts/`, `skills/`, `instructions/` first.
