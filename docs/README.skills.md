@@ -48,6 +48,28 @@ Invoke-RestMethod https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/ma
 
 ---
 
+### [dependabot-automation](../skills/dependabot-automation/SKILL.md)
+
+Automates Dependabot PR merging safely, aligns branch protection to current CI job names, and remediates stored-XSS output-encoding sinks. Works with any GitHub-hosted repository — detects the project stack (language, framework, ecosystems, CI jobs) before acting.
+
+**Install target:** `.github/skills/dependabot-automation/SKILL.md`
+
+**macOS/Linux**
+```bash
+mkdir -p .github/skills/dependabot-automation && curl -fsSL \
+  https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/skills/dependabot-automation/SKILL.md \
+  -o .github/skills/dependabot-automation/SKILL.md
+```
+
+**Windows (PowerShell)**
+```powershell
+$dest = ".github/skills/dependabot-automation"
+New-Item -ItemType Directory -Force -Path $dest > $null
+Invoke-RestMethod https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/skills/dependabot-automation/SKILL.md -OutFile "$dest/SKILL.md"
+```
+
+---
+
 ## Notes
 
 - VS Code supports one-click install links for prompts, agents, and instructions.
