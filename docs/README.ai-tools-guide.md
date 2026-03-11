@@ -58,7 +58,7 @@ Every major AI coding tool has its own instruction file. As of 2026, the ecosyst
 - Things the AI should always do or avoid
 - Workflow rules that apply to all tasks
 
-**What NOT to put in them:** Step-by-step workflows for specific tasks, rarely-used procedures, or instructions so long the AI forgets the earlier parts. Keep these files focused — under 200 lines is a good target.
+**What NOT to put in them:** Step-by-step workflows for specific tasks, rarely-used procedures, or instructions so long the AI forgets the earlier parts. Keep these files focused — under 200 lines is a good target. For generated onboarding defaults, prefer a stricter root target (`AGENTS.md` under 100 lines) and move verbose content to nested `AGENTS.md` files.
 
 **Example use case:** "Always use TypeScript strict mode. Tests live in `src/__tests__/`. Never commit directly to `main`."
 
@@ -269,6 +269,7 @@ ln -s AGENTS.md GEMINI.md
 - **New repos:** Use `AGENTS.md` as your primary instruction file. It covers the most tools out of the box.
 - **Existing Copilot repos:** Keep `.github/copilot-instructions.md` as your source of truth — nothing breaks. Add `AGENTS.md` later if you adopt other tools.
 - **Monorepos:** Use nested `AGENTS.md` files at the subdirectory level for package-specific overrides. Codex and Copilot both support this cascade model.
+- **Large single-repo apps:** Keep root `AGENTS.md` brief and create nested `AGENTS.md` files by concern (`app/`, `components/`, `lib/`, `docs/`, `.github/`) when guidance grows beyond 100 lines.
 
 ---
 

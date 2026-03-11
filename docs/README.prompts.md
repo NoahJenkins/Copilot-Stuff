@@ -22,6 +22,8 @@ Reusable GitHub Copilot prompt files for common workflows.
 
 Onboards greenfield and brownfield repositories by setting up stack-aware docs, instructions, templates, and security defaults.
 
+Generated instruction output is optimized for a concise root `AGENTS.md` (under 100 lines) with nested `AGENTS.md` files for directory-scoped or verbose guidance.
+
 > **Note:** This is a large, multi-step workflow prompt. For best results, use `codex-5.3` if available, as it handles long-running agentic tasks more reliably.
 
 **Install**

@@ -1,6 +1,6 @@
 # Project Task Tracker
 
-Last Updated: 2026-02-20
+Last Updated: 2026-03-11
 
 > Living document for major project tasks. Update status continuously during planning and implementation.
 
@@ -51,6 +51,7 @@ Last Updated: 2026-02-20
 - [x] Fix `sync-agents` Step 5: remove false `.agents/skills/` Codex target; Claude Code `.claude/skills/` confirmed working
 - [x] Delete orphaned `.agents/` directory (created by previous incorrect skill sync)
 - [x] Update `onboard-copilot` prompt to create AGENTS.md instead of copilot-instructions.md
+- [x] Refactor `onboard-copilot` prompt to enforce root `AGENTS.md` under 100 lines with nested `AGENTS.md` decomposition guidance
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
 

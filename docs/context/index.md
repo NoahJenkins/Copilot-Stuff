@@ -33,3 +33,7 @@
 
 - [2026-03-11 sync-agents Step 2 and Step 5 Corrections](./2026-03-11-sync-agents-step2-step5-corrections.md)
   - Removed AGENTS.md as Codex detection signal (caused false-positive detection in all repos). Removed false `.agents/skills/` target from Step 5 (no documented Codex skills convention). Confirmed Claude Code uses `.claude/skills/` (live-tested). Deleted orphaned `.agents/` directory.
+
+- [2026-03-11 Concise Root AGENTS and Nested Overlays](./2026-03-11-concise-root-agents-nested-overlays.md)
+  - Refactored onboard-copilot to enforce root `AGENTS.md` under 100 lines and move verbose/scoped guidance to nested `AGENTS.md` files.
+  - Related ADR: [ADR 0005](../adr/0005-enforce-concise-root-agents-with-nested-overlays.md)
