@@ -46,6 +46,8 @@ Last Updated: 2026-02-20
 ## Skills
 - [x] Create `dependabot-automation` skill (Dependabot auto-merge, branch protection alignment, XSS remediation)
 - [x] Update `sync-agents` skill to reflect AGENTS.md universal standard (detection table, fallback behavior, section headings, reporting)
+- [x] Update `sync-agents` skill to use AGENTS.md as source of truth (fallback to copilot-instructions.md)
+- [x] Update `onboard-copilot` prompt to create AGENTS.md instead of copilot-instructions.md
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
 
@@ -54,6 +56,8 @@ Last Updated: 2026-02-20
 - [x] Create root `AGENTS.md` and `CLAUDE.md` with contributor context for AI tools working in this repo
 - [x] Create ADR 0003: Adopt AGENTS.md as universal standard (docs/adr/0003-adopt-agents-md-as-universal-standard.md)
 - [x] Add context note: 2026-03-11 AI tools guide and AGENTS.md research
+- [x] Create ADR 0004: AGENTS.md as source of truth for sync-agents and onboard-copilot
+- [x] Add context note: 2026-03-11 AGENTS.md source of truth migration
 
 ## Definition of Done
 - [ ] Acceptance criteria are met

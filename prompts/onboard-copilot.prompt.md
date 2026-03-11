@@ -500,7 +500,9 @@ Keep hooks fast (< 2 seconds total) to avoid developer friction.
 
 ## 8. Custom Instructions
 
-Create or update `.github/copilot-instructions.md`:
+Create or update `AGENTS.md` at the repo root (universal source of truth for AI tools):
+
+> **Why AGENTS.md?** This is the universal instruction format read natively by GitHub Copilot (Aug 2025+), OpenAI Codex, Cursor, Gemini CLI, VS Code, and OpenCode. A single file covers all major AI coding tools. For GitHub Copilot-only setups, `.github/copilot-instructions.md` also continues to work — see `docs/README.ai-tools-guide.md` for setup strategies.
 
 > **Greenfield mode**: Populate the custom instructions with the user's intended tech stack. Fill in language, framework, and architecture fields based on their answers rather than leaving them blank. Add recommended patterns and conventions for the chosen stack.
 
@@ -1126,7 +1128,7 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `.pre-commit-config.yaml` - Pre-commit hooks
 
 ### GitHub Configuration
-- [ ] `.github/copilot-instructions.md` - Custom Copilot instructions
+- [ ] `AGENTS.md` - Universal AI tool instructions (GitHub Copilot, Codex, Cursor, Gemini CLI, and more)
 - [ ] `.github/agents/` - Installed all `onboarding-core` tagged agents from canonical `agents/` artifacts
 - [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
@@ -1139,7 +1141,7 @@ This repository has been automatically analyzed and configured with development 
 
 ## GitHub Copilot Configuration
 
-- Custom instructions configured in `.github/copilot-instructions.md`
+- Universal AI instructions configured in `AGENTS.md`
 - Project-specific coding standards, documentation structure, and security guidelines included
 
 ### Custom Agents Available
@@ -1183,7 +1185,7 @@ Review and customize the agent definitions and instructions to match your team's
    - Verify workspace settings work for your team
 
 2. **Review Custom Copilot Instructions & Agents**
-   - Validate auto-detected coding standards in `.github/copilot-instructions.md`
+   - Validate auto-detected coding standards in `AGENTS.md`
    - Review agent definitions in `.github/agents/`
    - Add project-specific guidelines
    - Update version information if needed
@@ -1224,7 +1226,7 @@ Review and customize the agent definitions and instructions to match your team's
 
 - Review documentation in `docs/`
 - Use custom Copilot agents for help (e.g., `@documentation-specialist` for doc questions, `@security-specialist` for security reviews)
-- Reference `.github/copilot-instructions.md` for project conventions
+- Reference `AGENTS.md` for project conventions
 - Create an issue using the templates in `.github/ISSUE_TEMPLATE/`
 
 ***

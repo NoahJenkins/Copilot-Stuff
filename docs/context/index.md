@@ -26,3 +26,7 @@
 - [2026-03-11 AI Tools Guide and AGENTS.md Universal Standard](./2026-03-11-ai-tools-guide-and-agents-md.md)
   - Researched AGENTS.md universal adoption (GitHub Copilot Aug 2025+). Created docs/README.ai-tools-guide.md, root AGENTS.md and CLAUDE.md, ADR 0003, and updated sync-agents skill to reflect AGENTS.md's expanded tool support.
   - Related ADR: [ADR 0003](../adr/0003-adopt-agents-md-as-universal-standard.md)
+
+- [2026-03-11 AGENTS.md as Source of Truth Migration](./2026-03-11-agents-md-source-of-truth.md)
+  - Updated sync-agents to read FROM AGENTS.md (fallback: copilot-instructions.md) and updated onboard-copilot to create AGENTS.md instead of copilot-instructions.md. Eliminates context duplication when both files coexist in a repo.
+  - Related ADR: [ADR 0004](../adr/0004-agents-md-as-sync-source-of-truth.md)
