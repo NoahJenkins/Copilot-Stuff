@@ -186,33 +186,35 @@ The core challenge of using multiple AI tools in the same repo: they each read d
 
 ---
 
-### Strategy 1: Copilot-First + `/sync-agents`
+### Strategy 1: AGENTS.md-First + `/sync-agents`
 
-**How it works:** Write and maintain your instructions in `.github/copilot-instructions.md`. Use the `/sync-agents` skill to automatically propagate them to all other AI tools detected in your repo.
+**How it works:** Write and maintain your instructions in `AGENTS.md` at the repo root. Use the `/sync-agents` skill to automatically propagate them to all other AI tools detected in your repo. GitHub Copilot, OpenAI Codex, Cursor, Gemini CLI, and VS Code read `AGENTS.md` natively — no sync needed for those. The skill handles the remaining ecosystems (Claude Code, Windsurf, Cline, Roo Code, etc.).
 
-**Best for:** Existing Copilot users who want to extend to other tools without changing their workflow.
+> **Legacy:** If your repo already has `.github/copilot-instructions.md` but no `AGENTS.md`, the skill falls back to reading `copilot-instructions.md` as the source. Migrate by renaming it to `AGENTS.md`.
+
+**Best for:** New repos, and existing repos ready to make AGENTS.md the canonical source.
 
 **Trade-offs:**
-- Copilot stays the source of truth
-- Sync is on-demand (run `/sync-agents` after each update)
+- AGENTS.md is the source of truth — no context duplication
+- Sync is on-demand (run `/sync-agents` after each update to AGENTS.md)
 - All 12+ ecosystems are supported by the skill
 
 ---
 
-### Strategy 2: AGENTS.md as Universal Source of Truth
+### Strategy 2: AGENTS.md Only (No Sync)
 
-**How it works:** Write your instructions in `AGENTS.md` at the repo root. Because it's now read by Copilot (Aug 2025+), Codex, Gemini CLI, Cursor, VS Code, and OpenCode, a single file covers most tools automatically. Add tool-specific files only when you need features exclusive to that tool.
+**How it works:** Write your instructions in `AGENTS.md` and rely entirely on native tool support. No sync skill needed for the tools that read it natively. Accept that Zed, Augment, Windsurf, Cline, Roo Code, Kilo Code, and Junie won't have synced copies unless you add them manually.
 
-**Best for:** New repos, multi-tool teams, or open source projects where contributors use different tools.
+**Best for:** Minimal-setup projects that only use tools with native AGENTS.md support (Copilot, Codex, Cursor, Gemini CLI, VS Code).
 
 **Trade-offs:**
-- One file covers the most common tools with no extra steps
-- Some tools (Zed, Augment, Windsurf, Cline, Roo Code, Kilo Code, Junie) still need their own files
-- Use `/sync-agents` for the tools that don't yet read `AGENTS.md`
+- Zero maintenance — one file, no commands to run
+- Tools without native AGENTS.md support are excluded
+- Combine with Strategy 1 (add `/sync-agents`) when you need broader coverage
 
 ---
 
-### Strategy 3: Symlink Strategy
+### Strategy 3: Symlink Strategy (Advanced)
 
 **How it works:** Create one real source file and symlink other file locations to point to it. Any edit to the source propagates everywhere automatically.
 
@@ -238,11 +240,12 @@ ln -s AGENTS.md GEMINI.md
 
 | Your situation | Recommended strategy |
 | :--- | :--- |
-| Solo dev, Copilot is your primary tool | Strategy 1 (Copilot-first + /sync-agents) |
-| Solo dev, Claude Code is your primary tool | Strategy 2 (AGENTS.md as source of truth) |
-| Team using multiple tools | Strategy 2 + `/sync-agents` for edge cases |
-| OSS repo with unknown contributors | Strategy 2 only — avoid symlinks |
-| You already have copilot-instructions.md set up | Strategy 1 — no need to migrate |
+| New repo, any toolset | Strategy 1 (AGENTS.md + /sync-agents) |
+| Solo dev, Claude Code is your primary tool | Strategy 1 (AGENTS.md + /sync-agents) |
+| Team using multiple tools | Strategy 1 (AGENTS.md + /sync-agents) |
+| OSS repo with unknown contributors | Strategy 1 only — avoid symlinks |
+| You already have copilot-instructions.md set up | Strategy 1 — rename to AGENTS.md and run /sync-agents |
+| Zero-duplication, macOS/Linux solo dev | Strategy 3 (Symlinks) |
 
 ---
 
@@ -284,7 +287,7 @@ This repository is a **distribution repo** — its artifacts are meant to be ins
 - `.github/copilot-instructions.md` — code review rules for Copilot (scoped to reviews only)
 - `.github/agents/` — four specialized Copilot agents available in agent mode
 
-**Propagation workflow:** When working in a target repo (not this one), install the `/sync-agents` skill and run it to propagate `.github/copilot-instructions.md` to all detected AI tools.
+**Propagation workflow:** When working in a target repo (not this one), install the `/sync-agents` skill and run it to propagate `AGENTS.md` to all detected AI tools. If the target repo only has `.github/copilot-instructions.md`, the skill falls back to that as the source automatically.
 
 ---
 
