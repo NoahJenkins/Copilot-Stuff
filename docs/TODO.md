@@ -45,8 +45,15 @@ Last Updated: 2026-02-20
 
 ## Skills
 - [x] Create `dependabot-automation` skill (Dependabot auto-merge, branch protection alignment, XSS remediation)
+- [x] Update `sync-agents` skill to reflect AGENTS.md universal standard (detection table, fallback behavior, section headings, reporting)
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
+
+## Documentation
+- [x] Create `docs/README.ai-tools-guide.md` — AI artifact decision guide with ASCII decision tree
+- [x] Create root `AGENTS.md` and `CLAUDE.md` with contributor context for AI tools working in this repo
+- [x] Create ADR 0003: Adopt AGENTS.md as universal standard (docs/adr/0003-adopt-agents-md-as-universal-standard.md)
+- [x] Add context note: 2026-03-11 AI tools guide and AGENTS.md research
 
 ## Definition of Done
 - [ ] Acceptance criteria are met

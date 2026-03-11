@@ -22,3 +22,7 @@
 
 - [2026-02-20 Sync Agents Update](./2026-02-20-sync-agents-update.md)
   - Updated the `sync-agents` skill to explicitly instruct the agent to completely overwrite the existing file content when inserting the content of `.github/copilot-instructions.md` to prevent duplication.
+
+- [2026-03-11 AI Tools Guide and AGENTS.md Universal Standard](./2026-03-11-ai-tools-guide-and-agents-md.md)
+  - Researched AGENTS.md universal adoption (GitHub Copilot Aug 2025+). Created docs/README.ai-tools-guide.md, root AGENTS.md and CLAUDE.md, ADR 0003, and updated sync-agents skill to reflect AGENTS.md's expanded tool support.
+  - Related ADR: [ADR 0003](../adr/0003-adopt-agents-md-as-universal-standard.md)

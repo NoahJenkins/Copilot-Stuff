@@ -28,7 +28,7 @@ The installer creates `.github/skills/<skill-name>/` (if needed) and downloads `
 
 ### [sync-agents](../skills/sync-agents/SKILL.md)
 
-Syncs GitHub Copilot instructions, custom agents, and skills into Claude Code, Gemini CLI, and OpenAI Codex formats.
+Syncs GitHub Copilot instructions, custom agents, and skills into all detected AI coding agent configurations. Supports 12+ ecosystems including AGENTS.md (universal — read by GitHub Copilot, OpenAI Codex, Cursor, Gemini CLI, and VS Code), Claude Code, Windsurf, Cline, Roo Code, and more. Detection-first: only syncs to tools already configured in your repo.
 
 **Install target:** `.github/skills/sync-agents/SKILL.md`
 

@@ -4,6 +4,8 @@ This repository contains reusable GitHub Copilot artifacts organized by type: pr
 
 > Inspired by [github/awesome-copilot](https://github.com/github/awesome-copilot) — a fantastic community-driven collection of Copilot prompts, instructions, and tools. If you find this repo useful, you'll love that one too. Highly recommend checking it out (and contributing!).
 
+> **Using AI coding tools while working in this repo?** See [AGENTS.md](./AGENTS.md) (universal) or [CLAUDE.md](./CLAUDE.md) for contributor context.
+
 ## Contents
 
 | Directory | README |
@@ -11,6 +13,7 @@ This repository contains reusable GitHub Copilot artifacts organized by type: pr
 | Prompts | [docs/README.prompts.md](./docs/README.prompts.md) |
 | Agents | [docs/README.agents.md](./docs/README.agents.md) |
 | Skills | [docs/README.skills.md](./docs/README.skills.md) |
+| AI Tools Guide | [docs/README.ai-tools-guide.md](./docs/README.ai-tools-guide.md) |
 
 Each directory README includes artifact details and install instructions.
 

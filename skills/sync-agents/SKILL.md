@@ -1,6 +1,6 @@
 ---
 name: sync-agents
-description: 'Synchronize GitHub Copilot instructions, custom agents, and skills into detected AI coding agent configurations in this repository. Use when asked to mirror .github/copilot-instructions.md, .github/instructions, .github/agents, or .github/skills into Claude, Codex, Cursor, Gemini, Windsurf, and related tooling.'
+description: 'Synchronize GitHub Copilot instructions, custom agents, and skills into detected AI coding agent configurations in this repository. Supports AGENTS.md as the universal standard now read by GitHub Copilot, OpenAI Codex, Cursor, Gemini CLI, and others. Use when asked to mirror .github/copilot-instructions.md, .github/instructions, .github/agents, or .github/skills into Claude, Codex, Cursor, Gemini, Windsurf, and related tooling.'
 ---
 
 # Sync Agent Instructions, Agents, and Skills
@@ -52,7 +52,7 @@ For each one found, mark that agent as **active** and include it in subsequent s
 | ------------------- | ---------------------------------------------------- | ----------------- |
 | **Claude Code**     | `CLAUDE.md` at repo root **or** `.claude/` directory | Full sync         |
 | **Gemini CLI**      | `GEMINI.md` at repo root **or** `.gemini/` directory | Full sync         |
-| **OpenAI Codex**    | `AGENTS.md` at repo root **or** `.agents/` directory | Full sync         |
+| **OpenAI Codex**    | `AGENTS.md` at repo root **or** `.agents/` directory | Full sync — **Note:** `AGENTS.md` is also read by GitHub Copilot (Aug 2025+), Cursor, and Gemini CLI; syncing this file benefits those tools automatically |
 | **OpenCode**        | `.opencode/` directory **or** `.opencode.json`       | Full sync         |
 | **Cursor**          | `.cursor/` directory **or** `.cursorrules` file      | Full sync         |
 | **Windsurf**        | `.windsurf/` directory **or** `.windsurfrules` file  | Full sync         |
@@ -63,9 +63,15 @@ For each one found, mark that agent as **active** and include it in subsequent s
 | **Zed**             | `.rules` file at repo root                           | Instructions only |
 | **Augment Code**    | `.augment/` directory                                | Full sync         |
 
-If **no agents are detected**, tell the user:
+If **no agents are detected**, offer the user a choice:
 
-> "No agent configuration directories or files were detected in this repository. To enable syncing, initialize at least one agent's configuration (e.g., create a `CLAUDE.md` file, a `.cursor/` directory, etc.) and re-run this command."
+> "No agent configuration directories or files were detected in this repository. You have two options:
+>
+> **Option A — Create AGENTS.md (recommended for new repos):** `AGENTS.md` is now read by GitHub Copilot, OpenAI Codex, OpenCode, Cursor, Gemini CLI, and VS Code. Creating this file gives you broad multi-tool coverage from a single file. Confirm to create `AGENTS.md` now and sync your Copilot instructions into it.
+>
+> **Option B — Initialize a specific agent:** Create the config signal for the tool you use (e.g., `CLAUDE.md` for Claude Code, `.cursor/` for Cursor) and re-run `/sync-agents`."
+>
+> If the user confirms Option A, execute only Step 3C (write `AGENTS.md` with the sync header and full content of `.github/copilot-instructions.md`), then skip to Step 6 and report completion.
 
 List the detected agents before proceeding:
 
@@ -157,9 +163,11 @@ using the same `@` import syntax pointing back to `.github/instructions/`.
 
 ---
 
-#### 3C — OpenAI Codex
+#### 3C — AGENTS.md (Universal)
 
 **Global instructions → `AGENTS.md`**
+
+> `AGENTS.md` is a universal format now read by GitHub Copilot (Aug 2025+), OpenAI Codex, OpenCode, Cursor, Gemini CLI, and VS Code. Writing this file provides broad multi-tool coverage automatically.
 
 ```markdown
 <!--
@@ -170,7 +178,7 @@ using the same `@` import syntax pointing back to `.github/instructions/`.
   ╚══════════════════════════════════════════════════════════════╝
 -->
 
-# Codex Agent Instructions
+# AI Agent Instructions (Universal — AGENTS.md)
 
 > **Source of truth:** [`.github/copilot-instructions.md`](.github/copilot-instructions.md)
 >
@@ -541,6 +549,14 @@ Files written:
     ...
 
 To keep all agents in sync, run /sync-agents after any .github/ update.
+```
+
+If `AGENTS.md` was written during this sync, also note:
+
+```
+💡 AGENTS.md is a universal format: GitHub Copilot, OpenAI Codex, OpenCode,
+   Cursor, Gemini CLI, and VS Code will all pick it up automatically.
+   No additional sync is needed for those tools when AGENTS.md is present.
 ```
 
 Also include a model normalization subsection:
