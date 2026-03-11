@@ -47,6 +47,9 @@ Last Updated: 2026-02-20
 - [x] Create `dependabot-automation` skill (Dependabot auto-merge, branch protection alignment, XSS remediation)
 - [x] Update `sync-agents` skill to reflect AGENTS.md universal standard (detection table, fallback behavior, section headings, reporting)
 - [x] Update `sync-agents` skill to use AGENTS.md as source of truth (fallback to copilot-instructions.md)
+- [x] Fix `sync-agents` Step 2: remove AGENTS.md as Codex detection signal (caused false-positive detection in all repos)
+- [x] Fix `sync-agents` Step 5: remove false `.agents/skills/` Codex target; Claude Code `.claude/skills/` confirmed working
+- [x] Delete orphaned `.agents/` directory (created by previous incorrect skill sync)
 - [x] Update `onboard-copilot` prompt to create AGENTS.md instead of copilot-instructions.md
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)

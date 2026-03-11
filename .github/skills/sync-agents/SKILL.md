@@ -55,7 +55,7 @@ For each one found, mark that agent as **active** and include it in subsequent s
 | ------------------- | ---------------------------------------------------- | ----------------- |
 | **Claude Code**     | `CLAUDE.md` at repo root **or** `.claude/` directory | Full sync         |
 | **Gemini CLI**      | `GEMINI.md` at repo root **or** `.gemini/` directory | Full sync         |
-| **OpenAI Codex**    | `AGENTS.md` at repo root **or** `.agents/` directory | Full sync — **Note:** `AGENTS.md` is also read by GitHub Copilot (Aug 2025+), Cursor, and Gemini CLI; syncing this file benefits those tools automatically |
+| **OpenAI Codex**    | `.agents/` directory                                  | Full sync — **Note:** `AGENTS.md` is the source of truth for Codex instructions; no instructions sync needed. Detect only if `.agents/` directory is explicitly present. |
 | **OpenCode**        | `.opencode/` directory **or** `.opencode.json`       | Full sync         |
 | **Cursor**          | `.cursor/` directory **or** `.cursorrules` file      | Full sync         |
 | **Windsurf**        | `.windsurf/` directory **or** `.windsurfrules` file  | Full sync         |
@@ -468,14 +468,15 @@ For each `.github/agents/<name>.agent.md`:
 
 ### Step 5 — Sync agent skills (where supported)
 
-Agent Skills use an open standard (`SKILL.md` with YAML frontmatter). The format is
-identical across Copilot, Claude Code, and Codex — only the storage path differs.
+Agent Skills use an open standard (`SKILL.md` with YAML frontmatter). Only tools with
+a documented skill/command path receive synced copies.
 
 | Tool                    | Skills path                      | Supported?           |
 | ----------------------- | -------------------------------- | -------------------- |
 | GitHub Copilot (source) | `.github/skills/<name>/SKILL.md` | ✅ Source            |
 | Claude Code             | `.claude/skills/<name>/SKILL.md` | ✅ If detected       |
-| OpenAI Codex / OpenCode | `.agents/skills/<name>/SKILL.md` | ✅ If detected       |
+| OpenCode                | `.opencode/commands/<name>.md`   | ✅ Via Step 3D       |
+| OpenAI Codex            | —                                | ❌ No skills concept |
 | All others              | —                                | ❌ No skills concept |
 
 For each `.github/skills/<skill-name>/` directory:
@@ -486,11 +487,9 @@ For each `.github/skills/<skill-name>/` directory:
 2. Write `SKILL.md` verbatim with a YAML sync comment
 3. Copy any bundled asset files as-is
 
-**If Codex or OpenCode is active:**
+**Important:** When writing `SKILL.md`, ensure you completely overwrite the existing file content. Do not append the content to the existing file, as this will cause duplication.
 
-1. Create `.agents/skills/<skill-name>/` directory
-2. Write `SKILL.md` verbatim with a YAML sync comment
-3. Copy any bundled asset files as-is
+**OpenCode** custom commands are handled in Step 3D. No additional action needed here.
 
 **Important — `name` field constraint:** The `name` field in SKILL.md frontmatter must
 exactly match the parent directory name. Do not rename directories or alter the field.

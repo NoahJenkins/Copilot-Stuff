@@ -30,3 +30,6 @@
 - [2026-03-11 AGENTS.md as Source of Truth Migration](./2026-03-11-agents-md-source-of-truth.md)
   - Updated sync-agents to read FROM AGENTS.md (fallback: copilot-instructions.md) and updated onboard-copilot to create AGENTS.md instead of copilot-instructions.md. Eliminates context duplication when both files coexist in a repo.
   - Related ADR: [ADR 0004](../adr/0004-agents-md-as-sync-source-of-truth.md)
+
+- [2026-03-11 sync-agents Step 2 and Step 5 Corrections](./2026-03-11-sync-agents-step2-step5-corrections.md)
+  - Removed AGENTS.md as Codex detection signal (caused false-positive detection in all repos). Removed false `.agents/skills/` target from Step 5 (no documented Codex skills convention). Confirmed Claude Code uses `.claude/skills/` (live-tested). Deleted orphaned `.agents/` directory.
