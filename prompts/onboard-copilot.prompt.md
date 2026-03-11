@@ -679,6 +679,29 @@ This repository has specialized Copilot agents in `.github/agents/`. **Delegate 
 - After any non-trivial implementation change, use `@documentation-specialist` automatically to apply required docs updates in the same turn
 ```
 
+Also create or update `AGENTS.md` at the **repository root** with the same content as `.github/copilot-instructions.md`.
+
+GitHub Copilot's coding agent adopted `AGENTS.md` (August 2025) as part of a cross-tool open standard also read by OpenAI Codex, Gemini CLI, Cursor, and other AI coding agents. Creating this file ensures Copilot's coding agent picks up instructions automatically and makes the configuration portable across the broader AI tooling ecosystem.
+
+Add a sync header at the top of `AGENTS.md` so editors know the source of truth:
+
+```markdown
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  Source of truth: .github/copilot-instructions.md           ║
+  ║  This file mirrors copilot-instructions.md for compatibility ║
+  ║  with GitHub Copilot's coding agent and other AI coding     ║
+  ║  tools (OpenAI Codex, Cursor, Gemini CLI, etc.)             ║
+  ║  To update: edit .github/copilot-instructions.md, then      ║
+  ║  re-run /onboard-copilot or /sync-agents.                   ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+
+[INSERT FULL CONTENT OF .github/copilot-instructions.md HERE]
+```
+
+> **Note**: In VS Code, reading `AGENTS.md` requires `chat.useAgentsMdFile: true` in settings. On GitHub.com the Copilot coding agent reads it by default. `.github/copilot-instructions.md` continues to apply in all other Copilot chat contexts.
+
 ## 9. Custom Agents
 
 Install specialized GitHub Copilot agents into `.github/agents/` using onboarding tags from this repository:
@@ -1126,7 +1149,8 @@ This repository has been automatically analyzed and configured with development 
 - [ ] `.pre-commit-config.yaml` - Pre-commit hooks
 
 ### GitHub Configuration
-- [ ] `.github/copilot-instructions.md` - Custom Copilot instructions
+- [ ] `.github/copilot-instructions.md` - Custom Copilot instructions (primary, all Copilot chat contexts)
+- [ ] `AGENTS.md` - Cross-tool agent instructions (Copilot coding agent, Codex, Cursor, Gemini CLI, etc.)
 - [ ] `.github/agents/` - Installed all `onboarding-core` tagged agents from canonical `agents/` artifacts
 - [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
@@ -1139,7 +1163,8 @@ This repository has been automatically analyzed and configured with development 
 
 ## GitHub Copilot Configuration
 
-- Custom instructions configured in `.github/copilot-instructions.md`
+- Custom instructions configured in `.github/copilot-instructions.md` (primary, all Copilot chat contexts)
+- `AGENTS.md` at repo root mirrors instructions for the Copilot coding agent and cross-tool compatibility
 - Project-specific coding standards, documentation structure, and security guidelines included
 
 ### Custom Agents Available
@@ -1183,7 +1208,7 @@ Review and customize the agent definitions and instructions to match your team's
    - Verify workspace settings work for your team
 
 2. **Review Custom Copilot Instructions & Agents**
-   - Validate auto-detected coding standards in `.github/copilot-instructions.md`
+   - Validate auto-detected coding standards in `.github/copilot-instructions.md` (and `AGENTS.md` at root)
    - Review agent definitions in `.github/agents/`
    - Add project-specific guidelines
    - Update version information if needed
@@ -1224,7 +1249,7 @@ Review and customize the agent definitions and instructions to match your team's
 
 - Review documentation in `docs/`
 - Use custom Copilot agents for help (e.g., `@documentation-specialist` for doc questions, `@security-specialist` for security reviews)
-- Reference `.github/copilot-instructions.md` for project conventions
+- Reference `.github/copilot-instructions.md` (or `AGENTS.md`) for project conventions
 - Create an issue using the templates in `.github/ISSUE_TEMPLATE/`
 
 ***
