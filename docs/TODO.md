@@ -54,6 +54,7 @@ Last Updated: 2026-03-12
 - [x] Refactor `onboard-copilot` prompt to enforce root `AGENTS.md` under 100 lines with nested `AGENTS.md` decomposition guidance
 - [x] Create internal `.github/skills/test-artifact/SKILL.md` for testing prompts/agents/instructions/skills against `testing_sandbox/`
 - [x] Harden `.github/skills/test-artifact/SKILL.md` Copilot CLI execution (dual modes, repo-root path stabilization, transcript capture, stuck-session recovery)
+- [x] Stabilize `.github/skills/test-artifact/SKILL.md` Mode B execution (input-file redirection, timeout bounds, infra gates, retries, and Mode A fallback)
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
 
@@ -71,6 +72,8 @@ Last Updated: 2026-03-12
 - [x] Create ADR 0007 for test-artifact Copilot CLI execution hardening
 - [x] Add context note: 2026-03-12 test-artifact Copilot CLI hardening
 - [x] Fix `test-artifact` CLI session reliability issues (correct `/model gpt-5-mini`, stale session cleanup, transcript completeness checks)
+- [x] Create ADR 0008 for test-artifact Mode B breakpoint remediation
+- [x] Add context note: 2026-03-12 test-artifact Mode B breakpoint remediation
 
 ## Definition of Done
 - [ ] Acceptance criteria are met

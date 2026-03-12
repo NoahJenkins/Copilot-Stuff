@@ -1,61 +1,115 @@
-● skill(test-artifact)
+● Explore: Analyze testing_sandbox codebase
+  ● Check architecture docs
+    $ head -30 /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/docs/architecture/README.md
+    └ 6 lines...
+  ● Check for test frameworks
+    $ grep -i "test\|jest\|vitest\|mocha"
+    /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/package.json
+    └ 1 line...
 
-● Check sandbox state
-  $ ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/
-  ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/ 2>/dev/null || echo "No .github
-  dir"
+Now let me check the existing files that need merging/updating:
+
+● Read AGENTS.md
+  └ 36 lines read
+
+● Read .gitignore
+  └ 75 lines read
+
+● Read docs/TODO.md
+  └ 44 lines read
+
+● Read README.md
+  └ 71 lines read
+
+● Read .pre-commit-config.yaml
+  └ 28 lines read
+
+● Read docs/context/index.md
+  └ 19 lines read
+
+● Read docs/adr/0001-adopt-documentation-structure.md
+  └ 90 lines read
+
+● Check .vscode contents
+  $ ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.vscode/ && cat
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.vscode/tasks.json
+  └ 33 lines...
+
+● Check existing agents
+  $ ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/ && head -5
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/code-reviewer.agent.md
+  2>/dev/null || echo "code-reviewer not found"
   └ 8 lines...
 
-● Check artifact location and frontmatter
-  $ REPO_ROOT="$(git -C /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox rev-parse
-  --show-toplevel)"
-  echo "REPO_ROOT: $REPO_ROOT"
-  ls "$REPO_ROOT/prompts/" 2>/dev/null || echo "No prompts dir"
-  head -20 "$REPO_ROOT/prompts/onboard-copilot.prompt.md" 2>/dev/null || echo "File not found"
-  └ 23 lines...
-
-● Check artifact frontmatter and sandbox state
-  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
-  # Check artifact frontmatter
-  grep -n "^---\|^description\|^model\|^name" "$REPO_ROOT/prompts/onboard-copilot.prompt.md" |
-  head -10
-  echo "---"...
-  └ 57 lines...
-
-● Check sandbox baseline state
-  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
-  # Check sandbox docs state
-  find "$REPO_ROOT/testing_sandbox/docs" -type f 2>/dev/null | head -30
-  echo "---"
-  # Check if .env exists...
-  └ 22 lines...
-
-✗ Check testingResults and clear copilot processes
-  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
-  ls "$REPO_ROOT/docs/testingResults/" 2>/dev/null
-  echo "---"
-  # Kill any active copilot processes
-  pkill -f '/opt/homebrew/Caskroom/copilot-cli/.*/copilot' 2>/dev/null || true...
-  Command not executed. The 'kill' command must specify at least one numeric PID. Usage: kill
-  <PID> or kill -9 <PID>
-
-● Check testingResults dir and copilot processes
-  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
-  ls "$REPO_ROOT/docs/testingResults/" 2>/dev/null || echo "No testingResults dir"
-  ps aux | grep -E '[ /]copilot' | grep -v grep || echo "no copilot CLI processes"
+● Check for onboarding-tags in existing agents
+  $ grep -l "onboarding-tags"
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/*.agent.md 2>/dev/null ||
+  echo "none found"
   └ 6 lines...
 
-There's already an active copilot session from earlier (pid 56208) and an existing output file from today. Let me check it:
+● Check onboarding-tags in code-reviewer
+  $ grep "onboarding-tags"
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/code-reviewer.agent.md
+  2>/dev/null | head -3 || echo "not found"
+  └ 2 lines...
 
-● Check existing CLI output transcript
-  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
-  OUT="$REPO_ROOT/docs/testingResults/2026-03-12-onboard-copilot-cli-output.txt"
-  wc -c "$OUT" && wc -l "$OUT"
-  echo "=== TAIL ==="
-  tail -n 60 "$OUT"
-  └ 52 lines...
+● Check all agent onboarding tags
+  $ grep "onboarding-tags"
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/*.agent.md
+  └ 6 lines...
 
-The output file tracks this current session. The OnboardCopilot prompt has been submitted — I'll now execute it against the testing_sandbox, following the test-artifact workflow to both run the onboarding and capture results.
+Now I have a full picture. Let me execute all onboarding tasks in parallel batches.
 
-● Todo added: Brownfield/Greenfield detection
+● Todo added: Update AGENTS.md
+
+● Run security audit
+  $ cd /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox && pnpm audit --json 2>/dev/null | head
+   -50 || pnpm audit 2>&1 | tail -20
+  └ 19 lines...
+
+● Todo started:
+
+● Get file or directory contents: agents
+  └ [{"type":"file","size":2455,"name":"backend-specialist.agent.md","path":"agen...
+
+Let me check local agent SHAs vs canonical to decide if updates are needed:
+
+● Get git blob SHAs of local agents
+  $ cd /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox && git hash-object
+  .github/agents/code-reviewer.agent.md .github/agents/documentation-specialist.agent.md
+  .github/agents/frontend-specialist.agent.md .github/agents/research-agent.agent.md
+  .github/agents/security-specialist.agent.md
+  └ 6 lines...
+
+All 5 agents match canonical SHAs exactly — no updates needed. Now let me execute all file operations:
+
+● Todo started: agents-verify
+
+● Edit AGENTS.md (+48 -24)
+
+● Create .vscode/extensions.json (+19)
+
+● Create .vscode/settings.json (+28)
+
+● Verify AGENTS.md line count
+  $ wc -l /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/AGENTS.md
+  └ 2 lines...
+
+AGENTS.md is 59 lines ✅. Now update docs and create reports:
+
+● Todo completed: agents-md, vscode-ext, vscode-settings
+
+● Edit docs/TODO.md (+1 -1)
+
+● Edit docs/TODO.md (+1)
+
+● Edit docs/TODO.md (+2)
+
+● Edit docs/TODO.md (+1)
+
+Now update the context index and create the two new reports:
+
+● Create docs/context/2026-03-12-security-baseline.md (+62)
+
+● Edit docs/context/index.md (+4 -2)
 

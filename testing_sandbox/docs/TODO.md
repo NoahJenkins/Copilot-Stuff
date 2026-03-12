@@ -1,6 +1,6 @@
 # Project Task Tracker
 
-Last Updated: 2026-03-03
+Last Updated: 2026-03-12
 
 > Living document for major project tasks. Update status continuously during planning and implementation.
 
@@ -9,6 +9,7 @@ Last Updated: 2026-03-03
 - [x] Establish docs structure (`docs/architecture/`, `docs/adr/`, `docs/context/`)
 - [x] Create initial ADR (`docs/adr/0001-adopt-documentation-structure.md`)
 - [x] Generate onboarding summary report
+- [x] Re-run onboarding (2026-03-12): verify agents, update AGENTS.md, add IDE config
 
 ## Architecture & Documentation
 - [x] Add/update architecture documentation
@@ -24,6 +25,7 @@ Last Updated: 2026-03-03
 - [x] Add CI audit gate for dependency vulnerabilities
 - [x] Modernize direct React dependencies (patch-level)
 - [ ] Evaluate ESLint 10 adoption after plugin ecosystem compatibility updates
+- [x] Security baseline re-run 2026-03-12: 0 vulnerabilities across 431 dependencies
 
 ## Blocked
 - [x] # TODO: Decide whether to standardize on pnpm-only lockfile strategy (`package-lock.json` vs `pnpm-lock.yaml`)
@@ -36,6 +38,8 @@ Last Updated: 2026-03-03
 - [ ] Ensure Prettier is added to devDependencies or remove it from pre-commit hooks
 - [ ] Verify Pre-commit configuration across contributor platforms
 - [ ] Assign owner for dependency remediation and schedule
+- [ ] Evaluate ESLint 10 adoption after plugin ecosystem compatibility updates
+- [ ] Install pre-commit hooks after cloning: `pip install pre-commit && pre-commit install`
 
 ## Definition of Done
 - [x] Acceptance criteria are met

@@ -15,5 +15,7 @@
   - Phase 3 execution: React patch upgrades complete; ESLint 10 spike attempted and rolled back
 - [2026-03-02-onboarding-report](./2026-03-02-onboarding-report.md)
   - Summary of onboarding automation changes
-
-<!-- Added by OnboardCopilot -->
+- [2026-03-12-security-baseline](./2026-03-12-security-baseline.md)
+  - Re-run security audit: 0 vulnerabilities across 431 dependencies
+- [2026-03-12-onboarding-report](./2026-03-12-onboarding-report.md)
+  - Second onboarding pass: agent verification, IDE config, AGENTS.md update

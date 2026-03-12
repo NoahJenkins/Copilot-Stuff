@@ -2,6 +2,10 @@
 
 ## 2026
 
+- [2026-03-12 Test-Artifact Mode B Breakpoint Remediation](./2026-03-12-test-artifact-mode-b-breakpoint-remediation.md)
+  - Replaced pipe-based scripted input with input-file redirection plus timeout bounds, added infrastructure completion gates, bounded retries, and fallback to manual mode.
+  - Related ADR: [ADR 0008](../adr/0008-remediate-test-artifact-mode-b-breakpoint.md)
+
 - [2026-03-12 Test-Artifact CLI Session Reliability](./2026-03-12-test-artifact-cli-session-reliability.md)
   - Added process-hardening corrections for `test-artifact` Copilot CLI testing: correct model command usage, stale-session cleanup, explicit transcript completeness checks, and infrastructure-failure retry guidance.
 

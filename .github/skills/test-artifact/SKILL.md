@@ -141,9 +141,19 @@ Use this mode when you need a deterministic transcript written to disk while sti
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT/testing_sandbox"
 
-{ printf '/model gpt-5-mini\n'; cat "$REPO_ROOT/prompts/<artifact>.prompt.md"; printf '\n/exit\n'; } \
-  | copilot --allow-all-tools --output-format text \
-  > "$REPO_ROOT/docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt" 2>&1
+OUT="$REPO_ROOT/docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt"
+INPUT_FILE="$(mktemp)"
+TIMEOUT_BIN="$(command -v gtimeout || command -v timeout || true)"
+
+{ printf '/model gpt-5-mini\n'; cat "$REPO_ROOT/prompts/<artifact>.prompt.md"; printf '\n/exit\n'; } > "$INPUT_FILE"
+
+if [ -n "$TIMEOUT_BIN" ]; then
+  "$TIMEOUT_BIN" 300 copilot --allow-all-tools --output-format text < "$INPUT_FILE" > "$OUT" 2>&1 || true
+else
+  copilot --allow-all-tools --output-format text < "$INPUT_FILE" > "$OUT" 2>&1
+fi
+
+rm -f "$INPUT_FILE"
 ```
 
 After the run, verify transcript completeness before evaluating behavior:
@@ -153,9 +163,19 @@ OUT="$REPO_ROOT/docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt"
 wc -c "$OUT"
 wc -l "$OUT"
 tail -n 40 "$OUT"
+
+ps aux | grep -E '[ /]copilot($| )' | grep -v grep || echo 'no copilot CLI processes'
 ```
 
-If transcript size is `0` bytes or output is clearly incomplete, treat the run as failed infrastructure (not artifact behavior), clean up active Copilot CLI processes, and retry.
+Use these minimum infrastructure gates:
+
+- transcript has at least `100` bytes
+- transcript has at least `5` lines
+- no active Copilot CLI process remains after the run
+
+If any gate fails, classify the attempt as infrastructure failure (not artifact behavior), clean up active Copilot CLI processes, and retry up to 3 attempts with backoff (`10s`, `20s`, `30s`).
+
+If all 3 Mode B attempts fail infrastructure gates, switch to Mode A (manual interactive), document the fallback in the report, and keep the verdict scoped to infrastructure reliability unless artifact behavior was fully observed.
 
 Capture the session output verbatim for inclusion in the feedback report (Step 6). Include both:
 
@@ -183,6 +203,7 @@ Example targeted stop:
 
 ```bash
 pkill -f '^/opt/homebrew/Caskroom/copilot-cli/.*/copilot$' || true
+pkill -x copilot || true
 ```
 
 ### 5) Evaluate Quality

@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    // AI & Collaboration
+    "github.copilot",
+    "github.copilot-chat",
+    "eamodio.gitlens",
+    // TypeScript / JavaScript
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    // Next.js / React
+    "dsznajder.es7-react-js-snippets",
+    // Tailwind CSS
+    "bradlc.vscode-tailwindcss",
+    // File utilities
+    "editorconfig.editorconfig",
+    "christian-kohler.path-intellisense"
+  ]
+}
