@@ -314,6 +314,7 @@ Use `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` as the canon
 
 - Canonical raw URLs: `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/<file>.agent.md`
 - Validate before install: HTTP 200, non-empty content, starts with `---`, contains `onboarding-tags`
+- **Do not create stub files**: Write the downloaded content directly to `.github/agents/<filename>` in a single operation. Do not pre-create a placeholder file and then append the download — this produces duplicate frontmatter and a malformed agent file. Each agent file must contain exactly one YAML frontmatter block (`---` ... `---`).
 - Print `INSTALLED:<filename>` after each success
 - Retry failed downloads up to 3 times; if still failing, fail with error (no local fallback for core agents)
 - Optional `onboarding-expanded` failures are non-blocking warnings
@@ -331,6 +332,8 @@ Use `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` as the canon
 Define how agents collaborate. After agents are installed, document delegation patterns in `AGENTS.md` and `docs/AGENTS.md`.
 
 ### Delegation Map
+
+After confirming which agents were installed in Section 3, update the **Sub-Agent Delegation** section in root `AGENTS.md` to include every installed agent — both core and expanded. For example, if `@frontend-specialist` was installed, add: `- @frontend-specialist — frontend architecture, component design, accessibility`. Do not leave expanded agents out of the delegation list.
 
 Ensure root `AGENTS.md` delegation index reflects all installed agents:
 
@@ -386,7 +389,7 @@ Create the following directories and files if they don't exist. If they exist, m
 - Naming: `YYYY-MM-DD-topic-name.md`
 - Required sections: Summary (2–3 sentences), Findings/Options, Open Questions
 - Maintain `docs/context/index.md` linking related notes to ADRs
-  - If `index.md` already exists: append new entries under the existing heading structure — do not add a second `#` heading or duplicate the file title
+  - If `index.md` already exists: read the file, find the last bullet entry in the list, and append new entries **below** it. Do not prepend content to the top of the file, do not add a new `#` heading, and do not add a new intro paragraph or `## Notes` section. Only add bullet entries to the existing list.
 
 ### docs/researchReports/
 - Purpose: Formal, reference-grade research — technology evaluations, comparative analyses, spike results
@@ -441,9 +444,9 @@ Last Updated: [YYYY-MM-DD]
 
 > **Sub-agent delegation**: Use `@documentation-specialist`. It is pre-configured with ADR format rules and immutability requirements.
 
-**Before creating**: Check whether `docs/adr/0001-*.md` already exists. If it does, use the next available sequential number (e.g., `0002-`) and adjust the ADR title and number accordingly. Do not create two files starting with the same number.
+**Before creating**: List all files currently in `docs/adr/` and identify every existing `NNNN` prefix (e.g., `0001`, `0002`). Use the next sequential number — if `0001-*.md` already exists, use `0002`; if `0001` and `0002` exist, use `0003`; and so on. Do not create two files starting with the same number.
 
-Create `docs/adr/[NNNN]-adopt-copilot-agent-setup.md` (use `0001` if no ADRs exist, otherwise the next number):
+Create `docs/adr/[NNNN]-adopt-copilot-agent-setup.md` (substitute the actual next available number for `[NNNN]`):
 
 ```markdown
 # ADR [NNNN]: Adopt GitHub Copilot Agent Setup with Living Documentation
@@ -516,7 +519,7 @@ Adopt Option 3:
 
 > **Greenfield mode**: No dependencies to scan. Generate a proactive security checklist for the intended stack instead. Title it "Security Setup Checklist".
 
-> **Existing baseline**: If a security baseline already exists (in `docs/context/` or `docs/researchReports/`), reference it. Create a new dated file in `docs/researchReports/` only if the existing one is outdated (>90 days) or is missing the required sections below.
+> **Existing baseline**: Before creating, check **both** `docs/context/` and `docs/researchReports/` for any file matching `*security-baseline*`. If a match exists and it contains the required sections (Critical Findings, Dependency Inventory, Detailed Findings), skip creation entirely and reference the existing file path in the summary report instead. Only create a new file if no baseline exists, or if the existing one is missing required sections.
 
 > **Terminal commands unavailable**: If audit commands cannot be run (e.g., no terminal access in agent mode), document what was inspectable (package.json/lockfile analysis, hardcoded secret patterns in source, `.gitignore` coverage) and mark actual vulnerability counts as `# TODO: run [audit command]`.
 
@@ -683,7 +686,7 @@ Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 - [ ] `docs/context/` + `index.md`
 - [ ] `docs/researchReports/`
 - [ ] `docs/TODO.md`
-- [ ] `docs/adr/0001-adopt-copilot-agent-setup.md`
+- [ ] `docs/adr/[NNNN]-adopt-copilot-agent-setup.md`
 
 ### Security
 - [ ] `docs/researchReports/[date]-security-baseline.md`

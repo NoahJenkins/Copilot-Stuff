@@ -54,6 +54,7 @@ Last Updated: 2026-03-12
 - [x] Refactor `onboard-copilot` prompt to enforce root `AGENTS.md` under 100 lines with nested `AGENTS.md` decomposition guidance
 - [x] Refocus `onboard-copilot` prompt: brownfield-first, coding standards extraction, agent orchestration, docs/researchReports/, /sync-agents conclusion
 - [x] Fix `onboard-copilot` prompt: ADR numbering conflict guard, index.md merge instruction, security baseline deduplication and terminal-unavailable fallback
+- [x] Fix `onboard-copilot` prompt (pass 2): index.md append location, ADR numbering procedural step, security baseline cross-directory check, agent stub-file prevention, expanded agent delegation update
 - [x] Create internal `.github/skills/test-artifact/SKILL.md` for testing prompts/agents/instructions/skills against `testing_sandbox/`
 - [x] Harden `.github/skills/test-artifact/SKILL.md` Copilot CLI execution (dual modes, repo-root path stabilization, transcript capture, stuck-session recovery)
 - [x] Stabilize `.github/skills/test-artifact/SKILL.md` Mode B execution (input-file redirection, timeout bounds, infra gates, retries, and Mode A fallback)

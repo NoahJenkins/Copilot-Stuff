@@ -5,6 +5,9 @@
 - [2026-03-12 OnboardCopilot Brownfield Refocus](./2026-03-12-onboard-copilot-brownfield-refocus.md)
   - Refocused onboard-copilot prompt to be brownfield-first with dedicated coding standards extraction, explicit agent orchestration step, docs/researchReports/ type, and mandatory /sync-agents conclusion.
 
+- [2026-03-12 OnboardCopilot Sandbox Fix Pass 2](./2026-03-12-onboard-copilot-sandbox-fix-pass-2.md)
+  - Second sandbox review pass: fixed index.md append behavior (append below last entry, never prepend), ADR numbering (list all existing files to find next number), security baseline deduplication (check both context/ and researchReports/), agent install stub issue (single-operation write, no pre-created stubs), and expanded agent omission from delegation list.
+
 - [2026-03-12 Test-Artifact Mode B Breakpoint Remediation](./2026-03-12-test-artifact-mode-b-breakpoint-remediation.md)
   - Replaced pipe-based scripted input with input-file redirection plus timeout bounds, added infrastructure completion gates, bounded retries, and fallback to manual mode.
   - Related ADR: [ADR 0008](../adr/0008-remediate-test-artifact-mode-b-breakpoint.md)
