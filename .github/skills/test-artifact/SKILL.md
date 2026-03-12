@@ -7,6 +7,16 @@ description: 'Test distributable Copilot artifacts (agents, prompts, instruction
 
 Use this workflow to test artifacts from this repository against `testing_sandbox/`.
 
+## Prerequisites
+
+- GitHub CLI with Copilot extension: `gh extension install github/gh-copilot`
+- Authenticated: `gh auth login`
+
+## Default Model
+
+Use **`gpt-5-mini`** for all test executions unless the user specifies a different model.
+Override with `--model <model>` on any `gh copilot` invocation.
+
 ## Scope
 
 - Artifacts under test may come from `agents/`, `prompts/`, `skills/`, or `instructions/`.
@@ -43,9 +53,31 @@ Use this workflow to test artifacts from this repository against `testing_sandbo
 
 ### 3) Execute Artifact Intent
 
-- Run the artifact in the sandbox context.
-- Capture key outputs, behavior changes, and any failures.
-- Verify the artifact behavior against the success criteria from Step 1.
+Use `gh copilot` CLI to exercise the artifact. Run from the `testing_sandbox/` directory so
+the sandbox codebase is available as context.
+
+**General invocation pattern:**
+
+```bash
+cd testing_sandbox
+gh copilot suggest --model gpt-5-mini "<describe the task the artifact is meant to handle>"
+```
+
+**By artifact type:**
+
+- **Prompts** — Paste the prompt content as the `gh copilot suggest` input. Compare output against intended behavior.
+- **Agents** — Describe the agent's role and a representative task; pass as the suggestion input.
+- **Instructions / Skills** — First install the artifact into the sandbox (Step 2), then invoke a task that the instruction is meant to shape. Check that output reflects the instruction constraints.
+
+**Overriding the model:**
+
+```bash
+gh copilot suggest --model <model-name> "<prompt>"
+```
+
+Capture the CLI output verbatim for inclusion in the feedback report (Step 5).
+
+- Verify the captured behavior against the success criteria from Step 1.
 
 ### 4) Evaluate Quality
 
