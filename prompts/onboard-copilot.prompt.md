@@ -211,7 +211,7 @@ Documentation process for ADRs, context notes, architecture docs, and research r
 - Location: `docs/context/` — naming: `YYYY-MM-DD-topic-name.md`
 - Informal and exploratory: research sessions, planning discussions, investigation summaries
 - Required sections: Summary (2–3 sentences), Findings, Open Questions
-- Maintain `docs/context/index.md` linking related notes to resulting ADRs
+- When a context note is created alongside an ADR, add `<!-- Related ADR: [ADR NNNN](../adr/NNNN-short-title.md) -->` at the bottom of the context note file
 
 ## Research Reports
 - Location: `docs/researchReports/` — naming: `YYYY-MM-DD-topic-name.md`
@@ -388,8 +388,7 @@ Create the following directories and files if they don't exist. If they exist, m
 - Purpose: Exploratory research, planning session notes, working documentation
 - Naming: `YYYY-MM-DD-topic-name.md`
 - Required sections: Summary (2–3 sentences), Findings/Options, Open Questions
-- Maintain `docs/context/index.md` linking related notes to ADRs
-  - If `index.md` already exists: read the file, find the last bullet entry in the list, and append new entries **below** it. Do not prepend content to the top of the file, do not add a new `#` heading, and do not add a new intro paragraph or `## Notes` section. Only add bullet entries to the existing list.
+- When a context note is created alongside an ADR, add `<!-- Related ADR: [ADR NNNN](../adr/NNNN-short-title.md) -->` at the bottom of the context note file
 
 ### docs/researchReports/
 - Purpose: Formal, reference-grade research — technology evaluations, comparative analyses, spike results
@@ -417,7 +416,7 @@ Last Updated: [YYYY-MM-DD]
 
 ## Architecture & Documentation
 - [ ] Add/update architecture documentation
-- [ ] Add context notes and update context/index.md
+- [ ] Add context notes with inline ADR links where applicable
 - [ ] Record architectural decisions as ADRs
 
 ## Security & Quality
@@ -683,7 +682,7 @@ Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 ### Documentation Structure
 - [ ] `docs/adr/`
 - [ ] `docs/architecture/`
-- [ ] `docs/context/` + `index.md`
+- [ ] `docs/context/`
 - [ ] `docs/researchReports/`
 - [ ] `docs/TODO.md`
 - [ ] `docs/adr/[NNNN]-adopt-copilot-agent-setup.md`
