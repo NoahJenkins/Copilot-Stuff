@@ -24,6 +24,7 @@ When working in this repo with an agent-mode tool, delegate to these specialists
 - **`@documentation-specialist`** — creating/updating ADRs, architecture docs, context notes, READMEs
 - **`@prompt-engineer`** — creating and reviewing Copilot prompts using first-party best practices
 - **`@research-agent`** — technical research, gathering context, analyzing information
+- **`@skill-engineer`** — creating and maintaining Copilot skills
 
 ---
 
@@ -45,7 +46,7 @@ A task is **incomplete** until required docs updates are applied.
 
 ### Agents (`agents/` and `.github/agents/`)
 - Must have markdown frontmatter with `name`, `description`, and `model` fields
-- Follow the structure standard in `.github/instructions/agent-structure.instructions.md`
+- Follow the structure standard in `instructions/AGENTS.md`
 - Filename: lowercase, hyphen-separated, ending in `.agent.md`
 
 ### Prompts (`prompts/` and `.github/prompts/`)
