@@ -1,0 +1,28 @@
+# Added by OnboardCopilot
+# Latest tags validated on 2026-03-02.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint (changed JS/TS files)
+        entry: pnpm exec eslint --max-warnings=0
+        language: system
+        types_or: [javascript, jsx, ts, tsx]
+      - id: prettier
+        name: prettier (changed files)
+        entry: pnpm exec prettier --check
+        language: system
+        types_or: [javascript, jsx, ts, tsx, json, yaml, markdown, css, scss, html]
