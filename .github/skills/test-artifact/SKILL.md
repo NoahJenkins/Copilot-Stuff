@@ -12,11 +12,13 @@ Use this workflow to test artifacts from this repository against `testing_sandbo
 - GitHub Copilot CLI: `copilot` must be available in your PATH
 - Authenticated with GitHub Copilot
 - Shell note: these examples are written for macOS/Linux shells. If `rg` is unavailable, use `grep` with separate `-e` patterns instead of regex alternation that begins with `-`.
+- Session note: avoid `set -u` for Copilot test commands in VS Code terminals; some prompt hooks reference unset variables and can interrupt scripted runs.
 
 ## Default Model
 
 Use **`gpt-5-mini`** for all test executions unless the user specifies a different model.
 After launching `copilot`, set the model by running `/model gpt-5-mini` as the first command in the session.
+Do not use `/model gpt-5 mini` (with a space).
 
 ## Scope
 
@@ -75,6 +77,14 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT/testing_sandbox"
 ```
 
+Before each run, ensure no previous Copilot CLI process is still active:
+
+```bash
+pkill -f '/opt/homebrew/Caskroom/copilot-cli/.*/copilot' || true
+pkill -x copilot || true
+ps aux | grep -E '[ /]copilot($| )' | grep -v grep || echo 'no copilot CLI processes'
+```
+
 **General invocation pattern:**
 
 ```bash
@@ -131,10 +141,21 @@ Use this mode when you need a deterministic transcript written to disk while sti
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT/testing_sandbox"
 
-{ echo '/model gpt-5-mini'; cat "$REPO_ROOT/prompts/<artifact>.prompt.md"; echo '/exit'; } \
+{ printf '/model gpt-5-mini\n'; cat "$REPO_ROOT/prompts/<artifact>.prompt.md"; printf '\n/exit\n'; } \
   | copilot --allow-all-tools --output-format text \
   > "$REPO_ROOT/docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt" 2>&1
 ```
+
+After the run, verify transcript completeness before evaluating behavior:
+
+```bash
+OUT="$REPO_ROOT/docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt"
+wc -c "$OUT"
+wc -l "$OUT"
+tail -n 40 "$OUT"
+```
+
+If transcript size is `0` bytes or output is clearly incomplete, treat the run as failed infrastructure (not artifact behavior), clean up active Copilot CLI processes, and retry.
 
 Capture the session output verbatim for inclusion in the feedback report (Step 6). Include both:
 

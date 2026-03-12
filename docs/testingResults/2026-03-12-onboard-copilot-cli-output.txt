@@ -1,0 +1,61 @@
+● skill(test-artifact)
+
+● Check sandbox state
+  $ ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/
+  ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/ 2>/dev/null || echo "No .github
+  dir"
+  └ 8 lines...
+
+● Check artifact location and frontmatter
+  $ REPO_ROOT="$(git -C /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox rev-parse
+  --show-toplevel)"
+  echo "REPO_ROOT: $REPO_ROOT"
+  ls "$REPO_ROOT/prompts/" 2>/dev/null || echo "No prompts dir"
+  head -20 "$REPO_ROOT/prompts/onboard-copilot.prompt.md" 2>/dev/null || echo "File not found"
+  └ 23 lines...
+
+● Check artifact frontmatter and sandbox state
+  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
+  # Check artifact frontmatter
+  grep -n "^---\|^description\|^model\|^name" "$REPO_ROOT/prompts/onboard-copilot.prompt.md" |
+  head -10
+  echo "---"...
+  └ 57 lines...
+
+● Check sandbox baseline state
+  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
+  # Check sandbox docs state
+  find "$REPO_ROOT/testing_sandbox/docs" -type f 2>/dev/null | head -30
+  echo "---"
+  # Check if .env exists...
+  └ 22 lines...
+
+✗ Check testingResults and clear copilot processes
+  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
+  ls "$REPO_ROOT/docs/testingResults/" 2>/dev/null
+  echo "---"
+  # Kill any active copilot processes
+  pkill -f '/opt/homebrew/Caskroom/copilot-cli/.*/copilot' 2>/dev/null || true...
+  Command not executed. The 'kill' command must specify at least one numeric PID. Usage: kill
+  <PID> or kill -9 <PID>
+
+● Check testingResults dir and copilot processes
+  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
+  ls "$REPO_ROOT/docs/testingResults/" 2>/dev/null || echo "No testingResults dir"
+  ps aux | grep -E '[ /]copilot' | grep -v grep || echo "no copilot CLI processes"
+  └ 6 lines...
+
+There's already an active copilot session from earlier (pid 56208) and an existing output file from today. Let me check it:
+
+● Check existing CLI output transcript
+  $ REPO_ROOT="/Users/noahjenkins/Code/Copilot-Stuff"
+  OUT="$REPO_ROOT/docs/testingResults/2026-03-12-onboard-copilot-cli-output.txt"
+  wc -c "$OUT" && wc -l "$OUT"
+  echo "=== TAIL ==="
+  tail -n 60 "$OUT"
+  └ 52 lines...
+
+The output file tracks this current session. The OnboardCopilot prompt has been submitted — I'll now execute it against the testing_sandbox, following the test-artifact workflow to both run the onboarding and capture results.
+
+● Todo added: Brownfield/Greenfield detection
+

@@ -2,6 +2,9 @@
 
 ## 2026
 
+- [2026-03-12 Test-Artifact CLI Session Reliability](./2026-03-12-test-artifact-cli-session-reliability.md)
+  - Added process-hardening corrections for `test-artifact` Copilot CLI testing: correct model command usage, stale-session cleanup, explicit transcript completeness checks, and infrastructure-failure retry guidance.
+
 - [2026-03-12 Test-Artifact Copilot CLI Hardening](./2026-03-12-test-artifact-copilot-cli-hardening.md)
   - Hardened `test-artifact` Copilot CLI execution with dual modes (manual + scripted interactive), repo-root path stabilization, and stuck-session handling guidance for reproducible transcripts.
   - Related ADR: [ADR 0007](../adr/0007-harden-test-artifact-copilot-cli-execution.md)

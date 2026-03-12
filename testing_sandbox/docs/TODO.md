@@ -30,9 +30,12 @@ Last Updated: 2026-03-03
 - [x] # TODO: Resolve multi-lockfile workspace warning during Next build (remove unused lockfile or set explicit Turbopack root)
 
 ## Follow-ups
-- [ ] # TODO: Assign owner for dependency remediation phases and target completion date
-- [ ] # TODO: Add team-specific onboarding tasks
-- [ ] # TODO: Assign owners and due dates for open items
+
+- [ ] Add CI workflow(s) to run lint, audit, and tests on PRs
+- [ ] Add a test framework and CI test job (e.g., Vitest or Jest)
+- [ ] Ensure Prettier is added to devDependencies or remove it from pre-commit hooks
+- [ ] Verify Pre-commit configuration across contributor platforms
+- [ ] Assign owner for dependency remediation and schedule
 
 ## Definition of Done
 - [x] Acceptance criteria are met

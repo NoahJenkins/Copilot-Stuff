@@ -70,6 +70,7 @@ Last Updated: 2026-03-12
 - [x] Add context note: 2026-03-12 testing sandbox workflow
 - [x] Create ADR 0007 for test-artifact Copilot CLI execution hardening
 - [x] Add context note: 2026-03-12 test-artifact Copilot CLI hardening
+- [x] Fix `test-artifact` CLI session reliability issues (correct `/model gpt-5-mini`, stale session cleanup, transcript completeness checks)
 
 ## Definition of Done
 - [ ] Acceptance criteria are met
