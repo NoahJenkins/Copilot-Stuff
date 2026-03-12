@@ -385,7 +385,8 @@ Create the following directories and files if they don't exist. If they exist, m
 - Purpose: Exploratory research, planning session notes, working documentation
 - Naming: `YYYY-MM-DD-topic-name.md`
 - Required sections: Summary (2–3 sentences), Findings/Options, Open Questions
-- Create `docs/context/index.md` grouping related notes and linking to ADRs
+- Maintain `docs/context/index.md` linking related notes to ADRs
+  - If `index.md` already exists: append new entries under the existing heading structure — do not add a second `#` heading or duplicate the file title
 
 ### docs/researchReports/
 - Purpose: Formal, reference-grade research — technology evaluations, comparative analyses, spike results
@@ -440,10 +441,12 @@ Last Updated: [YYYY-MM-DD]
 
 > **Sub-agent delegation**: Use `@documentation-specialist`. It is pre-configured with ADR format rules and immutability requirements.
 
-Create `docs/adr/0001-adopt-copilot-agent-setup.md`:
+**Before creating**: Check whether `docs/adr/0001-*.md` already exists. If it does, use the next available sequential number (e.g., `0002-`) and adjust the ADR title and number accordingly. Do not create two files starting with the same number.
+
+Create `docs/adr/[NNNN]-adopt-copilot-agent-setup.md` (use `0001` if no ADRs exist, otherwise the next number):
 
 ```markdown
-# ADR 0001: Adopt GitHub Copilot Agent Setup with Living Documentation
+# ADR [NNNN]: Adopt GitHub Copilot Agent Setup with Living Documentation
 
 ## Status
 Accepted
@@ -512,6 +515,10 @@ Adopt Option 3:
 > **Sub-agent delegation**: Use `@security-specialist`. Provide detected dependency manifest paths and tech stack from Section 1.
 
 > **Greenfield mode**: No dependencies to scan. Generate a proactive security checklist for the intended stack instead. Title it "Security Setup Checklist".
+
+> **Existing baseline**: If a security baseline already exists (in `docs/context/` or `docs/researchReports/`), reference it. Create a new dated file in `docs/researchReports/` only if the existing one is outdated (>90 days) or is missing the required sections below.
+
+> **Terminal commands unavailable**: If audit commands cannot be run (e.g., no terminal access in agent mode), document what was inspectable (package.json/lockfile analysis, hardcoded secret patterns in source, `.gitignore` coverage) and mark actual vulnerability counts as `# TODO: run [audit command]`.
 
 Create `docs/researchReports/[YYYY-MM-DD]-security-baseline.md`:
 
