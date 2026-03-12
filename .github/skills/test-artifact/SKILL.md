@@ -9,13 +9,13 @@ Use this workflow to test artifacts from this repository against `testing_sandbo
 
 ## Prerequisites
 
-- GitHub CLI with Copilot extension: `gh extension install github/gh-copilot`
-- Authenticated: `gh auth login`
+- GitHub Copilot CLI: `copilot` must be available in your PATH
+- Authenticated with GitHub Copilot
 
 ## Default Model
 
 Use **`gpt-5-mini`** for all test executions unless the user specifies a different model.
-Override with `--model <model>` on any `gh copilot` invocation.
+After launching `copilot`, set the model by running `/model gpt-5-mini` as the first command in the session.
 
 ## Scope
 
@@ -64,29 +64,39 @@ If any required field is missing, fail the test at this step and include the val
 
 ### 4) Execute Artifact Intent
 
-Use `gh copilot` CLI to exercise the artifact. Run from the `testing_sandbox/` directory so
+Use the `copilot` CLI to exercise the artifact. Run from the `testing_sandbox/` directory so
 the sandbox codebase is available as context.
 
 **General invocation pattern:**
 
 ```bash
 cd testing_sandbox
-gh copilot suggest --model gpt-5-mini "<describe the task the artifact is meant to handle>"
+copilot
+```
+
+Once inside the Copilot session, set the model first:
+
+```
+/model gpt-5-mini
+```
+
+Then submit the task description:
+
+```
+<describe the task the artifact is meant to handle>
 ```
 
 **By artifact type:**
 
-- **Prompts** — Paste the prompt content as the `gh copilot suggest` input. Compare output against intended behavior.
-- **Agents** — Describe the agent's role and a representative task; pass as the suggestion input.
+- **Prompts** — Paste the prompt content as the input. Compare output against intended behavior.
+- **Agents** — Describe the agent's role and a representative task; pass as the input.
 - **Instructions / Skills** — First install the artifact into the sandbox (Step 3), then invoke a task that the instruction is meant to shape. Check that output reflects the instruction constraints.
 
 **Overriding the model:**
 
-```bash
-gh copilot suggest --model <model-name> "<prompt>"
-```
+Use `/model <model-name>` within the Copilot session before submitting the task.
 
-Capture the CLI output verbatim for inclusion in the feedback report (Step 6).
+Capture the session output verbatim for inclusion in the feedback report (Step 6).
 
 - Verify the captured behavior against the success criteria from Step 1.
 
