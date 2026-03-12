@@ -1,5 +1,4 @@
 # Ignore non-GitHub-Copilot agent sync artifacts
-**/AGENTS.md
 **/CLAUDE.md
 **/GEMINI.md
 
