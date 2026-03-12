@@ -2,6 +2,10 @@
 
 ## 2026
 
+- [2026-03-12 Test-Artifact Copilot CLI Hardening](./2026-03-12-test-artifact-copilot-cli-hardening.md)
+  - Hardened `test-artifact` Copilot CLI execution with dual modes (manual + scripted interactive), repo-root path stabilization, and stuck-session handling guidance for reproducible transcripts.
+  - Related ADR: [ADR 0007](../adr/0007-harden-test-artifact-copilot-cli-execution.md)
+
 - [2026-03-12 Testing Sandbox Workflow](./2026-03-12-testing-sandbox-workflow.md)
   - Added a `test-artifact` skill and a `testing_sandbox/AGENTS.md` overlay to standardize artifact validation in the sandbox, with dated feedback reports written to `docs/testingResults/`.
   - Related ADR: [ADR 0006](../adr/0006-test-artifact-skill-over-agents-md.md)

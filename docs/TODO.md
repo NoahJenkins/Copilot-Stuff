@@ -53,6 +53,7 @@ Last Updated: 2026-03-12
 - [x] Update `onboard-copilot` prompt to create AGENTS.md instead of copilot-instructions.md
 - [x] Refactor `onboard-copilot` prompt to enforce root `AGENTS.md` under 100 lines with nested `AGENTS.md` decomposition guidance
 - [x] Create internal `.github/skills/test-artifact/SKILL.md` for testing prompts/agents/instructions/skills against `testing_sandbox/`
+- [x] Harden `.github/skills/test-artifact/SKILL.md` Copilot CLI execution (dual modes, repo-root path stabilization, transcript capture, stuck-session recovery)
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
 
@@ -67,6 +68,8 @@ Last Updated: 2026-03-12
 - [x] Create `docs/testingResults/` reporting directory and README guidance
 - [x] Create ADR 0006 for test-artifact workflow decision
 - [x] Add context note: 2026-03-12 testing sandbox workflow
+- [x] Create ADR 0007 for test-artifact Copilot CLI execution hardening
+- [x] Add context note: 2026-03-12 test-artifact Copilot CLI hardening
 
 ## Definition of Done
 - [ ] Acceptance criteria are met

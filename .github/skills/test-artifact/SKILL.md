@@ -11,6 +11,7 @@ Use this workflow to test artifacts from this repository against `testing_sandbo
 
 - GitHub Copilot CLI: `copilot` must be available in your PATH
 - Authenticated with GitHub Copilot
+- Shell note: these examples are written for macOS/Linux shells. If `rg` is unavailable, use `grep` with separate `-e` patterns instead of regex alternation that begins with `-`.
 
 ## Default Model
 
@@ -67,10 +68,18 @@ If any required field is missing, fail the test at this step and include the val
 Use the `copilot` CLI to exercise the artifact. Run from the `testing_sandbox/` directory so
 the sandbox codebase is available as context.
 
+Resolve the repository root first so the workflow is stable even if your current shell directory drifts:
+
+```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT/testing_sandbox"
+```
+
 **General invocation pattern:**
 
 ```bash
-cd testing_sandbox
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT/testing_sandbox"
 copilot
 ```
 
@@ -96,9 +105,64 @@ Then submit the task description:
 
 Use `/model <model-name>` within the Copilot session before submitting the task.
 
-Capture the session output verbatim for inclusion in the feedback report (Step 6).
+### Execution modes
+
+Use one of the two modes below.
+
+#### Mode A: Manual interactive (human-operated)
+
+```bash
+copilot
+```
+
+Inside the Copilot session, run these in order:
+
+```text
+/model gpt-5-mini
+<artifact test input>
+/exit
+```
+
+#### Mode B: Scripted interactive (automation-friendly, preferred for reproducible reports)
+
+Use this mode when you need a deterministic transcript written to disk while still setting the model as the first in-session command:
+
+```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT/testing_sandbox"
+
+{ echo '/model gpt-5-mini'; cat "$REPO_ROOT/prompts/<artifact>.prompt.md"; echo '/exit'; } \
+  | copilot --allow-all-tools --output-format text \
+  > "$REPO_ROOT/docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt" 2>&1
+```
+
+Capture the session output verbatim for inclusion in the feedback report (Step 6). Include both:
+
+- The transcript file path
+- The exact command used to execute the test
 
 - Verify the captured behavior against the success criteria from Step 1.
+
+### Stuck session handling
+
+If output appears stalled:
+
+1. Verify whether a `copilot` process is still active.
+2. Check whether the transcript file is still growing.
+3. If truly stuck, terminate only Copilot CLI processes (do not kill unrelated processes) and rerun with Mode B.
+
+Example checks:
+
+```bash
+ps aux | grep -i '[c]opilot'
+ls -l "$REPO_ROOT/docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt"
+```
+
+Example targeted stop:
+
+```bash
+pkill -f '^/opt/homebrew/Caskroom/copilot-cli/.*/copilot$' || true
+```
 
 ### 5) Evaluate Quality
 
@@ -136,6 +200,10 @@ Create `docs/testingResults/YYYY-MM-DD-<artifact-name>.md` with:
 ## Test Actions
 <what was executed>
 
+```bash
+<exact copilot command used>
+```
+
 ## Observed Behavior
 <actual outputs and behavior>
 
@@ -155,3 +223,5 @@ Create `docs/testingResults/YYYY-MM-DD-<artifact-name>.md` with:
 ```bash
 git checkout testing_sandbox/
 ```
+
+- Only clean up files changed by the current test run.
