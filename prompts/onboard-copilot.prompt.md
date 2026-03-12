@@ -1,682 +1,240 @@
 ---
-description: Automated repository onboarding for both greenfield and brownfield projects — scans existing repos or scaffolds new ones based on intended tech stack, creating custom instructions, documentation structure, IDE configuration, GitHub templates, security baseline, and development environment setup
+description: Brownfield repository onboarding for GitHub Copilot — detects and codifies existing coding standards, installs and orchestrates specialized agents, and establishes living documentation structure (ADR, architecture, context, researchReports). Run /sync-agents after setup to propagate to Claude Code, Cursor, and other AI tools.
+model: gpt-4.1
 ---
 
-# OnboardCopilot: Automated Repository Setup
+# OnboardCopilot: GitHub Copilot Repository Setup
 
-Scan this repository and perform the following comprehensive onboarding tasks.
+Scan this repository and configure it for effective GitHub Copilot usage. This prompt is **brownfield-first** — it assumes an existing codebase and extracts real conventions from it rather than inventing them.
 
-## Greenfield vs Brownfield Detection
+## Repository Mode
 
-Before starting, determine the repository mode:
+Before starting:
 
-1. **Check for existing source code**: Look for source files (`.js`, `.ts`, `.py`, `.go`, `.rs`, `.java`, `.rb`, etc.), dependency manifests (`package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`, `pom.xml`, `Gemfile`, etc.), and build configurations.
+1. **Check for existing source code**: Look for source files (`.js`, `.ts`, `.py`, `.go`, `.rs`, `.java`, `.rb`, etc.), dependency manifests (`package.json`, `requirements.txt`, `go.mod`, etc.), and build configurations.
+2. **Classify**:
+   - **Brownfield** (existing code): Proceed with codebase scanning as described below.
+   - **Greenfield** (no source code, no dependency manifests): Ask the user for their intended stack before proceeding.
 
-2. **Classify the repository**:
-   - **Brownfield** (existing code): Proceed with codebase scanning and detection as described in each section.
-   - **Greenfield** (blank/empty repo — no source code, no dependency manifests): Prompt the user for their intended tech stack before proceeding.
-
-3. **Greenfield tech stack prompt**: If the repository is greenfield, ask the user:
-   - **Primary language(s)**: e.g., TypeScript, Python, Go, Rust, Java
-   - **Framework(s)**: e.g., Next.js, FastAPI, Spring Boot, Gin, Actix
-   - **Package manager**: e.g., npm, pnpm, yarn, pip, poetry, cargo
-   - **Testing framework**: e.g., Jest, Vitest, pytest, go test, JUnit
-   - **Database** (if any): e.g., PostgreSQL, MongoDB, SQLite
-   - **Deployment target** (if known): e.g., Vercel, AWS, Docker, Kubernetes
-
-4. **Use the user's answers as the "detected" tech stack** for all subsequent sections. Where brownfield sections say "detected" or "analyze", greenfield mode uses the user's stated intentions instead. Scaffolding is generated based on the intended stack where applicable.
+3. **Greenfield stack prompt**: If no source code exists, ask:
+   - **Language(s)**: e.g., TypeScript, Python, Go, Rust
+   - **Framework(s)**: e.g., Next.js, FastAPI, Spring Boot, Gin
+   - **Package manager**: e.g., npm, pnpm, pip, poetry, cargo
+   - **Testing framework**: e.g., Jest, Vitest, pytest, go test
+   - **Deployment target**: e.g., Vercel, AWS, Docker, Kubernetes
 
 > Throughout this document, **"detected tech stack"** means either scanned from existing code (brownfield) or provided by the user (greenfield).
 
 ## General Guidance
 
-### Edge Cases & Conditional Logic
-Before executing each section, evaluate whether it applies to this repository:
-- **New/empty repository with no git history**: Skip CODEOWNERS generation (Section 6). Do not create a CODEOWNERS file.
-- **No `.env` file in repository**: Do not create `.env.example`.
-- **Monorepo with multiple languages**: Apply language-specific patterns for ALL detected languages. Create separate sections in `.env.example` (only when applicable), `.gitignore`, and pre-commit hooks for each language.
-- **Files already exist**: Always merge with existing content. Never overwrite without preserving current entries. Add new content in clearly commented sections.
-- **Pre-commit not available**: If the project doesn't use Python and `pre-commit` would be an unusual dependency, use ecosystem-native alternatives that do not require creating `.husky/` (for example, `lefthook`).
-- **CI/CD not present**: Skip Section 11 entirely. Note the absence in the summary report.
+### Conditional Logic
+- **Files already exist**: Always read existing content first. Merge and preserve — never overwrite.
+- **Monorepo with multiple languages**: Apply patterns for ALL detected languages.
+- **CI/CD not present**: Skip CI/CD documentation. Note absence in the summary report.
+- **No `.env` file**: Do not create `.env.example`.
 
 ### Merging Strategy
-When a file to be created or modified already exists:
-1. Read the existing file content first
+1. Read existing file content first
 2. Preserve all existing entries and configurations
-3. Add new content in clearly labeled sections with comments (e.g., `# Added by OnboardCopilot`)
-4. Remove exact duplicates but keep the existing version if formatting differs
-5. For `.vscode/settings.json`, merge keys — never overwrite existing user/team preferences
+3. Add new content in clearly labeled sections (e.g., `# Added by OnboardCopilot`)
+4. Remove exact duplicates; keep existing version when formatting differs
 
-### Shell Command Safety Constraints
-When generating shell commands for execution, avoid patterns that are commonly blocked by Copilot CLI safety checks.
-
+### Shell Command Safety
 - Prefer direct single-file commands over loop-driven bulk commands.
-- Avoid `for ...; do ...; done` command sequences when equivalent direct commands are possible.
-- Avoid nested command substitution in generated shell commands (for example `$(basename "$f")`).
-- If a generated command is blocked, immediately rewrite it into explicit direct commands and continue.
-- Never stop the onboarding flow because a shell command style is blocked; rewrite and proceed.
+- Avoid `for ...; do ...; done` sequences when equivalent direct commands are possible.
+- If a command is blocked, immediately rewrite as explicit direct commands and continue.
+- Never stop the onboarding flow because a command style was blocked.
 
 ### Sub-Agent Delegation
-After installing the custom agents in Section 9, delegate specialized work to them as sub-agents for the remainder of the onboarding process:
+After installing agents in Section 3, delegate specialized work:
 
-| Section | Delegate to | Reason |
-|---------|------------|--------|
-| 1. Codebase Analysis | `@research-agent` | Technical research, version lookups, framework identification |
-| 11. CI/CD Pipeline Documentation | `@documentation-specialist` | Structured documentation creation |
-| 12. Initial ADR | `@documentation-specialist` | ADR authoring follows agent's specialization |
-| 13. Security Baseline Report | `@security-specialist` | Vulnerability scanning, secrets detection, dependency audit |
-| 14. Summary Report | `@documentation-specialist` | Final report authoring |
+| Task | Delegate |
+|------|----------|
+| Codebase analysis | `@research-agent` |
+| Documentation authoring | `@documentation-specialist` |
+| Security assessment | `@security-specialist` |
+| Code standards validation | `@code-reviewer` |
 
-Optional expanded delegates (installed only when detected stack/repo characteristics warrant them):
-- Frontend-heavy repos → `@frontend-specialist`
-- Backend/service-heavy repos → `@backend-specialist`
-- Data-intensive repos (schema/migrations/query-heavy) → `@data-specialist`
-- CI/CD/infrastructure-heavy repos → `@devops-specialist`
+If a sub-agent is not yet installed, perform the work directly and note it in the summary report.
 
-When delegating:
-- Provide the sub-agent with all context gathered so far (detected languages, frameworks, file paths, etc.)
-- Let the sub-agent execute its full workflow — do not duplicate its responsibilities
-- Review the sub-agent's output before finalizing
-- If a sub-agent is not yet installed (i.e., Section 9 hasn't run yet), perform the work directly and note that delegation will be available for future runs
+---
 
 ## 1. Codebase Analysis
 
-> **Sub-agent delegation**: Use `@research-agent` to conduct the codebase analysis. Provide it with the repository root path and ask it to identify all technologies, frameworks, versions, and patterns listed below. Incorporate its findings into the analysis output.
+> **Sub-agent delegation**: Use `@research-agent` when available. Provide the repository root path and ask it to identify all technologies, patterns, and conventions listed below.
 
-> **Greenfield mode**: If the repository is empty, skip scanning. Instead, record the user's tech stack answers from the Greenfield Detection step as the analysis output. Use these answers as the "detected" stack for all subsequent sections.
+> **Greenfield mode**: Skip scanning. Record the user's tech stack answers as the analysis output.
 
-Analyze and document the following:
-- Primary programming languages and their versions
-- Frameworks and libraries in use (with versions)
-- Testing tools, frameworks, and test patterns
-- Build systems and package managers (npm, pip, maven, cargo, etc.)
-- CI/CD configuration files and workflows
-- Code style tools (linters, formatters)
-- Dependency management approach
+**Technology detection:**
+- Primary languages and versions
+- Frameworks and libraries (with versions)
+- Testing tools and patterns
+- Build systems and package managers
+- CI/CD configuration files
+- Code style tools (linters, formatters, configs present)
 - Project structure and architecture patterns
-- Containerization setup (Dockerfile, docker-compose.yml, .devcontainer/)
-- Monorepo tooling (lerna, pnpm workspaces, nx, turborepo)
-- License files and type
+- Containerization setup (Dockerfile, docker-compose, .devcontainer)
+- Monorepo tooling (turborepo, nx, pnpm workspaces, etc.)
 
-## 2. Documentation Structure
+**Brownfield coding standards extraction** — critical input for Section 2:
+- Naming conventions: which style applies where (camelCase, snake_case, PascalCase, kebab-case)
+- File and folder organization pattern (feature-based, layer-based, domain-based, etc.)
+- Import/module structure and ordering conventions
+- Error handling pattern (exceptions, result types, error callbacks, typed errors)
+- Async pattern (async/await, callbacks, reactive streams, etc.)
+- Testing pattern: file naming, describe/it structure, mocking approach, coverage expectations
+- Comment and documentation conventions (JSDoc, docstrings, inline comments, etc.)
+- API/interface design conventions (REST naming, response shape, pagination, etc.)
+- State management patterns (if applicable)
 
-Create the following directories if they don't exist:
-
-### docs/architecture/
-- Purpose: High-level architecture overviews, system diagrams, data flow documentation
-- Store information about how the system is structured and component interactions
-- Update when overall system design changes significantly
-
-### docs/adr/ (Architecture Decision Records)
-- Purpose: Numbered decision records documenting significant architectural choices
-- Naming convention: `NNNN-short-title.md` (e.g., `0001-use-postgresql.md`)
-- ADRs are append-only and immutable—never delete or edit existing ADRs
-- Each ADR must include:
-  - **Status**: proposed, accepted, deprecated, superseded
-  - **Context**: the problem, constraints, requirements
-  - **Options considered**: alternatives with pros/cons
-  - **Decision**: what was chosen and why
-  - **Consequences**: trade-offs, implications, what this enables or costs
-- Write an ADR when decisions affect structure, dependencies, non-functional requirements, interfaces, or construction techniques
-- If a decision is later reversed, create a new ADR that supersedes the old one
-
-### docs/context/
-- Purpose: Exploratory research, planning session notes, working documentation
-- Naming convention: `YYYY-MM-DD-topic-name.md`
-- Each note should include:
-  - **Summary**: key findings, 2-3 sentences
-  - **Options/Findings**: detailed exploration
-  - **Open Questions**: unresolved items
-  - Optional: Transcript/Details section for verbose content
-- Create `docs/context/index.md` that groups related notes and links to resulting ADRs
-- These notes support ADRs but are more informal and exploratory
-
-### docs/TODO.md
-- Purpose: Living task tracker for all major project work
-- Create `docs/TODO.md` if it does not exist; if it exists, merge and preserve existing tasks
-- Add a `Last Updated` line at the top of the file (ISO date format: `YYYY-MM-DD`) and refresh it whenever tasks change
-- Track major tasks using checkboxes (e.g., `- [ ]` for open, `- [x]` for completed)
-- Organize tasks by section when helpful (e.g., Onboarding, Architecture, Security, Follow-ups)
-- Include a `Blocked` section for tasks waiting on external dependencies (people, approvals, vendor access, infrastructure, etc.)
-- Include a short `Definition of Done` checklist so task completion is consistent across contributors
-- Actively maintain this file throughout execution:
-  - Add new major tasks as they are identified
-  - Mark tasks completed immediately when finished
-  - Move tasks into/out of `Blocked` as dependency status changes
-  - Update the `Last Updated` date whenever any task state changes
-  - Add brief `# TODO:` notes for unclear ownership or follow-up actions
-- If creating a new file, initialize it with this starter template:
-
-```markdown
-# Project Task Tracker
-
-Last Updated: 2026-02-19
-
-> Living document for major project tasks. Update status continuously during planning and implementation.
-
-## Onboarding
-- [ ] Run repository analysis and detect tech stack
-- [ ] Establish docs structure (`docs/architecture/`, `docs/adr/`, `docs/context/`)
-- [ ] Create initial ADR (`docs/adr/0001-adopt-documentation-structure.md`)
-- [ ] Generate onboarding summary report
-
-## Architecture & Documentation
-- [ ] Add/update architecture documentation
-- [ ] Add context/research notes and update `docs/context/index.md`
-- [ ] Record new architectural decisions as ADRs
-
-## Security & Quality
-- [ ] Run dependency/security audit
-- [ ] Review secret handling and `.gitignore` coverage
-- [ ] Address critical/high findings
-
-## Blocked
-- [ ] # TODO: Add blocked tasks here with dependency notes (e.g., waiting on approvals, access, vendor responses)
-
-## Follow-ups
-- [ ] # TODO: Add team-specific onboarding tasks
-- [ ] # TODO: Assign owners and due dates for open items
-
-## Definition of Done
-- [ ] Acceptance criteria are met
-- [ ] Relevant docs are updated (`README`, ADRs, context notes, or architecture docs as applicable)
-- [ ] Security/quality checks for the change are completed
-- [ ] Any follow-up work is captured as new TODO items
-```
-
-## 3. Environment Configuration
-
-### .env.example Template
-Only if a `.env` file already exists in the repository, scan the codebase for environment variable usage and create or update `.env.example`. If no `.env` file exists, do not create `.env.example`. If `.env` exists but no environment variables are detected, create a minimal template with common placeholders and a note for the team to populate:
-
-> **Greenfield mode**: Only generate a starter `.env.example` when a `.env` file already exists in the repository. Include common variables for the chosen framework (e.g., `DATABASE_URL` for database projects, `PORT` and `NODE_ENV` for Node.js, `SECRET_KEY` and `DEBUG` for Django, etc.).
-
-- Search for environment variable patterns:
-  - JavaScript/Node: `process.env.VARIABLE_NAME`
-  - Python: `os.getenv()`, `os.environ[]`
-  - Ruby: `ENV['']`
-  - Go: `os.Getenv()`
-  - Java: `System.getenv()`
-  - Shell scripts: `$VARIABLE_NAME`
-
-- If creating or updating `.env.example`, include:
-  - All detected environment variables as empty or example values
-  - Clear comments describing each variable's purpose
-  - Required vs optional variables clearly marked
-  - Example values showing expected format (e.g., `DATABASE_URL=postgresql://user:pass@localhost:5432/dbname`)
-  - Security warning at the top: `# ⚠️ Never commit actual secrets to version control`
-  
-- Group related variables with section headers:
-  ```
-  # Database Configuration
-  DATABASE_URL=
-  DB_POOL_SIZE=10
-
-  # API Keys
-  OPENAI_API_KEY=
-  STRIPE_API_KEY=
-
-  # Feature Flags
-  ENABLE_BETA_FEATURES=false
-  ```
-
-### .gitignore Enhancement
-Analyze detected tech stack and update `.gitignore` with:
-
-> **Greenfield mode**: Generate a complete `.gitignore` from scratch based on the user's intended tech stack. Apply all language-specific patterns listed below for the chosen language(s) and framework(s).
-
-**Language-specific patterns:**
-- Python: `__pycache__/`, `*.py[cod]`, `*.egg-info/`, `.pytest_cache/`, `venv/`, `.venv/`
-- Node.js: `node_modules/`, `npm-debug.log*`, `yarn-error.log*`, `.npm/`, `dist/`, `build/`
-- Java: `target/`, `*.class`, `*.jar`, `*.war`
-- Go: `bin/`, `*.exe`, `vendor/`
-- Rust: `target/`, `Cargo.lock` (for binaries)
-- Ruby: `*.gem`, `.bundle/`, `vendor/bundle/`
-
-**IDE/Editor files:**
-- `.vscode/*` with exclusions for shared config:
-  - `!.vscode/settings.json`
-  - `!.vscode/extensions.json`
-  - `!.vscode/launch.json` (if present)
-- `.idea/`
-- `*.swp`, `*.swo`, `*~`
-- `.DS_Store`
-
-**Environment and secrets:**
-- `.env`
-- `.env.local`
-- `.env.*.local`
-- `*.pem`
-- `*.key`
-- `secrets.yml`
-
-**Build artifacts and logs:**
-- `*.log`
-- `logs/`
-- Build output directories detected from build config
-
-**OS files:**
-- `.DS_Store`
-- `Thumbs.db`
-- `desktop.ini`
-
-Preserve existing `.gitignore` entries, add comments for each section, and remove duplicates.
-
-## 4. IDE Configuration
-
-If `.vscode/` already exists, update the following files as needed. Do not create the `.vscode/` directory or new files inside it:
-
-> **Greenfield mode**: Generate IDE configuration based on the user's intended tech stack. Select extensions, formatters, and linters for the chosen language(s) and framework(s).
-
-### .vscode/extensions.json
-Based on detected tech stack, recommend essential extensions:
-
-**Core extensions:**
-- GitHub Copilot (`github.copilot`)
-- GitLens (`eamodio.gitlens`)
-
-**Language-specific extensions:**
-- Python: Python extension, Pylint, Black formatter
-- JavaScript/TypeScript: ESLint, Prettier
-- Java: Extension Pack for Java, Spring Boot tools
-- Go: Go extension
-- Rust: rust-analyzer
-- Ruby: Ruby extension, Solargraph
-
-**Framework-specific tools:**
-- React: ES7+ React snippets
-- Vue: Volar
-- Angular: Angular Language Service
-- Django: Django template support
-
-**Testing frameworks:**
-- Jest, Pytest, JUnit extensions as appropriate
-
-Example format:
-```json
-{
-  "recommendations": [
-    "github.copilot",
-    "eamodio.gitlens",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
-  ]
-}
-```
-
-### .vscode/settings.json
-Configure workspace settings for consistency:
-
-**Formatter configuration:**
-- `"editor.formatOnSave": true`
-- Set default formatter based on language (Prettier, Black, rustfmt, etc.)
-
-**Linter configuration:**
-- Enable linters detected in the project
-- Configure lint-on-save if appropriate
-
-**Language-specific settings:**
-- Python: Set Python path, enable type checking
-- JavaScript/TypeScript: Configure module resolution
-- Set appropriate tab size based on existing code patterns
-
-**File associations:**
-- Map uncommon file extensions to correct languages
-
-**Editor preferences:**
-- Line endings (LF vs CRLF based on existing files)
-- Trim trailing whitespace
-- Insert final newline
-
-Example format:
-```json
-{
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true
-}
-```
-
-## 5. GitHub Templates
-
-### .github/ISSUE_TEMPLATE/bug_report.md
-```markdown
----
-name: Bug Report
-about: Report a bug or unexpected behavior
-title: '[BUG] '
-labels: bug
 ---
 
-## Description
-A clear and concise description of the bug.
+## 2. Coding Standards & AGENTS.md
 
-## Steps to Reproduce
-1. 
-2. 
-3. 
+Create or update `AGENTS.md` at the repo root. This is the universal instruction file read natively by GitHub Copilot, OpenAI Codex, Cursor, Gemini CLI, VS Code, and OpenCode. A single file provides broad multi-tool coverage.
 
-## Expected Behavior
-What you expected to happen.
+> **Brownfield requirement**: All coding standards in `AGENTS.md` must be derived from actual patterns detected in Section 1. Do not invent or assume conventions — reflect what the codebase already does. Where no clear pattern exists, use `# TODO: Define convention` as a placeholder.
 
-## Actual Behavior
-What actually happened.
+### Root `AGENTS.md` Size Policy (mandatory)
 
-## Environment
-- OS: 
-- Browser/Runtime version: 
-- Project version/commit: 
-
-## Additional Context
-Add any other context, screenshots, or logs.
-```
-
-### .github/ISSUE_TEMPLATE/feature_request.md
-```markdown
----
-name: Feature Request
-about: Suggest a new feature or enhancement
-title: '[FEATURE] '
-labels: enhancement
----
-
-## Problem Statement
-Describe the problem or need this feature would address.
-
-## Proposed Solution
-Describe your proposed solution or feature.
-
-## Alternatives Considered
-What alternatives have you considered?
-
-## Use Case
-Describe specific use cases for this feature.
-
-## Acceptance Criteria
-- [ ] 
-- [ ] 
-- [ ] 
-
-## Additional Context
-Add any other context, mockups, or examples.
-```
-
-### .github/PULL_REQUEST_TEMPLATE.md
-```markdown
-## Description
-Brief description of the changes in this PR.
-
-## Type of Change
-- [ ] Bug fix (non-breaking change fixing an issue)
-- [ ] New feature (non-breaking change adding functionality)
-- [ ] Breaking change (fix or feature causing existing functionality to break)
-- [ ] Documentation update
-- [ ] Refactoring (no functional changes)
-- [ ] Performance improvement
-- [ ] Dependency update
-
-## Related Issues
-Closes #
-Related to #
-
-## Changes Made
-- 
-- 
-- 
-
-## Testing Performed
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] Manual testing completed
-- [ ] All tests passing locally
-
-Describe specific test scenarios:
-- 
-- 
-
-## Documentation
-- [ ] README updated (if applicable)
-- [ ] API documentation updated (if applicable)
-- [ ] Architecture docs updated (if applicable)
-- [ ] ADR created (if architectural decision made)
-
-## Checklist
-- [ ] Code follows project style guidelines
-- [ ] Self-review completed
-- [ ] Comments added for complex logic
-- [ ] No new warnings generated
-- [ ] Dependent changes merged and published
-- [ ] No secrets or sensitive data committed
-
-## Screenshots (if applicable)
-
-## Additional Notes
-```
-
-## 6. CODEOWNERS File
-
-Do not create or modify `.github/CODEOWNERS` as part of this onboarding flow.
-
-## 7. Pre-commit Hooks Configuration
-
-Create `.pre-commit-config.yaml` based on detected languages:
-
-> **Greenfield mode**: Generate pre-commit hooks (or ecosystem-native equivalent) for the user's intended language(s). Include universal hooks plus language-specific hooks for the chosen stack.
-
-**Universal hooks:**
-- Trailing whitespace removal
-- End-of-file fixer
-- Check for merge conflicts
-- Check for large files
-- Prevent commit of secrets (using detect-secrets or similar)
-
-**Language-specific hooks:**
-- Python: black, isort, flake8, mypy
-- JavaScript/TypeScript: prettier, eslint
-- Go: gofmt, golint
-- Rust: rustfmt, clippy
-- Ruby: rubocop
-
-When generating this file, look up the latest stable release tags for each repository. Do not hardcode versions — they become outdated quickly.
-
-Example format:
-```yaml
-# IMPORTANT: Replace rev values with latest stable release tags before committing.
-repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: # latest from https://github.com/pre-commit/pre-commit-hooks/releases
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-merge-conflict
-      - id: check-added-large-files
-      
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: # latest from https://github.com/Yelp/detect-secrets/releases
-    hooks:
-      - id: detect-secrets
-
-  # Language-specific hooks based on detection
-```
-
-Keep hooks fast (< 2 seconds total) to avoid developer friction.
-
-> **Alternative for non-Python projects**: If `pre-commit` is not a good fit, consider alternatives such as `lefthook`. Do not create `.husky/` as part of this onboarding flow.
-
-## 8. Custom Instructions
-
-Create or update `AGENTS.md` at the repo root (universal source of truth for AI tools):
-
-> **Why AGENTS.md?** This is the universal instruction format read natively by GitHub Copilot (Aug 2025+), OpenAI Codex, Cursor, Gemini CLI, VS Code, and OpenCode. A single file covers all major AI coding tools. For GitHub Copilot-only setups, `.github/copilot-instructions.md` also continues to work — see `docs/README.ai-tools-guide.md` for setup strategies.
-
-> **Greenfield mode**: Populate the custom instructions with the user's intended tech stack. Fill in language, framework, and architecture fields based on their answers rather than leaving them blank. Add recommended patterns and conventions for the chosen stack.
-
-### Root `AGENTS.md` size and scope policy (mandatory)
-
-Keep root `AGENTS.md` **under 100 lines**.
-
-Root is for universal, always-on guidance only:
+Keep root `AGENTS.md` **under 100 lines**. Root contains only universal, always-on guidance:
 - Project overview (language/framework/architecture, short form)
-- Core coding standards summary
-- Command shortlist (build/test/dev/start)
+- Detected coding standards summary
+- Command shortlist (build, test, lint, dev)
 - Critical security guardrails
-- Short docs-update rule
-- Delegation index (names only; no long matrices)
+- Docs-update rule (short pointer)
+- Sub-agent delegation index
 
-Do **not** put long checklists, large tables, ADR templates, detailed doc structure prose, or extended examples in root `AGENTS.md`.
+Do **not** put long checklists, ADR templates, doc format prose, or extended examples in root `AGENTS.md`.
 
-### Nested `AGENTS.md` decomposition (mandatory when content is too long)
+### Nested `AGENTS.md` decomposition (when content exceeds 100 lines)
 
-When content would exceed 100 lines, split into nested files and reference them from root.
-
-Preferred nested targets (create only when relevant to detected stack):
+Split verbose content into nested files and reference them from root:
+- `docs/AGENTS.md` — ADR/context/researchReport documentation process details
 - `app/AGENTS.md` — route/framework-specific implementation rules
 - `components/AGENTS.md` — UI/component conventions and accessibility rules
-- `lib/AGENTS.md` — shared utility, security sink, and integration guidance
-- `docs/AGENTS.md` — ADR/context/architecture documentation process details
-- `.github/AGENTS.md` — CI/workflow/release/review automation conventions
+- `lib/AGENTS.md` — shared utility and integration guidance
+- `.github/AGENTS.md` — CI/workflow/review automation conventions
 
 Rules:
 1. Root keeps global constraints and short pointers to nested files.
-2. Nested files hold verbose/scoped guidance only; avoid repeating root content.
+2. Nested files hold verbose/scoped guidance only — avoid repeating root content.
 3. If a section applies to one directory, move it out of root.
-4. Keep each nested file focused on one concern.
+
+### Root `AGENTS.md` Template
 
 ```markdown
-# Project-Specific Guidelines for GitHub Copilot
+# [Project Name] — AI Agent Instructions
 
 ## Project Overview
-[Auto-generated based on codebase analysis]
-- Primary language(s): 
-- Framework(s): 
-- Architecture pattern: 
+- Language(s): [detected]
+- Framework(s): [detected]
+- Architecture: [detected — e.g., MVC, layered, hexagonal, feature-based]
+- Package manager: [detected]
 
 ## Coding Standards
 
-### Language & Framework Versions
-[List detected versions of key dependencies]
+### Style
+- Naming: [detected per context — e.g., camelCase for variables/functions, PascalCase for classes/components, UPPER_SNAKE for constants]
+- Files: [detected — e.g., kebab-case, PascalCase for components]
+- Imports: [detected ordering/grouping pattern]
+- Error handling: [detected — e.g., throw typed errors, return Result types, use error callbacks]
+- Async: [detected — e.g., async/await preferred, no raw promise chains]
 
-### Code Style
-[Document observed patterns:]
-- Naming conventions (camelCase, snake_case, PascalCase)
-- File organization patterns
-- Import/module structure
-- Error handling patterns
-- Testing patterns observed
+### Testing
+- Framework: [detected]
+- File naming: [detected — e.g., *.test.ts co-located, *.spec.ts in __tests__/]
+- Structure: [detected — e.g., describe/it, test classes]
+- Mocking: [detected — e.g., vi.mock, jest.spyOn, no manual mocks]
 
-### Testing Conventions
-- Test file naming: 
-- Test framework: 
-- Coverage expectations: 
-- Mocking approach: 
+### API/Interface Conventions
+[Detected patterns — e.g., RESTful resource naming, response envelope shape, error format]
 
-## Documentation
-- For detailed docs process rules, see `docs/AGENTS.md` when present.
-- Keep root-level policy short; put ADR/context templates in nested guidance.
+## Build & Development
+- Build: [detected or # TODO]
+- Test: [detected or # TODO]
+- Lint: [detected or # TODO]
+- Dev server: [detected or # TODO]
 
-## Information Sources Priority
-
-### 1. Primary: Documentation Lookup Tools
-- **Use available documentation lookup tools** (e.g., Context7 MCP server, library documentation fetchers) for all technical documentation lookups when available
-- Look up:
-  - Library and framework documentation
-  - API references
-  - Language features and syntax
-  - Best practices for current versions
-- If no documentation tools are configured, proceed to first-party sources below
-
-### 2. Secondary: First-Party Official Documentation
-Use first-party official documentation sources (especially if documentation tools above are unavailable):
-- learn.microsoft.com for Microsoft technologies
-- Official GitHub repositories and documentation sites
-- Vendor-maintained documentation portals
-- Language specification documents
-
-### 3. Never Rely Solely on Training Data
-- Do not use potentially outdated training data for:
-  - Current library versions
-  - Recent framework features
-  - Breaking changes in newer versions
-  - Deprecated APIs or patterns
-- Always verify current best practices with official sources
-
-## Security Guidelines
-
-### Critical Requirements
-- **Never commit secrets, credentials, API keys, or tokens** to the repository
-- Always use environment variables for sensitive configuration
+## Security
+- Never commit secrets, credentials, API keys, or tokens
+- Use environment variables for sensitive configuration
 - Validate and sanitize all user input
-- Use parameterized queries to prevent SQL injection
-- Implement proper authentication and authorization
-- Keep dependencies up to date with security patches
-
-### Code Review Focus
-- Input validation and sanitization
-- Authentication and authorization checks
-- Secure data handling (encryption, hashing)
-- Error handling that doesn't leak sensitive information
-- Dependency vulnerabilities
-
-## Build & Deployment
-[Document detected build and deployment patterns]
-- Build command: 
-- Test command: 
-- Development server: 
-- Production build: 
+- Use parameterized queries — no string interpolation in queries
+- Keep dependencies patched
 
 ## Documentation Update Policy
-- For non-trivial changes, run docs impact check in same turn.
-- Update impacted files under `docs/`.
-- See `docs/AGENTS.md` for detailed ADR/context/architecture triggers and formats.
+For non-trivial changes, update docs in the same turn without asking:
+- `docs/TODO.md` — update task tracker
+- `docs/adr/` — create ADR for architectural decisions
+- `docs/context/` — add research and planning notes
+- `docs/architecture/` — update for system design changes
+- `docs/researchReports/` — add formal research findings
+See `docs/AGENTS.md` for formats and triggers. A task is incomplete until docs are updated.
+
+## Information Sources
+1. **Documentation tools** (Context7 MCP, library fetchers) — use when available
+2. **First-party official docs** — learn.microsoft.com, GitHub docs, vendor portals
+3. **Never rely on training data alone** for current versions, deprecations, or breaking changes
 
 ## Sub-Agent Delegation
-
-Delegate to specialized agents in `.github/agents/` when available:
-- `@research-agent` for technical research
-- `@code-reviewer` for code quality review
-- `@security-specialist` for security review
-- `@documentation-specialist` for docs/ADR/context updates
+- `@research-agent` — technical research, dependency lookups, codebase analysis
+- `@code-reviewer` — code quality, standards adherence, maintainability
+- `@security-specialist` — security review, vulnerability analysis
+- `@documentation-specialist` — ADRs, architecture docs, context and research notes
+[See `.github/agents/` for additional stack-specific agents when installed]
 ```
 
-If a generated root `AGENTS.md` is over 100 lines, automatically split by concern into nested `AGENTS.md` files and regenerate root until compliant.
+### Nested `docs/AGENTS.md`
 
-#### Nested `AGENTS.md` skeleton examples
-
-```markdown
-# app/AGENTS.md
-
-## Scope
-Rules for route handlers, rendering/data-fetching patterns, and framework-specific constraints.
-
-## Conventions
-- Keep this file scoped to `app/**`.
-- Avoid repeating global rules from root `AGENTS.md`.
-```
+Create `docs/AGENTS.md` with detailed documentation process rules:
 
 ```markdown
 # docs/AGENTS.md
 
 ## Scope
-Rules for ADR creation, context note updates, architecture documentation, and task tracker maintenance.
+Documentation process for ADRs, context notes, architecture docs, and research reports.
 
-## Conventions
-- Keep templates and verbose documentation process details here.
-- Root `AGENTS.md` should only contain short docs policy pointers.
+## ADR Rules
+- Location: `docs/adr/` — naming: `NNNN-short-title.md`
+- ADRs are append-only and immutable — never delete or edit an existing ADR
+- Required sections: Status, Context, Options Considered, Decision, Consequences
+- Write an ADR when: structural changes, dependency additions, non-functional requirement
+  decisions, interface design choices, or technology selections are made
+- If a decision is reversed: create a new ADR that supersedes the old one (do not edit)
+
+## Architecture Docs
+- Location: `docs/architecture/`
+- Update when: system design changes, new components added, data flow modified
+- Each doc should include: purpose, current state, key design decisions, diagrams (Mermaid preferred)
+
+## Context Notes
+- Location: `docs/context/` — naming: `YYYY-MM-DD-topic-name.md`
+- Informal and exploratory: research sessions, planning discussions, investigation summaries
+- Required sections: Summary (2–3 sentences), Findings, Open Questions
+- Maintain `docs/context/index.md` linking related notes to resulting ADRs
+
+## Research Reports
+- Location: `docs/researchReports/` — naming: `YYYY-MM-DD-topic-name.md`
+- Formal and reference-grade: technology evaluations, comparative analyses, spike results
+- Required sections: Purpose, Methodology, Findings, Recommendations, References
+- Use when findings directly justify an architectural decision or inform an ADR
+
+## Task Tracker
+- `docs/TODO.md` — living task tracker; update the `Last Updated` date on every change
+- Sections: active work, Blocked (with dependency notes), Follow-ups, Definition of Done
+- Add newly discovered tasks during execution; mark completed immediately
 ```
 
-## 9. Custom Agents
+If a generated root `AGENTS.md` exceeds 100 lines, split verbose content into nested files and regenerate root until compliant.
 
-Install specialized GitHub Copilot agents into `.github/agents/` using onboarding tags from this repository:
-- `onboarding-core` → mandatory
-- `onboarding-expanded` → optional, install only when the detected repository stack indicates relevance
+---
+
+## 3. Custom Agents Installation
+
+Install specialized GitHub Copilot agents into `.github/agents/`. All `onboarding-core` tagged agents are mandatory.
 
 ### Known-Good Install Snippet (macOS/Linux)
-
-Use this exact snippet for reliable installation of mandatory onboarding-core agents plus conditionally selected onboarding-expanded agents:
 
 ```bash
 set -euo pipefail
@@ -692,11 +250,9 @@ core_agents=(
 
 expanded_agents=()
 
-# Populate these booleans from Section 1 detected stack (or greenfield user-provided stack)
-# has_frontend=true|false
-# has_backend=true|false
-# has_data=true|false
-# has_devops=true|false
+# Set these booleans from Section 1 detection:
+# has_frontend=true|false  has_backend=true|false
+# has_data=true|false      has_devops=true|false
 
 if [[ "${has_frontend:-false}" == "true" ]]; then
   expanded_agents+=(frontend-specialist.agent.md)
@@ -738,338 +294,356 @@ for f in "${core_agents[@]}"; do
   grep -q 'onboarding-tags' ".github/agents/$f"
 done
 
-# Optional verification (only for selected expanded agents)
-for f in "${expanded_agents[@]}"; do
-  test -s ".github/agents/$f"
-  head -n 1 ".github/agents/$f" | grep -q '^---'
-  grep -q 'onboarding-tags' ".github/agents/$f"
-done
-
 echo "VERIFIED:all-onboarding-core-agents"
 ```
 
-### Tag-Driven Agent Selection (Mandatory Core + Optional Expanded)
+### Tag-Driven Agent Selection
 
-Use `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` as the canonical source of agent metadata.
-Do not treat the target repository's local `agents/` directory (or absence of one) as a source-of-truth signal for mandatory onboarding agent availability.
+Use `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` as the canonical source. Do not treat the target repo's local `agents/` directory as a source signal.
 
-1. Inspect all files in `https://github.com/NoahJenkins/Copilot-Stuff/tree/main/agents` matching `*.agent.md`.
-2. Parse each file for the metadata comment format `<!-- onboarding-tags: ... -->`.
-3. Select all files tagged `onboarding-core` as mandatory and install each one into target repo `.github/agents/` with the same filename.
-4. Select files tagged `onboarding-expanded` as optional candidates. Install only those that match detected stack/repo signals:
-  - Frontend indicators (UI framework, component directories, client bundle tooling) → `frontend-specialist.agent.md`
-  - Backend indicators (API/server frameworks, service entrypoints) → `backend-specialist.agent.md`
-  - Data indicators (DB drivers, ORM usage, migrations/schema tooling) → `data-specialist.agent.md`
-  - DevOps indicators (CI workflows, Docker/Kubernetes/Terraform, release automation) → `devops-specialist.agent.md`
-5. In greenfield mode, derive optional selection from user-provided intended stack instead of filesystem scanning.
-6. If no `onboarding-core` agents are found, stop and report a configuration error in the summary.
-7. Invoke delegated tasks using the matching Copilot agent tag (for example, `documentation-specialist.agent.md` → `@documentation-specialist`).
+1. Inspect all `*.agent.md` files and parse `<!-- onboarding-tags: ... -->` metadata.
+2. Install all `onboarding-core` tagged files as mandatory.
+3. Install `onboarding-expanded` files only when detected stack warrants:
+   - Frontend indicators (UI framework, component dirs, client bundler) → `frontend-specialist.agent.md`
+   - Backend/service indicators (API/server frameworks, service entrypoints) → `backend-specialist.agent.md`
+   - DB/ORM/migrations → `data-specialist.agent.md`
+   - CI/CD/infrastructure (workflows, Docker/K8s/Terraform) → `devops-specialist.agent.md`
+4. In greenfield mode, derive selection from user-provided stack.
+5. If no `onboarding-core` agents resolve, stop and report a configuration error.
 
-### Failure Reporting (Canonical Source Only)
+### Download Requirements
 
-- Any missing-agent error must reference canonical GitHub discovery/download/validation outcomes from `main/agents`.
-- Do not report missing agents based on local root checks such as "repository root has no `agents/*.agent.md` metadata sources".
-- If mandatory agents cannot be resolved from canonical source, report that agent installation is blocked due to canonical source resolution failure and include which canonical files/tags failed.
-- If optional `onboarding-expanded` agents cannot be resolved, continue onboarding and report a non-blocking warning for those optional agents.
+- Canonical raw URLs: `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/<file>.agent.md`
+- Validate before install: HTTP 200, non-empty content, starts with `---`, contains `onboarding-tags`
+- Print `INSTALLED:<filename>` after each success
+- Retry failed downloads up to 3 times; if still failing, fail with error (no local fallback for core agents)
+- Optional `onboarding-expanded` failures are non-blocking warnings
 
-### Download Source Requirements
+### Failure Handling
 
-- Use canonical raw GitHub URLs (no cache-busting query params):
-  - `https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/<agent-file>.agent.md`
-- Download each selected `onboarding-core` and conditionally selected `onboarding-expanded` agent from the canonical raw URL first.
-- **Execution environment requirement (high priority):**
-  - For macOS/Linux, use shell-based download/install flow (`curl` or equivalent) as the required implementation path.
-  - PowerShell (`.ps1`) support is optional and Windows-only; do not make `.ps1` a prerequisite for Unix environments.
-  - Prefer **one agent per command** (or a very short loop) over long multi-line scripts in a single terminal invocation; long scripts can partially execute in some agent runners.
-  - Use strict curl flags for reliability: `--fail --location --silent --show-error --retry 3 --retry-all-errors --retry-delay 1`.
-  - Validate each downloaded file before install: HTTP 200, non-empty content, starts with front matter `---`, and includes `onboarding-tags` metadata.
-  - After each install, print deterministic status output (e.g., `INSTALLED:<filename>`).
-  - Perform a mandatory post-install verification pass:
-    - Confirm every selected `onboarding-core` filename exists in `.github/agents/`
-    - Confirm each installed file is non-empty and still contains front matter + `onboarding-tags`
-    - If any expected status line or file is missing, treat the step as failed and retry that file up to 3 times
-  - Perform optional verification for selected `onboarding-expanded` agents using the same checks, but treat failures as non-blocking warnings.
-  - Retry failed downloads up to 3 times; if still failing, stop and report an error for that mandatory agent.
-- If download fails for any selected `onboarding-core` agent after retries, do not use local fallback sources; fail the onboarding agent-install step and report the blocking error in the summary report.
-- If download fails for a selected `onboarding-expanded` agent after retries, continue and report the optional-agent warning in the summary report.
-- Do not hardcode individual agent file contents in this prompt.
-- Preserve front matter and body exactly as published in the source artifact.
-- If target file already exists, merge by keeping existing customizations and appending any missing canonical sections under `# Added by OnboardCopilot`.
+- If terminal output shows partial execution (setup lines appear but no `INSTALLED:` lines), re-run in smaller units (one file per command)
+- Record in the summary report whether install succeeded first attempt or required recovery
+- Any missing-agent error must reference canonical GitHub outcomes — do not report based on local root checks
 
-#### Reliability Failure Handling
+---
 
-- If the terminal output suggests partial execution (for example, only shell setup lines appear and no `INSTALLED:` lines), do not assume success.
-- Re-run installation in smaller units (single-file commands) and re-verify each file.
-- Record, in the summary report, whether installation succeeded on first attempt or required recovery retries.
+## 4. Agent Orchestration
 
-### Delegation Mapping
+Define how agents collaborate. After agents are installed, document delegation patterns in `AGENTS.md` and `docs/AGENTS.md`.
 
-After installing `onboarding-core` agents, ensure these task mappings remain available. If a mapped agent is missing, perform the task directly and note it in the summary report:
+### Delegation Map
 
-- Research tasks → `@research-agent`
-- Code quality review tasks → `@code-reviewer`
-- Security tasks → `@security-specialist`
-- Documentation tasks → `@documentation-specialist`
+Ensure root `AGENTS.md` delegation index reflects all installed agents:
 
-When installed, use these optional `onboarding-expanded` mappings for stack-specific work:
-- Frontend architecture/performance/accessibility tasks → `@frontend-specialist`
-- Backend/API/reliability tasks → `@backend-specialist`
-- Data modeling/migration/query tasks → `@data-specialist`
-- CI/CD/deployment/runtime operations tasks → `@devops-specialist`
+| Task Type | Primary Agent | Notes |
+|-----------|--------------|-------|
+| Technical research, dependency lookups | `@research-agent` | Use for all codebase/library research |
+| Code quality, standards review | `@code-reviewer` | Escalate security findings to `@security-specialist` |
+| Security scan, vulnerability analysis | `@security-specialist` | Provide dependency manifest paths and tech stack |
+| ADR authoring, architecture/context docs | `@documentation-specialist` | Provide all context gathered before delegating |
+| Frontend architecture/performance | `@frontend-specialist` (if installed) | Fallback: `@code-reviewer` |
+| Backend/API/reliability | `@backend-specialist` (if installed) | Fallback: `@code-reviewer` |
+| Database/schema/migrations | `@data-specialist` (if installed) | Fallback: `@code-reviewer` |
+| CI/CD/deployment | `@devops-specialist` (if installed) | Fallback: `@security-specialist` for pipeline security |
 
-## 10. README Enhancement
+### Handoff Protocol
 
-If `README.md` exists, enhance it with missing sections. If it doesn't exist, create a comprehensive one:
+Add to `docs/AGENTS.md`:
 
-### Required Sections
-
-**Project Description:**
-- Clear description of what the project does
-- Key features and capabilities
-
-**Quick Start:**
 ```markdown
-## Quick Start
+## Agent Handoff Protocol
+When delegating to a sub-agent, always provide:
+- Task objective and scope
+- Relevant file paths from Section 1 analysis
+- Prior findings (previous agent output, if any)
+- Expected output format
 
-### Prerequisites
-- [Language/Runtime] version X.X
-- [Required tools]
-
-### Installation
-1. Clone the repository
-2. Install dependencies: `[command]`
-3. If `.env.example` exists, copy environment template: `cp .env.example .env`
-4. Configure environment variables (see Configuration section)
-
-### Running Locally
-Development server: `[command]`
-Application runs at: `http://localhost:[port]`
-
-### Testing
-Run tests: `[command]`
-Run with coverage: `[command]`
-
-### Building
-Production build: `[command]`
+Escalation patterns:
+- Research findings that require decisions → @documentation-specialist creates ADR
+- Code review findings with security impact → escalate to @security-specialist
+- Any architectural change discovered → @documentation-specialist creates context note + ADR
 ```
 
-**Configuration:**
-- Link to `.env.example` (if present)
-- Describe required vs optional environment variables
-- External service dependencies
+---
 
-**Documentation:**
+## 5. Documentation Structure
+
+Create the following directories and files if they don't exist. If they exist, merge and preserve all current content.
+
+### docs/architecture/
+- Purpose: High-level architecture overviews, system diagrams, data flow documentation
+- Update when: overall system design changes, new components added, interfaces modified
+- Each document: purpose, current state, key design decisions, diagrams (Mermaid preferred)
+
+### docs/adr/ (Architecture Decision Records)
+- Purpose: Numbered decision records for significant architectural choices
+- Naming: `NNNN-short-title.md` (e.g., `0001-adopt-postgresql.md`)
+- ADRs are append-only and immutable — never delete or edit existing ones
+- Required sections: Status, Context, Options Considered, Decision, Consequences
+- Create a new ADR to supersede an old one if a decision is reversed
+
+### docs/context/
+- Purpose: Exploratory research, planning session notes, working documentation
+- Naming: `YYYY-MM-DD-topic-name.md`
+- Required sections: Summary (2–3 sentences), Findings/Options, Open Questions
+- Create `docs/context/index.md` grouping related notes and linking to ADRs
+
+### docs/researchReports/
+- Purpose: Formal, reference-grade research — technology evaluations, comparative analyses, spike results
+- Naming: `YYYY-MM-DD-topic-name.md`
+- Required sections: Purpose, Methodology, Findings, Recommendations, References
+- Use when findings directly inform an architectural decision or ADR
+
+### docs/TODO.md
+Create if it does not exist; merge if it does. Add a `Last Updated` line (ISO date). Use this template when creating new:
+
 ```markdown
-## Documentation
+# Project Task Tracker
 
-- [Architecture Documentation](./docs/architecture/)
-- [Architecture Decision Records](./docs/adr/)
-- [Planning & Research Notes](./docs/context/)
-- [Project Task Tracker](./docs/TODO.md)
+Last Updated: [YYYY-MM-DD]
+
+> Living document for major project tasks. Update continuously during planning and implementation.
+
+## Onboarding
+- [ ] Run codebase analysis and extract coding standards
+- [ ] Author AGENTS.md with detected coding standards
+- [ ] Install and verify onboarding-core agents
+- [ ] Define agent orchestration patterns
+- [ ] Establish docs structure (adr/, architecture/, context/, researchReports/)
+- [ ] Create initial ADR
+
+## Architecture & Documentation
+- [ ] Add/update architecture documentation
+- [ ] Add context notes and update context/index.md
+- [ ] Record architectural decisions as ADRs
+
+## Security & Quality
+- [ ] Run dependency/security audit
+- [ ] Review secret handling and .gitignore coverage
+- [ ] Address critical/high findings
+
+## Blocked
+- [ ] # TODO: Add blocked tasks with dependency notes
+
+## Follow-ups
+- [ ] # TODO: Add team-specific onboarding tasks
+
+## Definition of Done
+- [ ] Acceptance criteria met
+- [ ] Relevant docs updated (ADRs, context notes, architecture docs as applicable)
+- [ ] Security/quality checks for the change completed
+- [ ] Follow-up work captured as new TODO items
 ```
 
-**Contributing:**
-- Link to PR template
-- Link to issue templates
-- Basic contribution guidelines
+---
 
-**License:**
-- Include license information if present
+## 6. Initial ADR
 
-## 11. CI/CD Pipeline Documentation
+> **Sub-agent delegation**: Use `@documentation-specialist`. It is pre-configured with ADR format rules and immutability requirements.
 
-> **Skip condition**: If no CI/CD configuration exists (`.github/workflows/`, `.circleci/`, `.gitlab-ci.yml`, `Jenkinsfile`, etc.), skip this section and note the absence in the summary report.
-
-> **Sub-agent delegation**: Use `@documentation-specialist` to create the CI/CD pipeline documentation. Provide it with the CI/CD configuration file paths detected in Section 1.
-
-If CI/CD configuration exists, create `docs/architecture/ci-cd-pipeline.md` documenting:
-
-- **Overview**: Brief description of the CI/CD approach
-- **Pipeline Stages**: For each stage (build, test, security/quality, deploy), document:
-  - Trigger conditions
-  - Actions performed
-  - Success criteria
-  - Typical duration (if determinable)
-- **Deployment Environments**: For each environment (staging, production), document triggers, URLs, deployment method, and rollback procedures
-- **Required Secrets/Environment Variables**: List all secrets and environment variables referenced in CI/CD config (names only, never values)
-- **Troubleshooting**: Common failure scenarios and solutions based on the pipeline configuration
-- **Maintenance**: How to update CI dependencies and modify pipeline configuration
-
-## 12. Initial ADR
-
-> **Sub-agent delegation**: Use `@documentation-specialist` to create this ADR. It is pre-configured with ADR naming conventions, required sections, and immutability rules.
-
-Create `docs/adr/0001-adopt-documentation-structure.md`:
+Create `docs/adr/0001-adopt-copilot-agent-setup.md`:
 
 ```markdown
-# ADR 0001: Adopt Structured Documentation Framework
+# ADR 0001: Adopt GitHub Copilot Agent Setup with Living Documentation
 
 ## Status
 Accepted
 
 ## Context
-This repository lacked a systematic approach to documenting architectural decisions, system design, and technical research. This created several problems:
+This repository needed a systematic approach to:
+1. Configure GitHub Copilot with accurate, repo-specific coding standards extracted from the
+   actual codebase — not generic assumptions
+2. Install and orchestrate specialized AI agents for research, review, security, and documentation
+3. Establish a living documentation structure that stays in sync with code evolution
 
-- New developers struggled to understand why certain technical choices were made
-- Historical context for decisions was lost over time
-- Architecture knowledge existed only in individual team members' heads
-- Onboarding new team members required extensive verbal knowledge transfer
-- Technical debt decisions were made without clear documentation of trade-offs
-
-The team needed a lightweight but structured approach to:
-1. Document significant architectural decisions with their context and rationale
-2. Maintain high-level architecture documentation
-3. Preserve research and exploratory work that informs decisions
-4. Create a searchable knowledge base for the project
+Without this setup, AI tooling operates on generic patterns misaligned with actual conventions,
+documentation knowledge decays over time, and architectural decisions lose their rationale.
 
 ## Options Considered
 
-### Option 1: Wiki-based documentation
+### Option 1: No custom configuration
+**Pros:** Zero overhead
+**Cons:** Copilot produces generic suggestions misaligned with actual patterns; no specialized agents
+
+### Option 2: Custom instructions only (no agents, no docs structure)
+**Pros:** Simple; low maintenance
+**Cons:** Single AI context handles all concerns; no specialization; no decision trail
+
+### Option 3: Custom instructions + specialized agents + living documentation
 **Pros:**
-- Easy to edit
-- Good search functionality
-- Familiar to most developers
+- AGENTS.md grounded in real codebase conventions
+- Specialized agents handle research, review, security, and documentation without context pollution
+- Architectural decisions have traceable, searchable history in-repo
+- /sync-agents propagates setup to Claude Code, Cursor, Windsurf, and other AI tools
 
 **Cons:**
-- Often becomes outdated and unmaintained
-- Separate from code repository
-- No version control integration
-- Difficult to enforce structure
-
-### Option 2: Comprehensive formal documentation
-**Pros:**
-- Very detailed
-- Professional appearance
-
-**Cons:**
-- High maintenance burden
-- Slows down development
-- Often ignored by developers
-- Becomes outdated quickly
-
-### Option 3: Structured documentation in repository (ADR + Architecture + Context)
-**Pros:**
-- Version-controlled alongside code
-- Lightweight and focused
-- ADRs provide historical decision context
-- Easy to link code changes to decisions
-- Low barrier to contribution
-
-**Cons:**
-- Requires discipline to maintain
-- Less discoverable than a wiki
-- Needs team buy-in
+- Initial setup investment
+- Team must maintain ADR discipline for significant decisions
 
 ## Decision
-Adopt a three-tier structured documentation framework within the repository:
-
-1. **docs/adr/**: Architecture Decision Records for significant decisions
-2. **docs/architecture/**: High-level system design and component documentation
-3. **docs/context/**: Research notes and exploratory documentation
-
-This framework will be enforced through:
-- Custom GitHub Copilot agents that encourage documentation
-- PR templates that prompt for ADRs when appropriate
-- Onboarding materials that explain the structure
+Adopt Option 3:
+- `AGENTS.md` as universal instruction file (read natively by Copilot, Codex, Cursor, Gemini CLI, VS Code)
+- Core agent suite: `@research-agent`, `@code-reviewer`, `@security-specialist`, `@documentation-specialist`
+- Optional expanded agents based on detected stack
+- Docs structure: `docs/adr/`, `docs/architecture/`, `docs/context/`, `docs/researchReports/`
+- `/sync-agents` for ongoing propagation to all configured AI tools
 
 ## Consequences
 
 ### Positive
-- Architectural decisions will have clear, searchable historical context
-- New team members can understand "why" behind technical choices
-- Documentation lives with the code and evolves together
-- Low overhead compared to comprehensive documentation systems
-- GitHub Copilot agents can reference this documentation to provide better context
+- Copilot suggestions align with actual codebase conventions
+- Specialized agents handle concerns without polluting each other's context
+- Architectural decisions have traceable, searchable history
+- All AI tools in the workflow share the same project context via /sync-agents
 
 ### Negative
-- Requires team discipline to create ADRs for significant decisions
-- Initial learning curve for ADR format
-- Risk of documentation becoming outdated if not maintained
-- Need to establish what qualifies as "significant enough" for an ADR
+- Team must create ADRs for significant decisions (low friction, but requires discipline)
+- Agent instructions need review as codebase evolves
 
-### Mitigation Strategies
-- Create custom GitHub Copilot agents to prompt for documentation
-- Include ADR creation in PR checklist for architectural changes
-- Conduct periodic reviews of documentation during retrospectives
-- Keep ADR format simple and template-based to reduce friction
+### Mitigation
+- `docs/AGENTS.md` provides documentation triggers and format templates
+- PR template includes ADR prompt for architectural changes
+- Periodic `AGENTS.md` review during retrospectives
 ```
 
-## 13. Security Baseline Report
+---
 
-> **Sub-agent delegation**: Use `@security-specialist` to perform the security assessment. Provide it with the dependency manifest file paths and tech stack detected in Section 1. The security specialist will scan for vulnerabilities, secrets, and configuration issues.
+## 7. Security Baseline
 
-> **Greenfield mode**: Since there are no dependencies or code to scan, generate a proactive security checklist instead. Include common security considerations for the user's chosen tech stack (e.g., CORS configuration for web APIs, SQL injection prevention for database projects, secret management setup). Title it "Security Setup Checklist" rather than "Security Baseline Report".
+> **Sub-agent delegation**: Use `@security-specialist`. Provide detected dependency manifest paths and tech stack from Section 1.
 
-Create `docs/context/[YYYY-MM-DD]-security-baseline.md`:
+> **Greenfield mode**: No dependencies to scan. Generate a proactive security checklist for the intended stack instead. Title it "Security Setup Checklist".
 
-Perform initial security assessment:
+Create `docs/researchReports/[YYYY-MM-DD]-security-baseline.md`:
 
-**Dependency Analysis:**
-- Scan dependency manifest files
-- List direct and transitive dependencies with versions
-- Identify dependencies without pinned versions
-
-**Known Vulnerabilities:**
-- Run language-specific audit commands when available:
-  - Node.js: `npm audit` or `yarn audit`
-  - Python: `pip audit` or `safety check`
-  - Ruby: `bundle audit`
-  - Rust: `cargo audit`
-  - Go: `govulncheck ./...`
-- Check for `dependabot.yml` or `renovate.json` presence
-- Flag dependencies without lockfiles (lockfiles ensure reproducible builds and auditability)
-- Prioritize findings by severity (Critical, High, Medium, Low)
-- Identify outdated dependencies with security patches available
-
-**Secrets Detection:**
-- Scan codebase for patterns matching API keys, tokens, credentials
-- Verify `.gitignore` includes secret file patterns
-- Check for hard-coded passwords or keys
-
-**Security Configuration:**
-- Review security-related configuration
-- Check CI/CD for security scanning
-- Verify HTTPS/TLS usage
-
-Format the report as:
 ```markdown
 # Security Baseline Report
 *Generated: [Date]*
 
 ## Summary
-[2-3 sentence overview of security posture]
+[2–3 sentences: overall security posture and most critical findings]
 
 ## Critical Findings
-[List critical/high-severity issues requiring immediate attention]
+[Issues requiring immediate attention before production]
 
 ## Dependency Inventory
 - Total dependencies: [count]
 - Dependencies with known vulnerabilities: [count]
 - Outdated dependencies (>1 year): [count]
+- Missing lockfile: [yes/no — lockfiles ensure reproducible builds and auditability]
 
 ## Detailed Findings
 
 ### Known Vulnerabilities
-[List CVEs with severity and affected components]
+[CVEs with severity (Critical/High/Medium/Low) and affected components]
 
 ### Configuration Issues
-[List security configuration concerns]
+[Security configuration concerns]
 
 ### Secrets & Credentials
-[Report any detected secrets - DO NOT include actual values]
+[Detected patterns — DO NOT include actual values]
 
 ## Recommendations
 1. [Prioritized list of security improvements]
-2. 
-3. 
 
 ## Open Questions
 [Unresolved security concerns for team discussion]
 ```
 
-## 14. Summary Report
+**Audit commands by stack:**
+- Node.js: `npm audit` or `yarn audit`
+- Python: `pip audit` or `safety check`
+- Ruby: `bundle audit`
+- Rust: `cargo audit`
+- Go: `govulncheck ./...`
 
-> **Sub-agent delegation**: Use `@documentation-specialist` to compile the final onboarding report. Provide it with the complete results from all previous sections — technologies detected, files created, security findings, and any skipped sections.
+Check for `dependabot.yml` or `renovate.json` presence. Flag dependencies without lockfiles.
+
+---
+
+## 8. Sync to All AI Tools
+
+After completing setup, run `/sync-agents` to propagate `AGENTS.md` and `.github/agents/` to all configured AI coding tools in the repository.
+
+`/sync-agents` detects active AI tool configurations and:
+- Mirrors `AGENTS.md` into each detected tool's instruction format (Claude Code → `CLAUDE.md`, Cursor → `.cursor/rules/`, Windsurf → `.windsurf/rules/`, etc.)
+- Syncs `.github/agents/*.agent.md` to `.claude/agents/` as Claude Code sub-agents
+- Syncs `.github/skills/` to `.claude/skills/`
+- Reports all files written and any model normalization applied
+
+> **Why this matters**: `AGENTS.md` is read natively by GitHub Copilot, OpenAI Codex, OpenCode, and Cursor, but Claude Code, Windsurf, Cline, and others need synced copies. Running `/sync-agents` ensures all AI tools in your workflow share the same project context without maintaining separate files.
+
+---
+
+## 9. Optional Baseline Setup
+
+Complete these sections only when applicable. Check skip conditions before proceeding.
+
+### Environment Configuration
+
+**Skip if** no `.env` file exists in the repository.
+
+If `.env` exists:
+- Scan for environment variable patterns (`process.env.*`, `os.getenv()`, `os.environ[]`, `ENV['']`, `os.Getenv()`, `$VARIABLE`)
+- Create or update `.env.example` with all detected variables as empty or example values
+- Add security warning at top: `# ⚠️ Never commit actual secrets to version control`
+- Group by category (Database, API Keys, Feature Flags, etc.)
+- Mark required vs optional clearly
+
+### .gitignore Enhancement
+
+Update `.gitignore` with tech-stack patterns. Preserve all existing entries.
+
+Common additions by language:
+- Python: `__pycache__/`, `*.py[cod]`, `.pytest_cache/`, `venv/`, `.venv/`
+- Node.js: `node_modules/`, `dist/`, `build/`, `npm-debug.log*`
+- Java: `target/`, `*.class`, `*.jar`
+- Go: `bin/`, `*.exe`
+- Rust: `target/`
+- Universal: `.env`, `.env.local`, `.env.*.local`, `.DS_Store`, `Thumbs.db`, `*.log`, `*.pem`, `*.key`
+- IDE: `.idea/`, `.vscode/*` with exceptions for `!.vscode/settings.json`, `!.vscode/extensions.json`
+
+### IDE Configuration
+
+**Skip if** `.vscode/` does not already exist — do not create the directory.
+
+If `.vscode/` exists, update only:
+- `.vscode/extensions.json`: Add `github.copilot`, `eamodio.gitlens`, and language-appropriate extensions
+- `.vscode/settings.json`: Enable `editor.formatOnSave`, set default formatter, enable detected linters. Merge keys — never overwrite existing preferences.
+
+### GitHub Templates
+
+**Skip if** `.github/` does not already exist.
+
+If `.github/` exists, create if missing:
+- `.github/ISSUE_TEMPLATE/bug_report.md` — description, reproduction steps, expected/actual behavior, environment
+- `.github/ISSUE_TEMPLATE/feature_request.md` — problem statement, proposed solution, acceptance criteria
+- `.github/PULL_REQUEST_TEMPLATE.md` — change type, related issues, changes made, testing, documentation checklist (include ADR checkbox for architectural changes)
+
+### Pre-commit Hooks
+
+**Skip if** `pre-commit` would be an unusual dependency for this project's ecosystem.
+
+Create `.pre-commit-config.yaml` if appropriate:
+- Universal hooks: trailing whitespace, end-of-file fixer, merge conflict check, secrets detection
+- Language-specific: black/isort/flake8 (Python), prettier/eslint (JS/TS), gofmt (Go), rustfmt (Rust)
+- Look up latest stable release tags — do not hardcode versions
+- Keep total hook time < 2 seconds to avoid developer friction
+- For non-Python projects, prefer `lefthook` over requiring `pre-commit`; do not create `.husky/`
+
+### CI/CD Pipeline Documentation
+
+**Skip if** no CI/CD configuration exists (`.github/workflows/`, `.circleci/`, `.gitlab-ci.yml`, `Jenkinsfile`, etc.).
+
+> **Sub-agent delegation**: Use `@documentation-specialist` with detected CI/CD file paths.
+
+Create `docs/architecture/ci-cd-pipeline.md` documenting: pipeline stages (triggers, actions, success criteria), deployment environments, required secrets/env vars (names only), common failure scenarios, and how to update the pipeline.
+
+---
+
+## 10. Summary Report
+
+> **Sub-agent delegation**: Use `@documentation-specialist` with complete results from all previous sections.
 
 Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 
@@ -1078,147 +652,82 @@ Create `docs/context/[YYYY-MM-DD]-onboarding-report.md`:
 *Generated: [Date]*
 
 ## Executive Summary
-This repository has been automatically analyzed and configured with development best practices, documentation structure, GitHub Copilot custom instructions, and specialized agents.
+[2–3 sentences: what was set up, what was detected, and the key outcome]
 
 ## Onboarding Mode
-- [ ] **Brownfield** (existing codebase scanned)
-- [ ] **Greenfield** (scaffolded from intended tech stack)
+- [ ] Brownfield (existing codebase scanned)
+- [ ] Greenfield (scaffolded from intended tech stack)
 
 ## Technologies Detected
-> In greenfield mode, this section reflects the user's stated intended stack rather than detected dependencies.
+- Languages:
+- Frameworks:
+- Testing:
+- Build/CI:
 
-### Languages & Versions
-- 
+## Files Created / Modified
 
-### Frameworks & Libraries
-- 
-
-### Testing Tools
-- 
-
-### Build & CI/CD
-- 
-
-## Files & Directories Created
+### Copilot & Agent Configuration
+- [ ] `AGENTS.md` — root instructions with detected coding standards
+- [ ] `docs/AGENTS.md` — detailed documentation process rules
+- [ ] `.github/agents/` — installed agents: [list filenames]
 
 ### Documentation Structure
-- [ ] `docs/architecture/` - System design documentation
-- [ ] `docs/adr/` - Architecture Decision Records
-- [ ] `docs/context/` - Research and planning notes
-- [ ] `docs/TODO.md` - Living tracker for major project tasks
-- [ ] `docs/adr/0001-adopt-documentation-structure.md` - Initial ADR
-- [ ] `docs/context/index.md` - Context notes index
+- [ ] `docs/adr/`
+- [ ] `docs/architecture/`
+- [ ] `docs/context/` + `index.md`
+- [ ] `docs/researchReports/`
+- [ ] `docs/TODO.md`
+- [ ] `docs/adr/0001-adopt-copilot-agent-setup.md`
 
-### Development Environment
-- [ ] `.env.example` - Environment variable template (only if `.env` exists)
-- [ ] `.gitignore` - Enhanced with tech-stack patterns
-- [ ] `.pre-commit-config.yaml` - Pre-commit hooks
+### Security
+- [ ] `docs/researchReports/[date]-security-baseline.md`
 
-### GitHub Configuration
-- [ ] `AGENTS.md` - Universal AI tool instructions (GitHub Copilot, Codex, Cursor, Gemini CLI, and more)
-- [ ] `.github/agents/` - Installed all `onboarding-core` tagged agents from canonical `agents/` artifacts
-- [ ] `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
-- [ ] `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
-- [ ] `.github/PULL_REQUEST_TEMPLATE.md` - PR template
+### Optional Baseline (if applicable)
+- [ ] `.env.example`
+- [ ] `.gitignore` (enhanced)
+- [ ] `.vscode/` (updated)
+- [ ] `.github/ISSUE_TEMPLATE/`
+- [ ] `.github/PULL_REQUEST_TEMPLATE.md`
+- [ ] `.pre-commit-config.yaml`
+- [ ] `docs/architecture/ci-cd-pipeline.md`
 
-### Documentation
-- [ ] `README.md` - Enhanced with Quick Start and documentation links
-- [ ] `docs/architecture/ci-cd-pipeline.md` - CI/CD documentation (if applicable)
-- [ ] `docs/context/[date]-security-baseline.md` - Security assessment
+## Custom Agents Installed
 
-## GitHub Copilot Configuration
+### Core (mandatory)
+1. `@research-agent` — technical research and codebase analysis
+2. `@code-reviewer` — code quality and standards adherence
+3. `@security-specialist` — vulnerability analysis and secure coding
+4. `@documentation-specialist` — ADRs, architecture docs, context and research notes
 
-- Universal AI instructions configured in `AGENTS.md`
-- Project-specific coding standards, documentation structure, and security guidelines included
-
-### Custom Agents Available
-
-This repository includes all agents tagged `onboarding-core` from canonical `agents/` artifacts, installed into `.github/agents/`.
-
-Mandatory core task coverage:
-1. **@research-agent** — Technical research using context7 and first-party sources
-2. **@code-reviewer** — Code quality, standards adherence, and maintainability review
-3. **@security-specialist** — Security vulnerability analysis and secure coding validation
-4. **@documentation-specialist** — ADRs, architecture docs, and context note management
-
-Review and customize the agent definitions and instructions to match your team's specific conventions.
+### Expanded (stack-dependent)
+[List any installed expanded agents]
 
 ## Recommended Next Steps
 
-### Immediate Actions (Required)
-1. **Configure Environment Variables**
-   - Review `.env.example` (if present)
-   - Create `.env` file with actual values
-   - Ensure all required variables are set
+### Immediate
+1. **Review `AGENTS.md`** — validate that detected coding standards match team expectations; update any `# TODO` placeholders
+2. **Run `/sync-agents`** — propagate `AGENTS.md` and agents to Claude Code, Cursor, Windsurf, and other detected AI tools
+3. **Test each agent** — try `@research-agent`, `@code-reviewer`, and `@documentation-specialist` on real tasks
 
-2. **Review and Customize Templates**
-   - Customize issue/PR templates for your workflow
-   - Review pre-commit hooks and enable/disable as needed
+### This Week
+1. Address critical security findings in `docs/researchReports/[date]-security-baseline.md`
+2. Create `docs/architecture/` overview documenting the high-level system design
+3. Populate any `# TODO` placeholders left in `AGENTS.md`
 
-3. **Install Pre-commit Hooks**
-   ```bash
-   pip install pre-commit
-   pre-commit install
-   ```
+### Ongoing
+- Run `/sync-agents` after any significant update to `AGENTS.md` or `.github/agents/`
+- Create ADRs for architectural decisions — use `@documentation-specialist` to author them
+- Maintain `docs/TODO.md` as a living tracker
+- Monthly dependency audits using language-appropriate audit tools
 
-4. **Review Security Baseline**
-   - Address critical vulnerabilities identified
-   - Update outdated dependencies
-   - Review security recommendations
+## Security Reminders
+⚠️ Never commit `.env` files or actual secrets
+⚠️ Review security baseline before production deployment
+⚠️ Enable pre-commit hooks to prevent accidental secret commits
 
-### Short-term (First Week)
-1. **IDE Setup**
-   - Install recommended extensions from `.vscode/extensions.json`
-   - Verify workspace settings work for your team
+---
 
-2. **Review Custom Copilot Instructions & Agents**
-   - Validate auto-detected coding standards in `AGENTS.md`
-   - Review agent definitions in `.github/agents/`
-   - Add project-specific guidelines
-   - Update version information if needed
-
-3. **Test Agent Functionality**
-   - Try each custom agent (e.g., `@research-agent`, `@code-reviewer`)
-   - Verify agents produce useful, accurate output
-   - Customize agent system prompts as needed
-
-4. **Documentation Review**
-   - Read initial ADR: `docs/adr/0001-adopt-documentation-structure.md`
-   - Familiarize team with documentation structure
-   - Plan first architecture documentation session
-
-### Ongoing Maintenance
-1. **Keep Dependencies Updated**
-   - Run language-specific audit tools regularly (monthly recommended)
-   - Review security advisories
-
-2. **Document Decisions**
-   - Create ADRs for architectural decisions
-   - Maintain context notes for research
-   - Update architecture docs when system changes
-
-3. **Refine Templates**
-   - Update PR/issue templates based on team feedback
-   - Extend Copilot instructions and agents as project needs evolve
-
-## Security Considerations
-
-⚠️ **Important Security Reminders:**
-- Never commit `.env` files or actual secrets
-- Review security baseline report: `docs/context/[date]-security-baseline.md`
-- Address critical vulnerabilities before production deployment
-- Enable pre-commit hooks to prevent accidental secret commits
-
-## Questions or Issues?
-
-- Review documentation in `docs/`
-- Use custom Copilot agents for help (e.g., `@documentation-specialist` for doc questions, `@security-specialist` for security reviews)
-- Reference `AGENTS.md` for project conventions
-- Create an issue using the templates in `.github/ISSUE_TEMPLATE/`
-
-***
-
-**Onboarding Complete!** Your repository is now configured with development best practices, GitHub Copilot custom instructions, and specialized agents.
+**Onboarding Complete!** Your repository is now configured with accurate coding standards, specialized agents, and a living documentation structure. Run `/sync-agents` to propagate to all configured AI tools.
 ```
 
 ---
@@ -1226,26 +735,21 @@ Review and customize the agent definitions and instructions to match your team's
 ## Execution Instructions
 
 Execute all tasks in the order listed above. For each task:
-1. **Check applicability**: Evaluate whether the section applies to this repository (see General Guidance above)
-2. **Check for existing files**: Read existing files before creating or modifying — never overwrite without merging
-3. **Preserve existing content**: When enhancing files, keep all existing entries and add new content in labeled sections
-4. **Use consistent formatting and style**: Match the existing codebase conventions where possible
-5. **Add clear comments**: Explain generated content with comments (e.g., `# Added by OnboardCopilot`)
-6. **Create placeholder values**: Where team-specific information is needed, use `# TODO:` prefixed comments
-7. **Run docs impact check after every code edit**: If impacted, update required `docs/` targets in the same turn without asking for confirmation; only ask if target location is ambiguous
-8. **Use @documentation-specialist automatically after implementation**: Delegate documentation updates to `@documentation-specialist` with full context when available
-9. **Completion gate**: Treat work as incomplete until all required documentation updates are applied
-10. **Skip gracefully**: If a section cannot be completed (e.g., no git history for CODEOWNERS), note it in the summary report and move on
-11. **Actively maintain docs/TODO.md**: Add newly discovered major tasks during execution and mark tasks completed as soon as they are finished
-12. **Initialize TODO template when needed**: If `docs/TODO.md` is created during onboarding, seed it with the standard starter template from Section 2, then adapt it to the detected stack and project scope
-13. **Report blocked work in final summary**: Include any remaining items from the `Blocked` section of `docs/TODO.md`, along with dependency notes and recommended next action
-14. **Validate root instruction size**: Ensure generated root `AGENTS.md` stays under 100 lines. If it exceeds 100, split verbose/scoped content into nested `AGENTS.md` files and regenerate root.
+
+1. **Check applicability** — evaluate whether the section applies (see skip conditions)
+2. **Read before writing** — read existing files before creating or modifying; never overwrite without merging
+3. **Detect, don't invent** — coding standards in `AGENTS.md` must reflect actual codebase patterns from Section 1
+4. **Preserve existing content** — add new content in labeled sections; keep all existing entries
+5. **Use `# TODO:` for unknowns** — placeholder where team-specific information is needed
+6. **Delegate after Section 3** — use `@documentation-specialist` for all docs authoring once agents are installed
+7. **Completion gate** — a task is incomplete until all required `docs/` updates are applied
+8. **Actively maintain `docs/TODO.md`** — add discovered tasks; mark completed immediately
+9. **Validate root `AGENTS.md` size** — if over 100 lines, split into nested files and regenerate root
+10. **Skip gracefully** — if a section cannot be completed, note it in the summary and move on
+11. **End with `/sync-agents`** — always conclude by running `/sync-agents` to distribute to all configured AI tools
 
 After completing all tasks, provide a summary of:
-- What was created
-- What was modified
-- What requires manual review/configuration
-- Any warnings or important notes
-
-**Generate the complete onboarding summary report as the final step.**
-```
+- What was created and modified
+- What requires manual review or configuration
+- Any warnings, blocks, or skipped sections
+- Reminder to run `/sync-agents`
