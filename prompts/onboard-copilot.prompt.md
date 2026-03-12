@@ -1,6 +1,5 @@
 ---
 description: Brownfield repository onboarding for GitHub Copilot — detects and codifies existing coding standards, installs and orchestrates specialized agents, and establishes living documentation structure (ADR, architecture, context, researchReports). Run /sync-agents after setup to propagate to Claude Code, Cursor, and other AI tools.
-model: gpt-4.1
 ---
 
 # OnboardCopilot: GitHub Copilot Repository Setup
