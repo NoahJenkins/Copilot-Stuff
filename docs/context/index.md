@@ -2,6 +2,9 @@
 
 ## 2026
 
+- [2026-03-12 sync-agents: Nested AGENTS.md Support](./2026-03-12-sync-agents-nested-agents-md.md)
+  - Nested AGENTS.md files (outside root and .github/) are now treated as directory-scoped sources of truth, synced to matching CLAUDE.md and GEMINI.md files in the same directory.
+
 - [2026-03-12 OnboardCopilot Brownfield Refocus](./2026-03-12-onboard-copilot-brownfield-refocus.md)
   - Refocused onboard-copilot prompt to be brownfield-first with dedicated coding standards extraction, explicit agent orchestration step, docs/researchReports/ type, and mandatory /sync-agents conclusion.
 
