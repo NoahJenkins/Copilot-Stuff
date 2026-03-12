@@ -44,14 +44,25 @@ Override with `--model <model>` on any `gh copilot` invocation.
 - Identify the artifact and its intended behavior.
 - Define concrete pass/fail checks before running the test.
 
-### 2) Prepare Sandbox Install Target
+### 2) Validate Artifact Format
+
+Before installing, verify the artifact's frontmatter meets the format rules for its type:
+
+- **`.instructions.md` files** — must have both `description` and `applyTo` fields. If either is missing, stop and report the missing field(s) before proceeding.
+- **`.agent.md` files** — must have `name`, `description`, and `model` fields.
+- **`SKILL.md` files** — must have `name` and `description` fields; `name` must exactly match the parent directory name.
+- **`.prompt.md` files** — must have a `description` field; `model` is strongly recommended.
+
+If any required field is missing, fail the test at this step and include the validation error in the feedback report.
+
+### 3) Prepare Sandbox Install Target
 
 - Install/copy the artifact into sandbox-compatible paths as needed.
 - For `.instructions.md` testing, install into `testing_sandbox/.github/instructions/`.
 - For agent testing, install into `testing_sandbox/.github/agents/`.
 - For skill testing, install into `testing_sandbox/.github/skills/<name>/SKILL.md`.
 
-### 3) Execute Artifact Intent
+### 4) Execute Artifact Intent
 
 Use `gh copilot` CLI to exercise the artifact. Run from the `testing_sandbox/` directory so
 the sandbox codebase is available as context.
@@ -67,7 +78,7 @@ gh copilot suggest --model gpt-5-mini "<describe the task the artifact is meant 
 
 - **Prompts** — Paste the prompt content as the `gh copilot suggest` input. Compare output against intended behavior.
 - **Agents** — Describe the agent's role and a representative task; pass as the suggestion input.
-- **Instructions / Skills** — First install the artifact into the sandbox (Step 2), then invoke a task that the instruction is meant to shape. Check that output reflects the instruction constraints.
+- **Instructions / Skills** — First install the artifact into the sandbox (Step 3), then invoke a task that the instruction is meant to shape. Check that output reflects the instruction constraints.
 
 **Overriding the model:**
 
@@ -75,11 +86,11 @@ gh copilot suggest --model gpt-5-mini "<describe the task the artifact is meant 
 gh copilot suggest --model <model-name> "<prompt>"
 ```
 
-Capture the CLI output verbatim for inclusion in the feedback report (Step 5).
+Capture the CLI output verbatim for inclusion in the feedback report (Step 6).
 
 - Verify the captured behavior against the success criteria from Step 1.
 
-### 4) Evaluate Quality
+### 5) Evaluate Quality
 
 Assess:
 
@@ -88,7 +99,7 @@ Assess:
 - Practicality and maintainability of resulting changes
 - Safety and policy alignment
 
-### 5) Publish Feedback Report
+### 6) Publish Feedback Report
 
 Create `docs/testingResults/YYYY-MM-DD-<artifact-name>.md` with:
 
