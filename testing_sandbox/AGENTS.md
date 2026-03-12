@@ -23,7 +23,7 @@ This directory is the test bed for validating distributable artifacts from this 
 
 ## Workflow
 
-- Follow `skills/test-artifact/SKILL.md` for the full end-to-end test procedure.
+- Follow `.github/skills/test-artifact/SKILL.md` for the full end-to-end test procedure.
 - Include `.instructions.md` testing by installing instructions into `testing_sandbox/.github/instructions/` when applicable.
 - Publish results to `docs/testingResults/YYYY-MM-DD-<artifact-name>.md`.
 

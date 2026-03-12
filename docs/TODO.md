@@ -1,6 +1,6 @@
 # Project Task Tracker
 
-Last Updated: 2026-03-11
+Last Updated: 2026-03-12
 
 > Living document for major project tasks. Update status continuously during planning and implementation.
 
@@ -52,6 +52,7 @@ Last Updated: 2026-03-11
 - [x] Delete orphaned `.agents/` directory (created by previous incorrect skill sync)
 - [x] Update `onboard-copilot` prompt to create AGENTS.md instead of copilot-instructions.md
 - [x] Refactor `onboard-copilot` prompt to enforce root `AGENTS.md` under 100 lines with nested `AGENTS.md` decomposition guidance
+- [x] Create internal `.github/skills/test-artifact/SKILL.md` for testing prompts/agents/instructions/skills against `testing_sandbox/`
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
 
@@ -62,6 +63,10 @@ Last Updated: 2026-03-11
 - [x] Add context note: 2026-03-11 AI tools guide and AGENTS.md research
 - [x] Create ADR 0004: AGENTS.md as source of truth for sync-agents and onboard-copilot
 - [x] Add context note: 2026-03-11 AGENTS.md source of truth migration
+- [x] Add root testing sandbox policy pointers to `AGENTS.md` and `CLAUDE.md`
+- [x] Create `docs/testingResults/` reporting directory and README guidance
+- [x] Create ADR 0006 for test-artifact workflow decision
+- [x] Add context note: 2026-03-12 testing sandbox workflow
 
 ## Definition of Done
 - [ ] Acceptance criteria are met

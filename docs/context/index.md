@@ -2,6 +2,10 @@
 
 ## 2026
 
+- [2026-03-12 Testing Sandbox Workflow](./2026-03-12-testing-sandbox-workflow.md)
+  - Added a `test-artifact` skill and a `testing_sandbox/AGENTS.md` overlay to standardize artifact validation in the sandbox, with dated feedback reports written to `docs/testingResults/`.
+  - Related ADR: [ADR 0006](../adr/0006-test-artifact-skill-over-agents-md.md)
+
 - [2026-02-20 Documentation Update Policy](./2026-02-20-documentation-update-policy.md)
   - Related ADR: [ADR 0001](../adr/0001-adopt-documentation-structure.md)
 
