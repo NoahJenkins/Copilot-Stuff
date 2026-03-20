@@ -2,6 +2,10 @@
 
 ## 2026
 
+- [2026-03-20 Autoresearch-Inspired Eval Loop Design](./2026-03-20-autoresearch-loop-design.md)
+  - Adapted Karpathy autoresearch pattern for prompt improvement: scoring rubric (10 sections × 10 pts, two-track infra classification), `eval-artifacts` LLM-as-judge skill, and `research-loop` one-iteration-per-invocation skill. Human-supervised to guard against runaway degradation.
+  - Related ADR: [ADR 0009](../adr/0009-adopt-eval-rubric-and-research-loop.md)
+
 - [2026-03-12 sync-agents: Nested AGENTS.md Support](./2026-03-12-sync-agents-nested-agents-md.md)
   - Nested AGENTS.md files (outside root and .github/) are now treated as directory-scoped sources of truth, synced to matching CLAUDE.md and GEMINI.md files in the same directory.
 

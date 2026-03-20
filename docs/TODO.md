@@ -1,6 +1,6 @@
 # Project Task Tracker
 
-Last Updated: 2026-03-12
+Last Updated: 2026-03-20
 
 > Living document for major project tasks. Update status continuously during planning and implementation.
 
@@ -60,6 +60,10 @@ Last Updated: 2026-03-12
 - [x] Stabilize `.github/skills/test-artifact/SKILL.md` Mode B execution (input-file redirection, timeout bounds, infra gates, retries, and Mode A fallback)
 - [ ] Add quarterly Dependabot allowlist review reminder
 - [ ] Add regression tests for RSS/metadata/template output sinks (per-project follow-up)
+- [x] Run `eval-artifacts` dry run on 2026-03-12 transcript to validate rubric calibration (scored 72/100 — rubric calibrated)
+- [x] Run `research-loop` iteration 0 to establish official baseline score for `onboard-copilot` (baseline: 89/100 — above 85 stopping threshold)
+- [ ] Run `research-loop` iteration 1 and verify commit-or-revert logic fires correctly (optional — baseline already exceeds target)
+- [ ] Update `docs/eval-rubrics/onboard-copilot-rubric.md` as `onboard-copilot` prompt evolves
 
 ## Documentation
 - [x] Create `docs/README.ai-tools-guide.md` — AI artifact decision guide with ASCII decision tree

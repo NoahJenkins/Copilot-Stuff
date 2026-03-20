@@ -258,6 +258,12 @@ Create `docs/testingResults/YYYY-MM-DD-<artifact-name>.md` with:
 2. <improvement>
 ```
 
+To score this run with quantitative section-by-section feedback, invoke `eval-artifacts` with the transcript path after the report is written:
+```
+eval-artifacts:
+  transcript: docs/testingResults/YYYY-MM-DD-<artifact-name>-cli-output.txt
+```
+
 ## Optional Cleanup
 
 - If you modified sandbox files during testing, you may reset sandbox changes with:

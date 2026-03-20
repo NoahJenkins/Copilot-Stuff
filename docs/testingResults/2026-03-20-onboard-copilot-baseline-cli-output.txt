@@ -1,0 +1,153 @@
+● Read package.json
+  $ cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/package.json
+  └ 41 lines...
+
+● Explore testing_sandbox structure
+  $ find /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox -maxdepth 3 -not -path
+  "*/node_modules/*" -not -path "*/.git/*" | sort
+  └ 79 lines...
+
+● Read eslint and tsconfig
+  $ cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/eslint.config.mjs; echo "---"; cat
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/tsconfig.json
+  └ 54 lines...
+
+● Check existing AGENTS.md, TODO.md, and ADRs
+  $ cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/AGENTS.md 2>/dev/null || echo "NO
+  AGENTS.MD"; cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/docs/TODO.md 2>/dev/null;
+  echo "---ADR---"; ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/docs/adr/
+  └ 52 lines...
+
+● Read source files for coding standards
+  $ cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/app/components/Hero.tsx 2>/dev/null;
+  echo "---"; cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/app/lib/utils.ts
+  2>/dev/null; echo "---"; cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/app/page.tsx
+  2>/dev/null
+  └ 99 lines...
+
+● Check installed agents
+  $ head -5
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/research-agent.agent.md; echo
+   "---"; head -5
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/frontend-specialist.agent.md
+  └ 12 lines...
+
+● Read more source files
+  $ cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/app/lib/constants.ts; echo "---"; cat
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/app/layout.tsx; echo "---"; cat
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/app/providers.tsx
+  └ 84 lines...
+
+● Check workflows, researchReports, security baseline
+  $ ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/workflows/ 2>/dev/null || echo
+  "NO WORKFLOWS"; ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/docs/researchReports/
+  2>/dev/null || echo "EMPTY"; cat
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/docs/context/2026-03-12-security-baseline.md
+   2>/dev/null | head -30
+  └ 30 lines...
+
+● Check .gitignore and context index
+  $ cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.gitignore | head -40; echo "---"; cat
+   /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/docs/context/index.md 2>/dev/null | head
+  -20
+  └ 62 lines...
+
+● Check onboarding-tags and workflows
+  $ grep -l "onboarding-tags"
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/agents/*.agent.md 2>/dev/null; echo
+  "---"; ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/workflows/ 2>/dev/null ||
+  echo "NO WORKFLOWS DIR"
+  └ 7 lines...
+
+Now I have everything needed. Let me execute all the onboarding tasks:
+
+● Check workflows and researchReports dirs
+  $ ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/workflows/ 2>&1; ls
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/docs/researchReports/ 2>&1
+  └ 1 line...
+
+● Create docs/AGENTS.md (+48)
+
+● Create AGENTS.md (+64)
+
+● Verify AGENTS.md line count
+  $ wc -l /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/AGENTS.md
+  └ 2 lines...
+
+Good, 63 lines — under 100. Now creating the ADR, security baseline, and docs:
+
+● Create docs/researchReports/2026-03-20-security-baseline.md (+65)
+
+● Create docs/adr/0002-adopt-copilot-agent-setup.md (+64)
+
+● Create docs/context/2026-03-20-onboarding-report.md (+90)
+
+Now update `docs/context/index.md` and `docs/TODO.md`:
+
+● Read docs/context/index.md
+  └ 21 lines read
+
+● Edit docs/context/index.md (+3)
+
+● Edit docs/TODO.md (+1 -1)
+
+● Edit docs/TODO.md (+10 -5)
+
+Now run `/sync-agents` to propagate to all AI tools:
+
+● skill(sync-agents)
+
+● Read copilot-instructions.md source of truth
+  $ cat /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/copilot-instructions.md
+  2>/dev/null || echo "FILE_NOT_FOUND"
+  └ 2 lines...
+
+● Detect active AI agent configs in repo
+  $ ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/instructions/ 2>/dev/null ||
+  echo "NO_INSTRUCTIONS_DIR"; ls
+  /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/.github/skills/ 2>/dev/null; echo
+  "---DETECT---"; ls /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox/ | grep -E
+  "^(CLAUDE\.md|GEMINI\.md|AGENTS\.md|\.claude|\.gemini|\.agents|\.cursor|\.cursorrules|\.windsu...
+  └ 11 lines...
+
+The `/sync-agents` skill requires `.github/copilot-instructions.md` as its source of truth, which doesn't exist in this repo. Stopping sync per skill rules.
+
+---
+
+## ✅ Onboarding Complete
+
+Here's a summary of everything created/modified:
+
+### Files Created
+| File | Purpose |
+|------|---------|
+| `AGENTS.md` | Root AI instructions (63 lines, brownfield-derived standards) |
+| `docs/AGENTS.md` | Documentation process rules + agent handoff protocol |
+| `docs/adr/0002-adopt-copilot-agent-setup.md` | ADR formalizing Copilot agent setup |
+| `docs/researchReports/2026-03-20-security-baseline.md` | Formal security baseline (first entry in researchReports/) |
+| `docs/context/2026-03-20-onboarding-report.md` | This onboarding summary |
+
+### Files Updated
+- `docs/context/index.md` — new entry for 2026-03-20 onboarding report
+- `docs/TODO.md` — onboarding tasks marked complete, `/sync-agents` added as next action
+
+### Agents Verified (all 5 have `onboarding-tags`)
+`@research-agent`, `@code-reviewer`, `@security-specialist`, `@documentation-specialist`, `@frontend-specialist`
+
+### Skipped / Noted
+- **CI/CD docs**: `.github/workflows/` exists but is empty
+- **`.env.example`**: No `.env` file present
+- **`/sync-agents`**: ⚠️ Requires `.github/copilot-instructions.md` to exist first
+
+### Next Steps
+1. **Create `.github/copilot-instructions.md`** — paste your `AGENTS.md` content there, then run `/sync-agents` to propagate to Claude Code, Cursor, Windsurf, etc.
+2. **Fill `# TODO` placeholders** in `AGENTS.md` once a testing framework (Vitest recommended) is chosen
+3. **Add CI workflow** for `pnpm lint` + `pnpm audit`
+
+
+Total usage est:        1 Premium request
+API time spent:         3m 39s
+Total session time:     3m 49s
+Total code changes:     +345 -6
+Breakdown by AI model:
+ claude-sonnet-4.6       827.6k in, 11.1k out, 744.1k cached (Est. 1 Premium request)
