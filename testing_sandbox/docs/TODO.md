@@ -1,20 +1,15 @@
 # Project Task Tracker
 
-Last Updated: 2026-03-20
+Last Updated: 2026-03-12
 
 > Living document for major project tasks. Update status continuously during planning and implementation.
 
 ## Onboarding
-- [x] Run codebase analysis and extract coding standards
-- [x] Author AGENTS.md with detected coding standards (2026-03-20: created from scratch, brownfield-derived)
-- [x] Author docs/AGENTS.md with documentation process rules and agent handoff protocol
-- [x] Install and verify onboarding-core agents (5 total: 4 core + frontend-specialist)
-- [x] Define agent orchestration patterns
-- [x] Establish docs structure (adr/, architecture/, context/, researchReports/)
-- [x] Create initial ADR (0001-adopt-documentation-structure)
-- [x] Create ADR 0002-adopt-copilot-agent-setup (2026-03-20)
-- [x] Create formal security baseline in docs/researchReports/ (2026-03-20)
-- [ ] Run /sync-agents to propagate AGENTS.md to Claude Code, Cursor, Windsurf
+- [x] Run repository analysis and detect tech stack
+- [x] Establish docs structure (`docs/architecture/`, `docs/adr/`, `docs/context/`)
+- [x] Create initial ADR (`docs/adr/0001-adopt-documentation-structure.md`)
+- [x] Generate onboarding summary report
+- [x] Re-run onboarding (2026-03-12): verify agents, update AGENTS.md, add IDE config
 
 ## Architecture & Documentation
 - [x] Add/update architecture documentation

@@ -19,6 +19,3 @@
   - Re-run security audit: 0 vulnerabilities across 431 dependencies
 - [2026-03-12-onboarding-report](./2026-03-12-onboarding-report.md)
   - Second onboarding pass: agent verification, IDE config, AGENTS.md update
-- [2026-03-20-onboarding-report](./2026-03-20-onboarding-report.md)
-  - Third onboarding pass: AGENTS.md created (brownfield standards), docs/AGENTS.md, ADR 0002, researchReports security baseline
-  - Related ADR: [ADR 0002](../adr/0002-adopt-copilot-agent-setup.md)

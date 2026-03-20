@@ -54,11 +54,13 @@ Infrastructure classification is always recorded before section scoring. A `time
 
 **Goal:** All four core agents installed; no empty stubs.
 
-Core agents required: `copilot-engineer.agent.md`, `documentation-specialist.agent.md`, `prompt-engineer.agent.md`, `research-agent.agent.md`
+Core agents required (distributable set installed by onboard-copilot): `code-reviewer.agent.md`, `documentation-specialist.agent.md`, `research-agent.agent.md`, `security-specialist.agent.md`
+
+Note: `copilot-engineer.agent.md` and `prompt-engineer.agent.md` are internal agents for working ON this repo — they are not part of the distributable set and should not be expected in target repos.
 
 | Check | Points | Method |
 |-------|--------|--------|
-| All 4 core agent files exist in `testing_sandbox/.github/agents/` | 6 | `ls testing_sandbox/.github/agents/*.agent.md` — verify all 4 present |
+| All 4 core agent files exist in `testing_sandbox/.github/agents/` | 6 | `for a in code-reviewer documentation-specialist research-agent security-specialist; do test -f "testing_sandbox/.github/agents/${a}.agent.md" && echo FOUND || echo MISSING; done` |
 | No agent file is a stub (each > 200 bytes) | 2 | `wc -c testing_sandbox/.github/agents/*.agent.md` — all must be > 200 |
 | Agent files have required frontmatter (`name`, `description`, `model`) | 2 | `grep -l "^name:" testing_sandbox/.github/agents/*.agent.md` — all 4 must match |
 

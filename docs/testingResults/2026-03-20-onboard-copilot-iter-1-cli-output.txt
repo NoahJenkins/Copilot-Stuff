@@ -1,0 +1,258 @@
+● skill(sync-agents)
+
+I’m starting with a brownfield scan and baseline validation so I can derive real conventions before writing any onboarding files. Then I’ll install/sync agents, generate docs, and verify everything end-to-end.
+
+● Research-agent Analyze codebase
+  └ Agent started in background with agent_id: repo-analysis. You can use read_ag...
+
+● Todo added 6 items
+  │ Scan repository
+  │ Run baseline validation
+  │ Author onboarding files
+  │ Install onboarding agents
+  │ Sync AI configs
+  └ Final validation
+
+● List directory .
+  └ 22 files found
+
+● List directory docs
+  └ 5 files found
+
+● List directory .github
+  └ 5 files found
+
+● Read package.json
+  └ 40 lines read
+
+● Create session plan (shell)
+  │ cat > /Users/noahjenkins/.copilot/session-state/bfedfd56-bab9-4fdd-a96f-c64e18bf7577/plan.md
+  │ <<'EOF'
+  │ # OnboardCopilot plan
+  │
+  │ 1. Inspect repository structure, existing onboarding/docs/config, and commands.…
+  └ 9 lines...
+
+I found an existing docs and GitHub config scaffold, so I’m merging into that instead of inventing a fresh structure. Next I’m reading representative app/docs files and running the project’s existing validation commands for a real baseline.
+
+● List directory app
+  └ 7 files found
+
+● List directory docs/researchReports
+
+● List directory .github/agents
+  └ 5 files found
+
+● List directory docs/context
+  └ 9 files found
+
+● List directory .vscode
+  └ 3 files found
+
+● Read README.md
+  └ 71 lines read
+
+● Read eslint.config.mjs
+  └ 18 lines read
+
+● Read .pre-commit-config.yaml
+  └ 28 lines read
+
+● Read .gitignore
+  └ 75 lines read
+
+● Read TODO.md
+  │ docs/TODO.md
+  └ 48 lines read
+
+● Search (glob)
+  │ "app/**/*.{ts,tsx,js,jsx,css}"
+  └ 13 files found
+
+● Run baseline lint and build (shell)
+  │ cd /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox && pnpm lint && pnpm build
+  └ 23 lines...
+
+Baseline is healthy: `pnpm lint` and `pnpm build` both pass before changes. I also found prior onboarding artifacts, so this is effectively a refresh/merge pass rather than a first-time bootstrap.
+
+✗ Read AGENTS.md
+  └ Path does not exist
+
+✗ Read 2026-03-12-security-baseline.md
+  │ docs/researchReports/2026-03-12-security-baseline.md
+  └ Path does not exist
+
+● List directory docs/adr
+  └ 1 file found
+
+● List directory docs/architecture
+  └ 1 file found
+
+● Read layout.tsx
+  │ app/layout.tsx
+  └ 39 lines read
+
+● Read constants.ts
+  │ app/lib/constants.ts
+  └ 31 lines read
+
+● Read page.tsx
+  │ app/page.tsx
+  └ 21 lines read
+
+● Read utils.ts
+  │ app/lib/utils.ts
+  └ 6 lines read
+
+● Read Hero.tsx
+  │ app/components/Hero.tsx
+  └ 69 lines read
+
+● Read providers.tsx
+  │ app/providers.tsx
+  └ 11 lines read
+
+● Read ThemeToggle.tsx
+  │ app/components/ThemeToggle.tsx
+  └ 36 lines read
+
+● Read index.md
+  │ docs/context/index.md
+  └ 21 lines read
+
+● Read (Research-agent agent — Analyze codebase)
+  └ Completed
+
+The repo already has most of the documentation scaffold and even some agent files, but the onboarding prompt asks for a canonical refresh. I’m now verifying existing ADR/security state, then I’ll reinstall the required agents from the upstream source and update the living docs accordingly.
+
+● Read 0001-adopt-documentation-structure.md
+  │ docs/adr/0001-adopt-documentation-structure.md
+  └ 90 lines read
+
+● Read 2026-03-12-security-baseline.md
+  │ docs/context/2026-03-12-security-baseline.md
+  └ 61 lines read
+
+● Read bug_report.md
+  │ .github/ISSUE_TEMPLATE/bug_report.md
+  └ 28 lines read
+
+● Read README.md
+  │ docs/architecture/README.md
+  └ 5 lines read
+
+● Read feature_request.md
+  │ .github/ISSUE_TEMPLATE/feature_request.md
+  └ 26 lines read
+
+● Read PULL_REQUEST_TEMPLATE.md
+  │ .github/PULL_REQUEST_TEMPLATE.md
+  └ 48 lines read
+
+● Read extensions.json
+  │ .vscode/extensions.json
+  └ 18 lines read
+
+● Read settings.json
+  │ .vscode/settings.json
+  └ 27 lines read
+
+● Search (glob)
+  │ "docs/{context,researchReports}/*security-baseline*.md"
+  └ 2 files found
+
+● Read code-reviewer.agent.md
+  │ .github/agents/code-reviewer.agent.md
+  └ L1:80 (80 lines read)
+
+● Read frontend-specialist.agent.md
+  │ .github/agents/frontend-specialist.agent.md
+  └ L1:60 (59 lines read)
+
+● Todo started scan-repo
+
+● List directory .github/skills
+  └ 1 file found
+
+● Search (glob)
+  │ ".github/instructions/*.instructions.md"
+  └ No matches found
+
+● Search (glob)
+  │ "docs/AGENTS.md"
+  └ No matches found
+
+● Search (glob)
+  │ ".github/copilot-instructions.md"
+  └ No matches found
+
+I’ve got enough evidence now to codify real conventions without guessing. I’m writing a compact root `AGENTS.md` plus scoped `docs/AGENTS.md`, then I’ll refresh the required agent files from the canonical upstream source and use the installed specialists for the remaining docs.
+
+● Edit
+  │ Create AGENTS.md
+  └ Create docs/AGENTS.md
+
+● Todo started author-onboarding-files
+
+● Refresh required agent files (shell)
+  │ cd /Users/noahjenkins/Code/Copilot-Stuff/testing_sandbox && set -euo pipefail && mkdir -p
+  │ .github/agents && download_agent() { file="$1"; tmp="$(mktemp)";
+  │ url="https://raw.githubusercontent.com/NoahJenkins/Copilot-Stuff/main/agents/${file}"; curl
+  │ --fail --location --silent --show-error --retry 3 --retry-all-errors --retry-delay 1 -o "$tmp"
+  │ "$url"; test -s "$tmp"; head -n 1 "$tmp" | grep -q '^---'; grep -q 'onboarding-tags' "$tmp"; …
+  └ 17 lines...
+
+The canonical agent refresh worked cleanly on the first try, including the stack-dependent `frontend-specialist`. I’m handing the documentation and security follow-up to the installed specialists now while I prepare the remaining file updates and final sync.
+
+● Documentation-specialist Draft onboarding docs
+  └ Agent started in background with agent_id: docs-drafter. You can use read_age...
+
+● Research-agent Review security baseline
+  └ Agent started in background with agent_id: security-check. You can use read_a...
+
+● Memory stored bootstrap_and_build
+  └ Use pnpm for this project; validated commands are `pnpm lint` and `pnpm build`.
+
+● Read SKILL.md
+  │ .github/skills/sync-agents/SKILL.md
+  └ 1 line read
+
+● Search (glob)
+  │ "{.claude,.gemini,.agents,.opencode,.cursor,.windsurf,.clinerules,.roo,.kilocode,.junie,.augment
+  │ }"
+  └ No matches found
+
+● Search (grep)
+  │ "process\.env\.[A-Z0-9_]+" (app)
+  └ 4 lines found
+
+● Search (glob)
+  │ "{CLAUDE.md,GEMINI.md,AGENTS.md,.opencode.json,.cursorrules,.windsurfrules,.clinerules,.roorules
+  │ ,.rules}"
+  └ 2 files found
+
+● Read AGENTS.md
+  └ 56 lines read
+
+● Read dependabot.yml
+  │ .github/dependabot.yml
+  └ 25 lines read
+
+● Listing background agents
+
+● Read SKILL.md
+  │ .github/skills/sync-agents/SKILL.md
+  └ L1:80 (79 lines read)
+
+● Search (glob)
+  │ ".github/skills/*"
+  └ No matches found
+
+● Read (Research-agent agent — Review security baseline)
+  └ Completed
+
+✗ Read (Documentation-specialist agent (Draft onboarding docs))
+  └ Failed
+
+● Operation cancelled by user
+

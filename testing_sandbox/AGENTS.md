@@ -1,63 +1,56 @@
 # DFW Cloud Devs Website — AI Agent Instructions
 
 ## Project Overview
-- Language: TypeScript 5 (strict mode)
-- Framework: Next.js 16 App Router, React 19
-- Styling: Tailwind CSS 4 with `cn()` utility (clsx + tailwind-merge)
-- Animations: framer-motion
-- Package manager: pnpm 10
-- Architecture: Single-page app with feature-based components under `app/components/`
+- Language(s): TypeScript, TSX, CSS, Markdown, YAML
+- Framework(s): Next.js 16 App Router, React 19, Tailwind CSS 4
+- Architecture: Single-app frontend with `app/`, `app/components/`, `app/lib/`, and `docs/`
+- Package manager: pnpm (`pnpm-lock.yaml` is canonical)
 
 ## Coding Standards
 
 ### Style
-- Naming: `PascalCase` for components/types, `camelCase` for functions/variables, `UPPER_SNAKE_CASE` for constants
-- Files: `PascalCase.tsx` for components, `camelCase.ts` for utilities and lib modules
-- Imports: external libraries first, then internal (`../lib/`, `../components/`)
-- `'use client'` directive required for client components using hooks/animations
-- Default exports for components; named exports for utilities and types
-- Error handling: typed TypeScript errors; surface user-facing errors as UI state
-- Async: `async/await` preferred over promise chains
+- Naming: PascalCase component files, camelCase variables/functions, UPPER_SNAKE_CASE exported constants
+- Files: Next route files use `page.tsx` / `layout.tsx`; shared components use PascalCase filenames
+- Imports: group external imports before local imports; keep CSS imports near the top of route/layout files
+- Exports: default-export React components; use named exports for shared constants and utilities
+- Error handling: prefer explicit safe fallbacks for optional public env values; `# TODO: Define shared error boundary pattern`
+- Async: no strong async convention exists yet; current UI is mostly static and client interactivity uses local hooks
+- Client components: add `'use client'` only when hooks, browser APIs, or interactive state are required
 
 ### Testing
-- Framework: # TODO — not yet installed (Vitest or Jest recommended)
-- File naming: # TODO — co-located `*.test.ts` preferred
-- Mocking: # TODO
+- Framework: `# TODO: Define test framework`
+- File naming: `# TODO: Define test file naming`
+- Structure: no automated test suite is installed yet
+- Mocking: `# TODO: Define mocking approach`
 
-### API/Interface Conventions
-- Environment variables: `NEXT_PUBLIC_*` for client-exposed values; never hard-code secrets
-- Constants: centralized in `app/lib/constants.ts`
+### API and Interface Conventions
+- No backend or API route conventions are established yet in this repo
+- Keep component props small and local; inline simple prop typing when it improves readability
+- Centralize reusable config/constants in `app/lib/`
 
-## Build & Development
+## Build and Development
 - Build: `pnpm build`
-- Dev server: `pnpm dev`
+- Test: `# TODO: Add test command`
 - Lint: `pnpm lint`
-- Test: # TODO (no test runner configured yet)
+- Dev server: `pnpm dev`
 
 ## Security
 - Never commit secrets, credentials, API keys, or tokens
-- Use `NEXT_PUBLIC_*` env vars for client-side config; keep server secrets server-only
-- Validate and sanitize all user input
-- Keep dependencies patched — `pnpm audit` must pass with 0 vulnerabilities
+- Use environment variables for sensitive configuration and keep safe fallback values public-only
+- Validate and sanitize any future user input before rendering or storage
+- Keep pnpm lockfile updates and dependency audits current
 
 ## Documentation Update Policy
-For non-trivial changes, update docs in the same turn without asking:
-- `docs/TODO.md` — update task tracker
-- `docs/adr/` — create ADR for architectural decisions
-- `docs/context/` — add dated research/planning notes; update `docs/context/index.md`
-- `docs/architecture/` — update for system design changes
-- `docs/researchReports/` — add formal research findings
-See `docs/AGENTS.md` for formats and triggers. A task is incomplete until docs are updated.
+For non-trivial changes, update `docs/TODO.md`, relevant ADR/context/architecture docs, and any onboarding report in the same turn. See `docs/AGENTS.md` for triggers and formats.
 
 ## Information Sources
-1. **Documentation tools** (Context7 MCP, library fetchers) — use when available
-2. **First-party official docs** — nextjs.org, react.dev, tailwindcss.com, learn.microsoft.com
-3. **Never rely on training data alone** for current versions, deprecations, or breaking changes
+1. Documentation tools and repo docs
+2. First-party vendor documentation
+3. Never rely on training data alone for current versions or breaking changes
 
 ## Sub-Agent Delegation
-- `@research-agent` — technical research, dependency lookups, codebase analysis
-- `@code-reviewer` — code quality, standards adherence, maintainability
-- `@security-specialist` — vulnerability analysis, dependency audits, secure coding review
-- `@documentation-specialist` — ADRs, architecture docs, context and research notes
-- `@frontend-specialist` — frontend architecture, component design, Tailwind/Next.js patterns, accessibility
-See `.github/agents/` for full agent definitions.
+- `@research-agent` — codebase analysis, dependency lookups, repo research
+- `@code-reviewer` — standards, maintainability, and quality review
+- `@security-specialist` — audits, secret handling, and vulnerability review
+- `@documentation-specialist` — ADRs, architecture docs, context notes, and reports
+- `@frontend-specialist` — UI architecture, accessibility, and frontend performance
